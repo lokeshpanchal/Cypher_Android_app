@@ -1,0 +1,318 @@
+
+<P STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>What
+is Cypher?</B></FONT></FONT>
+<br>
+<FONT COLOR="#000000", serif">Silent
+Secret is a social community for young people to share their
+thoughts, feelings, secrets, news and lifestyle by posting
+anonymously. </FONT>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">Your
+post can be a secret, a thought, a feeling, something humorous,
+aspirational or hopeful.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">We
+believe in Cypher as a social community built by and for young
+people, to support young people to have less stress and anxiety by
+providing a safe place to share, and connect to expert support
+organisations in times of need.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">When
+you first download the Cypher mobile app, you will need to
+create a new anonymous account by choosing your own username, pin,
+security question and answer. We will also ask for your age, and
+gender. We request this data to support us with data analysis,
+improve services for young people and content filtering. This
+information is not identifiable therefore you will remain anonymous.
+You can share secrets of 200 characters or less and by sharing you
+give Cypher full permission to share your secret as deemed
+appropriate by Cypher. We retain the full right of ownership
+of all posts and content shared on Cypher.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">We
+take safeguarding of young people seriously. Our services are not
+directed to persons under 11. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif"><B>PLEASE
+NOTE - Cypher cannot provide emergency support, advice or
+assistance. If you are in an emergency please call the police on 999
+or for emotional support call Childline on 0800 1111 if you live in
+the UK or contact the emergency service of your country. </B></FONT>
+</P>
+
+<P STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>What
+if a secret indicates a user is in immediate danger or harm?</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">If
+we receive a secret that indicates a young person is in imminent
+danger or at immediate</FONT><FONT COLOR="#000000", serif"><B> </B></FONT><FONT COLOR="#000000", serif">risk</FONT><FONT COLOR="#000000", serif"><B>
+</B></FONT><FONT COLOR="#000000", serif">of harm, will act to safeguard
+this young person by sending a 'push notification', which will
+advise you have an urgent message in 'My Secrets''. 'My
+Secrets' is a section of the app that only the young person who the
+account belongs to can access, by entering their pin. When they enter
+this section of the app they will have a message waiting, which will
+advise '</FONT><FONT COLOR="#000000"><FONT COLOR="#000000", serif"><SPAN LANG="en-US">We'd
+like to reassure you that you are not alone. Some words in your last
+post suggest that you might be feeling down. There are some awesome
+organisations that want to offer their support, please try
+</SPAN></FONT></FONT><FONT COLOR="#07A3FD"><FONT COLOR="#000000", serif"><SPAN LANG="en-US"><U><A HREF="http://www.silentsecret.uk/support">www.silentsecret.uk/support</A>.html</U></SPAN></FONT></FONT><FONT COLOR="#000000"><FONT COLOR="#000000", serif"><SPAN LANG="en-US">
+to access the perfect one for you'</SPAN></FONT></FONT><FONT COLOR="#000000", serif">.
+We also reserve the right to take the necessary steps to try and
+safeguard that young person by passing on the secret and other
+details such as time of post and</FONT><FONT COLOR="#000000", serif"><B>
+</B></FONT><FONT COLOR="#000000", serif">geo location to the Child
+Exploitation and Online Protection Agency (CEOP) for additional
+support, in the most serious of cases or to the appropriate authority
+of the user's country.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>What
+happens if an inappropriate secret is shared?</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">Silent
+Secret uses a custom algorithm to search for inappropriate keywords
+in a post so that </FONT><FONT COLOR="#000000", serif">when a secret is
+shared it will be automatically checked against a dictionary of
+inappropriate and offensive keywords. Any secret that is flagged will
+not go live and drop into a queue for human
+moderation. Along with keyword flagging by Cypher's
+algorithm, we have human moderators responsible for scanning through
+content and lastly we have a in-app feature where users can
+flag/report posts they deem inappropriate. </FONT><FONT COLOR="#000000", serif">We
+have this process in place to allow every young person to have the
+most inclusive experience as possible without compromising themselves
+or others using the platform. Cypher does not have human
+moderators 24 hours a day to monitor all shared content. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Copyright
+material </B></FONT></FONT>
+</P>
+<FONT COLOR="#000000", serif">If
+you are posting material that you think might be copyrighted, then
+you must use quotation marks ('') for this post. If a post is
+found to break copyright laws, then it will be removed. We strongly
+advise that you share what is important to you anonymously, and not
+quote copyrighted materials such as song lyrics etc. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Defamatory
+comments</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">Defamatory
+comments are strictly against Cypher's code of conduct. If
+you make a defamatory comment then you are at risk of legal action
+being taken against you. Any posts that are found to be defamatory
+will be removed.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in; line-height: 100%"><FONT COLOR="#000000", serif">An
+example of defamation would be if a young person is naming other
+people e.g. parents, teachers, club leaders, local police officers,
+other young people, etc. as abusers. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">A
+defamatory comment or post is one that might damage or undermine the
+reputation of a person or organisation who it is written about, by:</FONT>
+<UL>
+	<LI><FONT COLOR="#000000", serif">Exposing the individual or organisation to hatred, ridicule or contempt;</FONT>
+	<LI><FONT COLOR="#000000", serif">Causing
+	the individual or organisation to be shunned or avoided;</FONT>
+	<LI><FONT COLOR="#000000", serif">Lowering the individual or organisation in the view of the general public; or</FONT>
+	<LI><FONT COLOR="#000000", serif">Damaging
+	the individual's reputation in their office, profession or trade
+	or the organisation's office, profession or trade.</FONT>
+</UL>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Verified
+Users &amp; Commenting on posts</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">Young
+people using Cypher can obtain verified user status after
+posting 5 secrets and giving out 10 positive affirmation interactions
+to other young people's posts. The app will guide users through
+this process. If you become verified, this allows you to make
+comments on other verified users' secrets and receive comments too.
+As with all secrets posted, every comment will be </FONT><FONT COLOR="#000000", serif">automatically
+checked against a dictionary of inappropriate and offensive keywords
+by our custom algorithm and other verified users also have the
+ability to flag a comment they find offensive or inappropriate.
+Cypher reserves the right to unverify a user at any point,
+should an inappropriate or offensive comment be made.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Location
+Settings</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">When
+you first download the app you have the option to either 'allow'
+or 'don't allow' Cypher to access your location while
+you use the app. As is specified when this option appears, location
+is primarily used to help improve the secret content you will see. We
+will also use location data to understand what is trending in
+different areas. If you choose 'allow', we will not be able to
+identify who you are, so you will still remain anonymous.</FONT></FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Glimpse</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">Glimpse
+is a section of the app where you can access news, entertainment and
+lifestyle content within the app. The content is aggregated from
+sources including YouTube, Vine and other web sources. All content is
+curated by Cypher and will therefore be appropriate for all of
+Cypher's users.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>iFriend</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">iFriend
+is a section of the app where you can add up to five 'internet
+friends' to your private iFriend list. You can have 1-2-1 chats
+with your iFriends; you can also tag your iFriends in comments. As
+with all secrets and comments posted, every chat text of iFriends
+will be </FONT><FONT COLOR="#000000", serif">automatically checked
+against a dictionary of inappropriate and offensive keywords by our
+custom algorithm and moderated by Cypher human moderators for
+the purpose of preventing offensive or inappropriate content. Silent
+Secret reserves the right to unverify a user at any point, should an
+inappropriate or offensive comment be made.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>AppCounselling</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">AppCounselling
+is currently being piloted in limited locations; you'd need to have
+an approved QR code to be able to access our direct counselling
+service. This does not prevent you from accessing your usual
+counselling services in your local area or with Childline or
+equivalent of Childline in your country. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Coupon
+codes and school rating</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">By
+entering a coupon code within the app, you will have access to
+additional background images. It will also allow us to know which
+organisation has given you the coupon code, which will enable us to
+work with these organisations to improve services for young people.
+You can also rate your school in a number of categories every six
+months. This data is anonymous and we hope the data will help improve
+school services for young people.</FONT></P>
+
+<FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Sharing
+content from Cypher</B></FONT></FONT>
+<br>
+<FONT COLOR="#000000", serif">Users
+can share content from within Cypher including their mood,
+secrets from the 'happy' tab and content from within Glimpse. It
+is your responsibility for what content you share, how you share it
+and with whom you share it. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Android
+Users</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">For
+Cypher's Android users, the app will allow you to call phone
+numbers within 'get support', which may incur call charges.
+Please check your call rates with your service provider. Although
+upon installing the app, the settings suggest we can 'modify or
+delete the contents of your SD card and read its contents' we will
+NEVER do so. This is a standard Android requirement. This setting is
+only enabled to allow you to use Cypher in offline mode. The
+'find accounts on the device' enables you to login to Silent
+Secret and 'prevent phone from sleeping' is enabled, to allow you
+to receive push notifications.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>What
+happens with your anonymous secrets after they have been shared?</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">Silent
+Secret receives your anonymous secrets and thoughts through our
+mobile app. When using the app you consent to our terms of sharing,
+collection, transfer, storage, disclosure and other uses of your
+anonymous secrets and thoughts as described in this Privacy Policy.
+Irrespective of which country you reside in or supply secrets and
+thoughts from, you authorise Cypher to use what you have
+shared in the United Kingdom and any other country where Silent
+Secret operates.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">We
+also use a database to collect anonymous statistical information to
+help us improve Cypher's services. This can also involve
+sharing anonymous information with others to promote Cypher as
+a social project working with young people and raising funds.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">Silent
+Secret may give local authorities and other local and national
+organisations access to anonymous data. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">Local
+Authorities and other local and national organisations </FONT><FONT COLOR="#000000", serif"><B>only</B></FONT><FONT COLOR="#000000", serif">
+have access to anonymous data; they </FONT><FONT COLOR="#000000", serif"><B>do
+not</B></FONT><FONT COLOR="#000000", serif"> have access to geo location
+of users. Cypher's intention in doing this is to encourage
+local authorities and other organisations to use our data to better
+understand the voice, feelings and wishes of young people in their
+local area. By doing so they will be able to provide more appropriate
+services, more quickly to meet what is most important to the young
+people in their community. Having
+your phone's location settings on will ensure Cypher will
+localise and personalise (sign post to) digital sign-posting support
+organisations for individual users based on the </FONT><FONT COLOR="#000000", serif"><B>approximate</B></FONT><FONT COLOR="#000000", serif"> location.
+This is to empower a user to access the most relevant digital
+sign-posting support available to them instantly.</SPAN></SPAN></FONT></FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in; line-height: 100%"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>How
+do we store your secrets and geo location addresses?</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">We
+are legally bound by children safeguarding ethics to ensure that such
+information is only used for the purpose for which it was requested
+and also to ensure that the data is held securely.</FONT></P>
+<UL>
+	<LI><FONT COLOR="#000000", serif">Records
+	are kept on an electronic database built for Cypher. </FONT>
+	
+	<LI><FONT COLOR="#000000", serif">Silent
+	Secret will keep your geo location records for 5 years.</FONT>
+	<LI><FONT COLOR="#000000", serif">We
+	are unable to provide you with copies of your geo location.</FONT>
+</UL>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Invite
+your friends</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">When
+you invite your friends to use Cypher via the 'invite your
+friends' feature in the Cypher menu, a text message will be
+automatically created for you to send. Any text messages sent will be
+charged at your standard network rate. Please check with your phone
+network as to the cost of sending a text message. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Silent
+Secret and Social Networks</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">Silent
+Secret users should not post or send us secrets on our social network
+websites such as Facebook or Twitter etc. Human moderators will
+delete any secrets that are shared on Cypher's Facebook page
+or tweeted to our Twitter handle.</FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Accessing
+Support "Get Support"</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">Through
+the app's digital sign-posting 'Get Support' Cypher only
+provide support by providing a link to third party organisations, we
+do not own or manage any of the third party organisations. We cannot
+be held responsible for the privacy of data collected by
+organisations not managed by Cypher. </FONT>
+</P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#ff0000"><FONT COLOR="#000000", serif"><B>Business
+Transfers</B></FONT></FONT></P>
+<FONT COLOR="#000000", serif">In
+the event that Cypher is involved in a bankruptcy, merger,
+acquisition, reorganisation or sale of assets, your secrets and
+anonymous information may be sold or transferred as part of that
+transaction. The promises in this policy may apply to your anonymous
+information as transferred to the new entity with this exception, </FONT><FONT COLOR="#000000", serif"><SPAN LANG="en-US"><SPAN STYLE="background: #ffffff">we
+will never sell or transfer Cypher anonymous information to a
+data company and we have no intention to do so.</SPAN></SPAN></FONT></P>
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">If
+you have any questions or comments about this Privacy Policy, please
+contact us at privacy@silentsecret.uk</FONT></P>
+
+
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">Effective:
+October 2016</FONT></P>
+<P ALIGN=JUSTIFY STYLE="margin-bottom: 0in"><FONT COLOR="#000000", serif">Review:
+February 2016</FONT></P>

@@ -1,0 +1,7 @@
+Alias: helio
+alias-pass: qwer0622
+keystore-pass: qwer0622
+
+
+
+

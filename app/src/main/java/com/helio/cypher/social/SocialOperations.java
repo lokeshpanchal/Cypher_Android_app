@@ -1,0 +1,1226 @@
+package com.helio.cypher.social;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+
+import com.helio.cypher.EncryptionDecryption.CryptLib;
+import com.helio.cypher.R;
+import com.helio.cypher.WebserviceDTO.Me2HufLikeActionDTO;
+import com.helio.cypher.WebserviceDTO.Me2HugLikeConditionalDTO;
+import com.helio.cypher.WebserviceDTO.Me2HugLikeObjectDTO;
+import com.helio.cypher.activities.MainActivity;
+import com.helio.cypher.adapters.FeedAdapter;
+import com.helio.cypher.connection.IfriendRequest;
+import com.helio.cypher.models.Secret;
+import com.helio.cypher.utils.AppSession;
+import com.helio.cypher.utils.CommonFunction;
+import com.helio.cypher.utils.Constants;
+
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+public class SocialOperations {
+
+    private Context mContext;
+
+    Calendar c = Calendar.getInstance();
+
+    Me2HugLikeConditionalDTO me2HugLikeConditionalDTO = null;
+
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
+    String formattedDate = df.format(c.getTime());
+
+    public SocialOperations(Context context) {
+        mContext = context;
+    }
+
+
+
+    /*public ArrayList<String> flag(final Secret item, final FeedAdapter.ViewHolder holder) {
+        ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+        biteObject.setObjectId(item.getObjectId());
+        biteObject.put(Constants.SECRET_FLAGS, item.getFlags() + 1);
+        ArrayList<String> flagUsers = item.getFlagUsers();
+        flagUsers.add(Preference.getUserName());
+        biteObject.put(Constants.SECRET_FLAG_USERS, flagUsers);
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        biteObject.setACL(acl);
+
+        ((MainActivity) mContext).showProgress();
+        biteObject.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                ((MainActivity) mContext).stopProgress();
+                if (e == null) {
+                    holder.flag.setImageResource(R.drawable.ic_flagged);
+                    item.setFlags(item.getFlags() + 1);
+                }
+            }
+        });
+
+        return flagUsers;
+    }*/
+
+/*    public ArrayList<String> unFlag(final Secret item, final FeedAdapter.ViewHolder holder)
+    {
+        final ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+        biteObject.setObjectId(item.getObjectId());
+        biteObject.put(Constants.SECRET_FLAGS, item.getFlags() - 1);
+        final ArrayList<String> flagUsers = item.getFlagUsers();
+        flagUsers.remove(Preference.getUserName());
+        biteObject.put(Constants.SECRET_FLAG_USERS, flagUsers);
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        biteObject.setACL(acl);
+
+        ((MainActivity) mContext).showProgress();
+        biteObject.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                ((MainActivity) mContext).stopProgress();
+                if (e == null) {
+                    holder.flag.setImageResource(R.drawable.ic_flag);
+                }
+            }
+        });
+
+        return flagUsers;
+    }*/
+
+    public ArrayList<String> hug(final Secret item, final FeedAdapter.ViewHolder holder) {
+
+
+        final ArrayList<String> hugUsers = item.getHugUsers();
+
+
+        try {
+            hugUsers.add(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)));
+
+            int hougcount = 0;
+            String hug = AppSession.getValue(mContext, Constants.USER_HUGS);
+            if (hug != null && !hug.equalsIgnoreCase("")) {
+                try {
+                    hougcount = Integer.parseInt(hug);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            hougcount = hougcount + 1;
+
+            AppSession.save(mContext, Constants.USER_HUGS, "" + hougcount);
+
+
+            if (me2HugLikeConditionalDTO != null)
+                me2HugLikeConditionalDTO = null;
+
+
+            int hug_oxygen = 10;
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    String hhug_food = MainActivity.petAvtarInfoDTO.getHug_oxygen();
+                    if (hhug_food != null && !hhug_food.equalsIgnoreCase("") && !hhug_food.equalsIgnoreCase("null")) {
+                        hug_oxygen = Integer.parseInt(hhug_food);
+                        if (hug_oxygen <= 90)
+                            hug_oxygen = hug_oxygen + 10;
+
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                MainActivity.petAvtarInfoDTO.setHug_oxygen("" + hug_oxygen);
+                CommonFunction.oxygen_maintain();
+            }
+
+            String sendpush = "true";
+
+            String total_count = "";
+            int total_scrcount = 0;
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
+                    if (total_count != null && !total_count.equalsIgnoreCase("")) {
+                        total_scrcount = Integer.parseInt(total_count);
+
+                    }
+
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
+                } catch (Exception e) {
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
+                    total_scrcount = 1;
+                    e.printStackTrace();
+                }
+            }
+
+          /*  if(item.getCreatedByUser()!= null && !item.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username))
+            {
+                sendpush = "true";
+            }*/
+
+            me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)), item.getObjectId(), item.getCreatedByUser(), hugUsers,
+                    hugUsers, hougcount, item.getHugs() + 1, sendpush, 0, "" + hug_oxygen, "", "", "" + total_scrcount);
+            holder.hug.setImageResource(R.drawable.ic_hug);
+            item.setHugs(item.getHugs() + 1);
+            holder.hugs.setText(String.valueOf(item.getHugs()));
+
+            new HugAction().execute();
+
+            ((MainActivity) mContext).updateActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+       /* ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+        biteObject.setObjectId(item.getObjectId());
+        biteObject.put(Constants.SECRET_HUGS, item.getHugs() + 1);
+       final ArrayList<String> hugUsers = item.getHugUsers();
+        hugUsers.add(Preference.getUserName());
+        biteObject.put(Constants.SECRET_HUG_USERS, hugUsers);
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        biteObject.setACL(acl);
+
+        biteObject.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e)
+            {
+                if (e == null)
+                {
+                    try
+                    {
+                        CommonFunction.increaehug_oxygen();
+                        holder.hug.setImageResource(R.drawable.ic_hug);
+                        item.setHugs(item.getHugs() + 1);
+                        holder.hugs.setText(String.valueOf(item.getHugs()));
+
+                        //if (ActionChecker.checker(item.getHugs()))
+
+
+                        try
+                        {
+                            if(!item.getUser().getUsername().equalsIgnoreCase(ParseUser.getCurrentUser().getUsername()))
+                                sendPushData(item.getObjectId(), item.getHugs(), item.getCreatedByUser(), Constants.PUSH_TEXT_HUGGED, item, Constants.NOTIFICATION_TYPE_HUG);
+
+                        }
+                        catch (Exception e1)
+                        {
+                            e1.printStackTrace();
+                        }
+
+                        createSocialItem(item.getUser(), Constants.HUG_CLASS, item.getObject());
+
+                        ParseUser.getCurrentUser().put(Constants.USER_HUGS, ParseUser.getCurrentUser().getInt(Constants.USER_HUGS) + 1);
+                        ParseUser.getCurrentUser().put("lastactivitydate", formattedDate);
+                        ParseUser.getCurrentUser().put(Constants.SECRET_HUG_USERS, hugUsers);
+                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                try
+                                {
+                                    ((MainActivity) mContext).updateActivity();
+                                }
+                                catch (Exception e2)
+                                {
+                                    e2.printStackTrace();
+                                }
+
+                            }
+                        });
+                    }
+                    catch (Exception e2)
+                    {
+                     e2.printStackTrace();
+                    }
+
+                }
+            }
+        });
+*/
+        return hugUsers;
+    }
+
+    public ArrayList<String> unHug(final Secret item, final FeedAdapter.ViewHolder holder) {
+
+
+        final ArrayList<String> hugUsers = item.getHugUsers();
+
+
+        try {
+
+
+            hugUsers.remove(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)));
+            int hougcount = 0;
+            String hug = AppSession.getValue(mContext, Constants.USER_HUGS);
+            if (hug != null && !hug.equalsIgnoreCase("")) {
+                try {
+                    hougcount = Integer.parseInt(hug);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            if (hougcount > 0)
+                hougcount = hougcount - 1;
+
+            AppSession.save(mContext, Constants.USER_HUGS, "" + hougcount);
+
+            if (me2HugLikeConditionalDTO != null)
+                me2HugLikeConditionalDTO = null;
+
+            int hug_oxygen = 10;
+
+            if (MainActivity.petAvtarInfoDTO != null) {
+
+                try {
+                    String hhug_food = MainActivity.petAvtarInfoDTO.getHug_oxygen();
+                    if (hhug_food != null && !hhug_food.equalsIgnoreCase("") && !hhug_food.equalsIgnoreCase("null")) {
+                        hug_oxygen = Integer.parseInt(hhug_food);
+                        if (hug_oxygen >= 20)
+                            hug_oxygen = hug_oxygen - 10;
+
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                MainActivity.petAvtarInfoDTO.setHug_oxygen("" + hug_oxygen);
+
+                CommonFunction.oxygen_maintain();
+            }
+
+            String total_count = "";
+            int total_scrcount = 0;
+            if (MainActivity.petAvtarInfoDTO != null) {
+
+
+                try {
+                    total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
+                    if (total_count != null && !total_count.equalsIgnoreCase("")) {
+                        total_scrcount = Integer.parseInt(total_count);
+
+                    }
+
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
+                } catch (Exception e) {
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
+                    total_scrcount = 1;
+                    e.printStackTrace();
+                }
+            }
+            me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)), item.getObjectId(), item.getCreatedByUser(), hugUsers,
+                    hugUsers, hougcount, item.getHugs() - 1, "false", 0, "" + hug_oxygen, "", "", "" + total_scrcount);
+
+            try {
+                int kk = item.getHugs();
+
+                if (kk > 0) {
+                    item.setHugs(kk - 1);
+                } else {
+                    item.setHugs(0);
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            holder.hug.setImageResource(R.drawable.ic_not_hug);
+
+            holder.hugs.setText(String.valueOf(item.getHugs()));
+            new HugAction().execute();
+
+            ((MainActivity) mContext).updateActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        /*ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+        biteObject.setObjectId(item.getObjectId());
+        biteObject.put(Constants.SECRET_HUGS, item.getHugs() - 1);
+       final ArrayList<String> hugUsers = item.getHugUsers();
+        hugUsers.remove(Preference.getUserName());
+        biteObject.put(Constants.SECRET_HUG_USERS, hugUsers);
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        biteObject.setACL(acl);
+
+        biteObject.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+
+                    try
+                    {
+                        holder.hug.setImageResource(R.drawable.ic_not_hug);
+
+
+
+                        try {
+
+                            CommonFunction.decreasehug_oxygen();
+
+                            int kk = item.getHugs();
+
+                            if (kk > 0) {
+                                item.setHugs(item.getHugs() - 1);
+                            } else {
+                                item.setHearts(0);
+                            }
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
+                        }
+
+
+                        holder.hugs.setText(String.valueOf(item.getHugs()));
+                        ParseUser.getCurrentUser().put(Constants.USER_HUGS, ParseUser.getCurrentUser().getInt(Constants.USER_HUGS) - 1);
+                        ParseUser.getCurrentUser().put("lastactivitydate", formattedDate);
+
+                        ParseUser.getCurrentUser().put(Constants.SECRET_HUG_USERS, hugUsers);
+
+                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+
+                                try
+                                {
+                                    ((MainActivity) mContext).updateActivity();
+                                }
+                                catch (Exception e2)
+                                {
+                                    e2.printStackTrace();
+                                }
+
+                            }
+                        });
+                    }
+                     catch (Exception e2)
+                     {
+                         e2.printStackTrace();
+                     }
+
+                }
+            }
+        });*/
+
+        return hugUsers;
+    }
+
+    public ArrayList<String> heart(final Secret item, final FeedAdapter.ViewHolder holder) {
+
+        //username/userid/notification_status
+
+
+        final ArrayList<String> heartsUsers = item.getHeartUsers();
+
+
+        try {
+
+            heartsUsers.add(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)));
+
+            int heartgcount = 0;
+            String hug = AppSession.getValue(mContext, Constants.USER_HEARTS);
+            if (hug != null && !hug.equalsIgnoreCase("")) {
+                try {
+                    heartgcount = Integer.parseInt(hug);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            heartgcount = heartgcount + 1;
+
+            AppSession.save(mContext, Constants.USER_HEARTS, "" + heartgcount);
+
+            if (me2HugLikeConditionalDTO != null)
+                me2HugLikeConditionalDTO = null;
+
+            int heart_food = 10;
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    String hheart_food = MainActivity.petAvtarInfoDTO.getHeart_food();
+                    if (hheart_food != null && !hheart_food.equalsIgnoreCase("") && !hheart_food.equalsIgnoreCase("null")) {
+                        heart_food = Integer.parseInt(hheart_food);
+                        if (heart_food <= 90)
+                            heart_food = heart_food + 10;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                MainActivity.petAvtarInfoDTO.setHeart_food("" + heart_food);
+                CommonFunction.food_maintain();
+            }
+
+            String sendpush = "true";
+            String total_count = "";
+
+            int total_scrcount = 0;
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
+                    if (total_count != null && !total_count.equalsIgnoreCase(""))
+                    {
+                        total_scrcount = Integer.parseInt(total_count);
+                    }
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
+                } catch (Exception e) {
+                      MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
+                    total_scrcount = 1;
+                    e.printStackTrace();
+                }
+            }
+
+
+           /* if(item.getCreatedByUser()!= null && !item.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username))
+            {
+                sendpush = "true";
+            }*/
+
+            me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)), item.getObjectId(), item.getCreatedByUser(), heartsUsers,
+                    heartsUsers, heartgcount, item.getHearts() + 1, sendpush, 0, "", "" + heart_food, "", "" + total_scrcount);
+            holder.heart.setImageResource(R.drawable.ic_hearted);
+            item.setHearts(item.getHearts() + 1);
+            holder.hearts.setText(String.valueOf(item.getHearts()));
+
+            new HeartsAction().execute();
+
+            ((MainActivity) mContext).updateActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+     /*   ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+        biteObject.setObjectId(item.getObjectId());
+        biteObject.put(Constants.SECRET_HEARTS, item.getHearts() + 1);
+       final ArrayList<String> heartsUsers = item.getHeartUsers();
+        heartsUsers.add(Preference.getUserName());
+        biteObject.put(Constants.SECRET_HEART_USERS, heartsUsers);
+
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        biteObject.setACL(acl);
+
+        biteObject.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                if (e == null)
+                {
+                    try
+                    {
+                        CommonFunction.increaehearfood();
+                        holder.heart.setImageResource(R.drawable.ic_hearted);
+                        item.setHearts(item.getHearts() + 1);
+                        holder.hearts.setText(String.valueOf(item.getHearts()));
+
+                        //  if (ActionChecker.checker(item.getHearts()))
+
+
+                        try
+                        {
+                            if(!item.getUser().getUsername().equalsIgnoreCase(ParseUser.getCurrentUser().getUsername()))
+                                sendPushData(item.getObjectId(), item.getHearts(), item.getCreatedByUser(), Constants.PUSH_TEXT_HEARTED, item, Constants.NOTIFICATION_TYPE_HEART);
+
+                        }
+                        catch (Exception e1)
+                        {
+                            e1.printStackTrace();
+                        }
+
+                        createSocialItem(item.getUser(), Constants.HEART_CLASS, item.getObject());
+
+                        ParseUser.getCurrentUser().put(Constants.USER_HEARTS, ParseUser.getCurrentUser().getInt(Constants.USER_HEARTS) + 1);
+                        ParseUser.getCurrentUser().put("lastactivitydate", formattedDate);
+                        ParseUser.getCurrentUser().put(Constants.SECRET_HEART_USERS, heartsUsers);
+                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                try
+                                {
+                                    ((MainActivity) mContext).updateActivity();
+                                }
+                                catch (Exception e2)
+                                {
+                                    e2.printStackTrace();
+                                }
+
+                            }
+                        });
+                    }
+                    catch (Exception e2)
+                    {
+                        e2.printStackTrace();
+                    }
+
+                }
+            }
+        });*/
+
+        return heartsUsers;
+    }
+
+    public ArrayList<String> unHeart(final Secret item, final FeedAdapter.ViewHolder holder) {
+
+        final ArrayList<String> heartsUsers = item.getHeartUsers();
+
+
+        try {
+
+            heartsUsers.remove(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)));
+
+            int heartgcount = 0;
+            String hug = AppSession.getValue(mContext, Constants.USER_HEARTS);
+            if (hug != null && !hug.equalsIgnoreCase("")) {
+                try {
+                    heartgcount = Integer.parseInt(hug);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            if (heartgcount > 0)
+                heartgcount = heartgcount - 1;
+
+            AppSession.save(mContext, Constants.USER_HEARTS, "" + heartgcount);
+
+
+            if (me2HugLikeConditionalDTO != null)
+                me2HugLikeConditionalDTO = null;
+
+            int heart_food = 10;
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    String hheart_food = MainActivity.petAvtarInfoDTO.getHeart_food();
+                    if (hheart_food != null && !hheart_food.equalsIgnoreCase("") && !hheart_food.equalsIgnoreCase("null")) {
+                        heart_food = Integer.parseInt(hheart_food);
+                        if (heart_food >= 20)
+                            heart_food = heart_food - 10;
+
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                MainActivity.petAvtarInfoDTO.setHeart_food("" + heart_food);
+                CommonFunction.food_maintain();
+            }
+
+
+            int total_scrcount = 0;
+            String total_count = "";
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
+                    if (total_count != null && !total_count.equalsIgnoreCase("")) {
+                        total_scrcount = Integer.parseInt(total_count);
+
+                    }
+
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
+                } catch (Exception e) {
+                     MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
+                    total_scrcount = 1;
+                    e.printStackTrace();
+                }
+            }
+
+            me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)), item.getObjectId(), item.getCreatedByUser(), heartsUsers,
+                    heartsUsers, heartgcount, item.getHearts() - 1, "false", 0, "", "" + heart_food, "", total_scrcount + "");
+            holder.heart.setImageResource(R.drawable.ic_heart);
+
+            try {
+                int kk = item.getHearts();
+
+                if (kk > 0) {
+                    item.setHearts(kk - 1);
+                } else {
+                    item.setHearts(0);
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+
+            holder.hearts.setText(String.valueOf(item.getHearts()));
+
+            new HeartsAction().execute();
+
+            ((MainActivity) mContext).updateActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+/*
+
+        ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+        biteObject.setObjectId(item.getObjectId());
+        biteObject.put(Constants.SECRET_HEARTS, item.getHearts() - 1);
+      final  ArrayList<String> heartsUsers = item.getHeartUsers();
+        heartsUsers.remove(Preference.getUserName());
+        biteObject.put(Constants.SECRET_HEART_USERS, heartsUsers);
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        biteObject.setACL(acl);
+
+        biteObject.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+
+                    try{
+                        holder.heart.setImageResource(R.drawable.ic_heart);
+
+
+                        try {
+                            CommonFunction.decreasehearfood();
+                            int kk = item.getHearts();
+
+                            if (kk > 0) {
+                                item.setHearts(item.getHearts() - 1);
+                            } else {
+                                item.setHearts(0);
+                            }
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
+                        }
+
+
+                        holder.hearts.setText(String.valueOf(item.getHearts()));
+                        ParseUser.getCurrentUser().put(Constants.USER_HEARTS, ParseUser.getCurrentUser().getInt(Constants.USER_HEARTS) - 1);
+                        ParseUser.getCurrentUser().put("lastactivitydate", formattedDate);
+                        ParseUser.getCurrentUser().put(Constants.SECRET_HEART_USERS, heartsUsers);
+                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                try
+                                {
+                                    ((MainActivity) mContext).updateActivity();
+                                }
+                                catch (Exception e2)
+                                {
+                                    e2.printStackTrace();
+                                }
+
+                            }
+                        });
+                    }
+                    catch (Exception e2)
+                    {
+                        e2.printStackTrace();
+                    }
+
+                }
+            }
+        });*/
+
+        return heartsUsers;
+    }
+
+    public ArrayList<String> me2(final Secret item, final FeedAdapter.ViewHolder holder) {
+        final ArrayList<String> me2Users = item.getMe2Users();
+
+        try {
+
+            me2Users.add(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)));
+
+            int me2gcount = 0;
+            String hug = AppSession.getValue(mContext, Constants.USER_ME2S);
+            if (hug != null && !hug.equalsIgnoreCase("")) {
+                try {
+                    me2gcount = Integer.parseInt(hug);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            me2gcount = me2gcount + 1;
+
+            AppSession.save(mContext, Constants.USER_ME2S, "" + me2gcount);
+
+
+            if (me2HugLikeConditionalDTO != null)
+                me2HugLikeConditionalDTO = null;
+
+
+            int vertual_commnet_cont = 1;
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    String ver_com_count = MainActivity.petAvtarInfoDTO.getComments_count();
+                    if (ver_com_count != null && !ver_com_count.equalsIgnoreCase("")) {
+                        vertual_commnet_cont = Integer.parseInt(ver_com_count);
+                        vertual_commnet_cont = vertual_commnet_cont + 1;
+                        MainActivity.petAvtarInfoDTO.setComments_count("" + vertual_commnet_cont);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            String sendpush = "true";
+
+
+            int total_scrcount = 0;
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    String total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
+                    if (total_count != null && !total_count.equalsIgnoreCase("")) {
+                        total_scrcount = Integer.parseInt(total_count);
+                    }
+
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
+                } catch (Exception e) {
+                      MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
+                    total_scrcount = 1;
+                    e.printStackTrace();
+                }
+            }
+           /* if(item.getCreatedByUser()!= null && !item.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username))
+            {
+                sendpush = "true";
+            }*/
+            me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)), item.getObjectId(), item.getCreatedByUser(), me2Users,
+                    me2Users, me2gcount, item.getMe2s() + 1, sendpush, vertual_commnet_cont, "", "", "", "" + total_scrcount);
+            holder.me2.setImageResource(R.drawable.ic_me);
+            item.setMe2s(item.getMe2s() + 1);
+            holder.me2s.setText(String.valueOf(item.getMe2s()));
+            new Me2Action().execute();
+
+            ((MainActivity) mContext).updateActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+       /* ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+        biteObject.setObjectId(item.getObjectId());
+        biteObject.put(Constants.SECRET_ME2S, item.getMe2s() + 1);
+       final ArrayList<String> me2Users = item.getMe2Users();
+        me2Users.add(Preference.getUserName());
+        biteObject.put(Constants.SECRET_ME2USERS, me2Users);
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        biteObject.setACL(acl);
+
+
+
+
+        biteObject.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+
+                    try
+                    {
+
+
+                        CommonFunction.increaem2water();
+
+                        holder.me2.setImageResource(R.drawable.ic_me);
+                        item.setMe2s(item.getMe2s() + 1);
+                        holder.me2s.setText(String.valueOf(item.getMe2s()));
+
+                        //if (ActionChecker.checker(item.getMe2s()))
+                        try
+                        {
+                            if(!item.getUser().getUsername().equalsIgnoreCase(ParseUser.getCurrentUser().getUsername()))
+                                sendPushData(item.getObjectId(), item.getMe2s(), item.getCreatedByUser(), Constants.PUSH_TEXT_ME2S, item, Constants.NOTIFICATION_TYPE_ME2);
+
+                        }
+                        catch (Exception e1)
+                        {
+                            e1.printStackTrace();
+                        }
+
+                        ParseUser.getCurrentUser().put(Constants.USER_ME2S, ParseUser.getCurrentUser().getInt(Constants.USER_ME2S) + 1);
+                        ParseUser.getCurrentUser().put("lastactivitydate", formattedDate);
+                        ParseUser.getCurrentUser().put(Constants.SECRET_ME2USERS, me2Users);
+                        createSocialItem(item.getUser(), Constants.ME2_CLASS, item.getObject());
+
+                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                try
+                                {
+                                    ((MainActivity) mContext).updateActivity();
+                                }
+                                catch (Exception e2)
+                                {
+                                    e2.printStackTrace();
+                                }
+
+                            }
+                        });
+                    }
+                    catch (Exception e2)
+                    {
+                        e2.printStackTrace();
+                    }
+
+                }
+            }
+        });
+*/
+        return me2Users;
+    }
+
+    public ArrayList<String> unMe2(final Secret item, final FeedAdapter.ViewHolder holder) {
+
+        final ArrayList<String> me2Users = item.getMe2Users();
+
+
+        try {
+
+            me2Users.remove(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)));
+
+            int me2gcount = 0;
+            String hug = AppSession.getValue(mContext, Constants.USER_ME2S);
+            if (hug != null && !hug.equalsIgnoreCase("")) {
+                try {
+                    me2gcount = Integer.parseInt(hug);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            if (me2gcount > 0)
+                me2gcount = me2gcount - 1;
+
+            AppSession.save(mContext, Constants.USER_ME2S, "" + me2gcount);
+
+            int vertual_commnet_cont = 1;
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    String ver_com_count = MainActivity.petAvtarInfoDTO.getComments_count();
+                    if (ver_com_count != null && !ver_com_count.equalsIgnoreCase("")) {
+                        vertual_commnet_cont = Integer.parseInt(ver_com_count);
+                        vertual_commnet_cont = vertual_commnet_cont - 1;
+                        MainActivity.petAvtarInfoDTO.setComments_count("" + vertual_commnet_cont);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            int total_scrcount = 0;
+            String total_count = "";
+            if (MainActivity.petAvtarInfoDTO != null) {
+                try {
+                    total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
+                    if (total_count != null && !total_count.equalsIgnoreCase("")) {
+                        total_scrcount = Integer.parseInt(total_count);
+
+                    }
+
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
+                } catch (Exception e) {
+                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
+                    total_scrcount = 1;
+                    e.printStackTrace();
+                }
+            }
+           /* int water = 10;
+            if(MainActivity.petAvtarInfoDTO!= null) {
+                try {
+                    String me2_water = MainActivity.petAvtarInfoDTO.getM2_water();
+                    if (me2_water != null && !me2_water.equalsIgnoreCase("") && !me2_water.equalsIgnoreCase("null")) {
+                        water = Integer.parseInt(me2_water);
+                        if (water >= 20)
+                            water = water - 10;
+
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                MainActivity.petAvtarInfoDTO.setM2_water("" + water);
+                CommonFunction.water_maintain();
+            }*/
+
+            if (me2HugLikeConditionalDTO != null)
+                me2HugLikeConditionalDTO = null;
+
+            me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(CryptLib.encrypt(AppSession.getValue(mContext, Constants.USER_NAME)), item.getObjectId(), item.getCreatedByUser(), me2Users,
+                    me2Users, me2gcount, item.getMe2s() - 1, "false", vertual_commnet_cont, "", "", "", "" + total_count);
+            holder.me2.setImageResource(R.drawable.ic_me_off);
+
+            try {
+                int kk = item.getMe2s();
+
+                if (kk > 0) {
+                    item.setMe2s(item.getMe2s() - 1);
+                } else {
+                    item.setMe2s(0);
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+
+            holder.me2s.setText(String.valueOf(item.getMe2s()));
+
+            new Me2Action().execute();
+            ((MainActivity) mContext).updateActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        /*
+        ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+        biteObject.setObjectId(item.getObjectId());
+        biteObject.put(Constants.SECRET_ME2S, item.getMe2s() - 1);
+       final ArrayList<String> me2Users = item.getMe2Users();
+        me2Users.remove(Preference.getUserName());
+        biteObject.put(Constants.SECRET_ME2USERS, me2Users);
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+        biteObject.setACL(acl);
+
+        biteObject.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+
+                    try
+                    {
+
+
+                        CommonFunction.decreasem2water();
+
+                        holder.me2.setImageResource(R.drawable.ic_me_off);
+
+                        try {
+                            int kk = item.getMe2s();
+
+                            if (kk > 0) {
+                                item.setMe2s(item.getMe2s() - 1);
+                            } else {
+                                item.setMe2s(0);
+                            }
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
+                        }
+
+
+
+                        holder.me2s.setText(String.valueOf(item.getMe2s()));
+
+
+                        ParseUser.getCurrentUser().put(Constants.USER_ME2S, ParseUser.getCurrentUser().getInt(Constants.USER_ME2S) - 1);
+                        ParseUser.getCurrentUser().put("lastactivitydate", formattedDate);
+                        ParseUser.getCurrentUser().put(Constants.SECRET_ME2USERS, me2Users);
+                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                try
+                                {
+                                    ((MainActivity) mContext).updateActivity();
+                                }
+                                catch (Exception e2)
+                                {
+                                    e2.printStackTrace();
+                                }
+
+                            }
+                        });
+                    }
+                    catch (Exception e2)
+                    {
+                        e2.printStackTrace();
+                    }
+
+                }
+            }
+        });*/
+
+        return me2Users;
+    }
+
+
+   /* private void sendPushData(String id, int count, String user, String keyword, final Secret item, final String type) {
+        JSONObject dataType = new JSONObject();
+        final String text;
+
+        if (type.equals(Constants.NOTIFICATION_TYPE_ME2)) {
+            text = mContext.getString(R.string.you_have_shared) + count + mContext.getString(R.string.people_);
+        } else {
+            text = count + mContext.getString(R.string.people_have) + keyword + mContext.getString(R.string.your_secret);
+        }
+
+        try {
+            dataType.put(Constants.PUSH_ALERT, text);
+            dataType.put(Constants.PUSH_SECRET_ID, id);
+            dataType.put(Constants.PUSH_ACTION, Constants.PUSH_ACTION_SOCIAL);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ParsePush push = new ParsePush();
+        push.setData(dataType);
+        push.setChannel(user);
+        push.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                savePushToTheClass(item.getObject(), type, text, item.getUser());
+            }
+        });
+    }
+
+    private void savePushToTheClass(ParseObject item, String type, String text, ParseUser user) {
+        try {
+            ObjectMaker.formNewNotification(item, text, type, user);
+
+
+        } catch (IllegalArgumentException ill)
+        {
+        } catch (NullPointerException n) {
+        }
+    }
+
+    private void createSocialItem(ParseUser receiver, String className, ParseObject secret) {
+        try {
+            ObjectMaker.formSocial(ParseUser.getCurrentUser(), receiver, className, secret).saveInBackground();
+        } catch (IllegalArgumentException ill) {
+        } catch (NullPointerException n) {
+        }
+    }
+*/
+
+
+    private class Me2Action extends AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String status = "";
+        Bitmap bitmap;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(mContext);
+
+
+                Me2HufLikeActionDTO loginDTO = new Me2HufLikeActionDTO(Constants.ENCRYPT_SECRET_TABLE, Constants.ENCRYPT_ME2ACTION_METHOD, me2HugLikeConditionalDTO);
+                Me2HugLikeObjectDTO loginbjectDTO = new Me2HugLikeObjectDTO(loginDTO);
+
+                http.Me2HuglikeAction(loginbjectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+
+        }
+    }
+
+
+    private class HeartsAction extends AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String status = "";
+        Bitmap bitmap;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(mContext);
+
+
+                Me2HufLikeActionDTO loginDTO = new Me2HufLikeActionDTO(Constants.ENCRYPT_SECRET_TABLE, Constants.ENCRYPT_HEARTACTION_METHOD, me2HugLikeConditionalDTO);
+                Me2HugLikeObjectDTO loginbjectDTO = new Me2HugLikeObjectDTO(loginDTO);
+
+                http.Me2HuglikeAction(loginbjectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+
+        }
+    }
+
+
+    private class HugAction extends AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String status = "";
+        Bitmap bitmap;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(mContext);
+
+
+                Me2HufLikeActionDTO loginDTO = new Me2HufLikeActionDTO(Constants.ENCRYPT_SECRET_TABLE, Constants.ENCRYPT_HUGACTION_METHOD, me2HugLikeConditionalDTO);
+                Me2HugLikeObjectDTO loginbjectDTO = new Me2HugLikeObjectDTO(loginDTO);
+
+                http.Me2HuglikeAction(loginbjectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+
+        }
+    }
+
+
+}

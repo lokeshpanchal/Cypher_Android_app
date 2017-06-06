@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <View
+        android:background="#44999999"
+        android:id="@+id/web_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></View>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/headerview"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Support"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+    <WebView
+        android:id="@+id/support_web_view"
+        android:layout_margin="2dp"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/headerview"
+        android:layout_height="match_parent"></WebView>
+
+
+    <ImageView android:id="@+id/web_dialog_close"
+        android:layout_margin="@dimen/support_close_web_margin"
+        android:src="@drawable/ic_close_web"
+        android:layout_width="@dimen/support_close_size"
+        android:layout_height="@dimen/support_close_size" />
+</RelativeLayout>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <View
+        android:id="@+id/verify_root"
+        android:background="#44999999"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></View>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <View
+                android:layout_weight="1.5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:background="@drawable/rate_shape"
+                android:orientation="vertical"
+                android:layout_weight="10"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+
+                <LinearLayout
+                    android:layout_weight="4"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_marginLeft="@dimen/pin_input_margin"
+                            android:layout_marginRight="@dimen/pin_input_margin"
+                            android:layout_centerInParent="true"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:gravity="center"
+                                android:text="@string/you_can_comment"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/button_ts"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <LinearLayout
+                                android:layout_gravity="center"
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:gravity="center"
+                                    android:text="the "
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/button_ts"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                                <ImageView
+                                    android:src="@drawable/ic_verified_icon"
+                                    android:layout_width="@dimen/tutorial_secre_ite_size"
+                                    android:layout_height="@dimen/tutorial_secre_ite_size" />
+
+                                <TextView
+                                    android:gravity="center"
+                                    android:text=" sign on it. Simply click"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/button_ts"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_gravity="center"
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:gravity="center"
+                                    android:text="the "
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/button_ts"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                                <ImageView
+                                    android:src="@drawable/ic_verified_icon"
+                                    android:layout_width="@dimen/tutorial_secre_ite_size"
+                                    android:layout_height="@dimen/tutorial_secre_ite_size" />
+
+                                <TextView
+                                    android:gravity="center"
+                                    android:text=" sign to add a comment."
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/button_ts"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:background="@drawable/ic_dialog_bot"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/verify_ok"
+                        android:gravity="center"
+                        android:text="@string/ok_"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/button_ts"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_weight="1.5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_weight="4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
+</RelativeLayout>

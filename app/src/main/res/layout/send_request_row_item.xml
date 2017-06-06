@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/send_request_ifriends"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Pending Request"
+        android:textSize="16sp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/date_pending"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:layout_below="@+id/send_request_ifriends"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/accept_request"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="80dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/accept"
+        />
+
+    <ImageView
+        android:id="@+id/reject_request"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/reject"
+        />
+</RelativeLayout>

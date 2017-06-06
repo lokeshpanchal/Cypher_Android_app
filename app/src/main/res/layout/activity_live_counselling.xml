@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/glimpse_gray"
+    tools:context=".activities.LiveCounselling">
+
+
+    <RelativeLayout
+        android:id="@+id/timer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="130dp"
+            android:background="@drawable/timerborder"
+            android:gravity="center"
+            android:paddingBottom="35dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="35dp"
+            android:text="00:00"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/textpush"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/timer"
+            android:layout_margin="30dp"
+            android:text="Your Counsellor is getting ready, your session will start shortly. In the meantime you can browse around in the app, we will send you a notification when the Counsellor is ready to start."
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/sharemoodontimer"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/textpush"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/theme_shape"
+            android:gravity="center"
+            android:text="Share mood Graph"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/chatscreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:background="#dddddd"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/attandencemessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="40dp"
+            android:gravity="center"
+            android:text="Post some text to confirm your attendance"
+            android:textColor="#666666"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/chat_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="52dp"
+            android:divider="@null" />
+
+        <ImageView
+            android:id="@+id/chatmoodshare"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:padding="7dp"
+            android:src="@drawable/ic_mood"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/msg_et"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp"
+
+            android:layout_marginRight="50dp"
+            android:layout_toRightOf="@+id/chatmoodshare"
+            android:background="@color/white"
+            android:ems="5"
+            android:hint="Type a message"
+            android:paddingLeft="15dp" />
+
+
+        <ImageView
+            android:id="@+id/send_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="2dp"
+            android:background="@color/white"
+            android:padding="8dp"
+            android:src="@drawable/ic_send" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/homemenu">
+
+
+        <TextView
+            android:id="@+id/cancel_book"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+
+            android:background="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/appointmenttext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/appcounselling"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/show_counsel_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:text="00:00"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/callbutton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/show_counsel_timer"
+            android:background="@drawable/call_icon"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ratingscreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header_layout"
+        android:background="@color/glimpse_gray"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:gravity="center"
+            android:text="Your Counsellor will not see these feedback ratings."
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="10"
+            android:background="@drawable/rate_shape"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/rating_question"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/pin_input_margin"
+                            android:layout_marginRight="@dimen/pin_input_margin"
+                            android:layout_marginTop="30dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Did you feel listened to and understood during this session?"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/button_ts" />
+
+                        <RatingBar
+                            android:id="@+id/rate_counselling"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center"
+
+                            android:layout_margin="5dp"
+
+                            android:layout_weight="1"
+                            android:numStars="5"
+                            android:rating="0"
+                            android:stepSize="1.0" />
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
+                android:background="@drawable/ic_dialog_bot"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ratingok"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/submit"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/button_ts" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/impactratinglayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/menu"
+        android:visibility="gone">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            >
+
+            <TextView
+                android:id="@+id/impact_timer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/homemenu"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Counselling will start in 00:00"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/impact_timer"
+                android:layout_above="@+id/thanksanswering">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
+
+
+
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:background="@color/white"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+
+
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:id="@+id/impactquestion"
+                                android:layout_width="250dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="60dp"
+                                    android:background="#ffffff"
+                                    android:gravity="left|center"
+                                    android:paddingLeft="10dp"
+                                    android:paddingRight="10dp"
+                                    android:text="OVER THE LAST WEEK..."
+                                    android:textColor="#333333"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:background="#d3d3d3" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:background="#d3d3d3"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:id="@+id/impactnotaatall"
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="60dp"
+
+                                    android:gravity="center"
+                                    android:background="#ffffff"
+                                    android:rotation="330"
+                                    android:text="Not at all"
+                                    android:textColor="#333333"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:background="#d3d3d3" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:background="#d3d3d3"
+                                android:visibility="gone" />
+
+
+                            <LinearLayout
+                                android:id="@+id/impactonlyoccasional"
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="60dp"
+                                    android:background="#ffffff"
+                                    android:gravity="center"
+
+                                    android:rotation="330"
+                                    android:text="Occasionally"
+                                    android:textColor="#333333"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:background="#d3d3d3" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:background="#d3d3d3"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:id="@+id/impactsometimes"
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="60dp"
+                                    android:background="#ffffff"
+                                    android:gravity="center"
+
+                                    android:rotation="330"
+                                    android:text="Sometimes"
+                                    android:textColor="#333333"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:background="#d3d3d3" />
+                            </LinearLayout>
+
+
+                            <TextView
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:background="#d3d3d3"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:id="@+id/impactofter"
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="60dp"
+                                    android:background="#ffffff"
+                                    android:gravity="center"
+
+                                    android:rotation="330"
+                                    android:text="Often"
+                                    android:textColor="#333333"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:background="#d3d3d3" />
+                            </LinearLayout>
+
+
+                            <TextView
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:background="#d3d3d3"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:id="@+id/impactmostoff"
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="60dp"
+                                    android:background="#ffffff"
+                                    android:gravity="center"
+
+                                    android:rotation="330"
+                                    android:text="Most of the time"
+                                    android:textColor="#333333"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+
+                                    android:background="#d3d3d3" />
+                            </LinearLayout>
+
+
+                            <TextView
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:background="#d3d3d3"
+                                android:visibility="gone" />
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+
+
+                </LinearLayout>
+            </ScrollView>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/thanksanswering"
+                android:background="@color/homemain"
+                android:gravity="center"
+                android:layout_above="@+id/submitimpact"
+                android:text="Thank you for answering these questions"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/submitimpact"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/white"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:text="Submit"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+
+        <ProgressBar
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

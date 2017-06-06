@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#328170">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/petlayout"
+                android:layout_width="match_parent"
+                android:layout_height="270dp"
+                android:visibility="visible"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:orientation="horizontal"
+                >
+
+
+                <ProgressBar
+                    android:id="@+id/water_progress"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="200dp"
+                    android:layout_height="180dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="-95dp"
+                    android:layout_marginTop="5dp"
+                    android:progress="10"
+                    android:progressDrawable="@drawable/progressbar_stateblue"
+
+                    />
+
+                <ProgressBar
+                    android:id="@+id/food_progress"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="230dp"
+                    android:layout_height="180dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="-110dp"
+                    android:layout_marginTop="5dp"
+                    android:progress="30"
+                    android:progressDrawable="@drawable/progressbar_state">
+
+                </ProgressBar>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="35dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@color/white"
+                    android:layout_marginTop="35dp">
+
+                    <ImageView
+                        android:id="@+id/petimage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+
+                    <TextView
+                        android:id="@+id/oxygenlevel"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#66222222" />
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/water_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="20dp"
+                    android:text="30%"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="18dp"
+
+                    android:text="Water"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+
+                    android:text="Comments"
+
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+
+                <TextView
+                    android:id="@+id/food_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+
+                    android:layout_marginTop="20dp"
+                    android:text="30%"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="18dp"
+
+                    android:text="Food"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+
+                    android:text="Hearts"
+
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/oxygen_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginRight="20dp"
+                    android:text="Oxygen : 30%"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginRight="20dp"
+                    android:text="Hugs"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/stats_close"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/petlayout"
+                android:visibility="visible"
+                android:background="@drawable/getsupport_shape"
+                android:gravity="center"
+                android:layout_margin="40dp"
+                android:text="Continue"
+                android:textColor="@color/black"
+                android:textSize="@dimen/stats_go_back" />
+        </RelativeLayout>
+
+
+    <include layout="@layout/caution_layout" />
+
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/glimpse_gray"
+        android:visibility="gone">
+
+
+        <ProgressBar
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+   <!-- <ProgressBar
+        android:id="@+id/stats_progress_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/stats_progress_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main"
+        android:visibility="gone" />-->
+
+<!--    <include layout="@layout/caution_layout" />-->
+
+</RelativeLayout>
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/feed_view_item_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feed_view_item_height"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:id="@+id/feed_view_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/support_close_tp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/feed_view_arrow_size"
+                android:layout_height="@dimen/feed_view_arrow_size"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_left_arrow" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="right|center"
+                android:paddingRight="@dimen/support_close_tp"
+                android:text="@string/back"
+                android:textColor="@color/white"
+                android:textSize="@dimen/feed_view_back_ts" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/feed_view_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/feed_view_share"
+            android:layout_toRightOf="@+id/feed_view_back"
+            android:layout_toStartOf="@+id/feed_view_share"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/feed_view_view_title_ts" />
+
+        <TextView
+            android:id="@+id/feed_view_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/support_close_tp"
+            android:layout_marginRight="@dimen/support_close_tp"
+            android:gravity="center"
+            android:text="@string/share"
+            android:textColor="@color/white"
+            android:textSize="@dimen/feed_view_back_ts" />
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/feed_view_vb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/relativeLayout"></WebView>
+
+
+</RelativeLayout>
+

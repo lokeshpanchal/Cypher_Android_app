@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/feed_view_top_item_height">
+
+        <LinearLayout
+            android:id="@+id/feed_data_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/support_close_tp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/feed_view_arrow_size"
+                android:layout_height="@dimen/feed_view_arrow_size"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_left_arrow" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="right|center"
+                android:paddingRight="@dimen/support_close_tp"
+                android:text="@string/back"
+                android:textColor="@color/white"
+                android:textSize="@dimen/feed_view_back_ts" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/feed_data_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/feed_view_title_ts" />
+
+        <TextView
+            android:id="@+id/feed_data_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="right|center"
+            android:paddingLeft="@dimen/support_close_tp"
+            android:paddingRight="@dimen/support_close_tp"
+            android:text="Filter"
+            android:textColor="@color/white"
+            android:textSize="@dimen/feed_view_back_ts" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/feed_data_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/relativeLayout"
+        android:divider="@android:color/transparent"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"></ListView>
+
+    <LinearLayout
+        android:id="@+id/feed_filter_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout"
+        android:background="@color/filter"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feed_view_top_item_height">
+
+            <CheckBox
+                android:id="@+id/feed_youtube"
+                android:layout_width="@dimen/feed_view_filter_width"
+                android:layout_height="@dimen/feed_view_filter_height"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/feed_view_filter_m"
+                android:background="@drawable/youtube_selector"
+                android:button="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feed_view_top_item_height">
+
+            <CheckBox
+                android:id="@+id/feed_vine"
+                android:layout_width="@dimen/feed_view_filter_width"
+                android:layout_height="@dimen/feed_view_filter_height"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/feed_view_filter_m"
+                android:background="@drawable/vine_selector"
+                android:button="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feed_view_top_item_height">
+
+            <CheckBox
+                android:id="@+id/feed_web"
+                android:layout_width="@dimen/feed_view_filter_width"
+                android:layout_height="@dimen/feed_view_filter_height"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/feed_view_filter_m"
+                android:background="@drawable/web_selector"
+                android:button="@null" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
+

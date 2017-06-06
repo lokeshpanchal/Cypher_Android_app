@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/comments_item_me"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/comment_item_flag_me"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/comment_item_flag_size"
+        android:layout_marginTop="@dimen/support_item_image_p"
+        android:layout_weight="1"
+        android:src="@drawable/ic_not_flagged" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+
+
+            <TextView
+                android:id="@+id/comment_item_text_me"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:layout_margin="@dimen/support_item_image_p"
+                android:gravity="right"
+                android:textColor="#5C5C5C"
+                android:textSize="@dimen/comment_item_ts" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/comment_item_time_me"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center"
+            android:layout_margin="@dimen/support_item_image_p"
+            android:gravity="right"
+            android:textColor="#5C5C5C"
+            android:textSize="@dimen/comment_time_ts" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/comment_item_fruit_me"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/comment_item_fruit_size"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1.5"
+        android:scaleType="fitStart" />
+
+</LinearLayout>

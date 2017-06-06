@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/rate_school_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/rate_item_sides_m"
+        android:layout_marginRight="@dimen/rate_item_sides_m"
+        android:layout_marginTop="@dimen/rate_item_mt"
+        android:background="@color/homemenu"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/rate_ts" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/rate_item_mt"
+        android:layout_marginLeft="@dimen/rate_item_sides_m"
+        android:layout_marginRight="@dimen/rate_item_sides_m"
+        android:background="@color/homemain">
+
+        <RatingBar
+            android:id="@+id/rate_school_rate_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:numStars="5"
+            android:rating="0"
+            android:stepSize="1.0" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/rate_item_padding_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/rate_item_collapse"
+        android:visibility="gone"></View>
+</LinearLayout>
