@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.helio.cypher.activities.DooWappAudio">
+    tools:context="com.helio.silentsecret.activities.DooWappAudio">
 
     <RelativeLayout
         android:id="@+id/header_layout"

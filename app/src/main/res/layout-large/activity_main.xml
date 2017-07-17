@@ -111,7 +111,7 @@
                 android:textSize="10sp"
                 android:visibility="gone" />
 
-            <com.helio.cypher.views.OwnPager
+            <com.helio.silentsecret.views.OwnPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -132,7 +132,7 @@
 
                     />
 
-            </com.helio.cypher.views.OwnPager>
+            </com.helio.silentsecret.views.OwnPager>
 
 
             <FrameLayout

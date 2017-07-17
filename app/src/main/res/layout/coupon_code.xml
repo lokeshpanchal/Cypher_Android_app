@@ -79,7 +79,7 @@
                         android:layout_marginTop="30dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="Coupon Code"
+                        android:text="Ruby Code"
                         android:textColor="@color/white"
                         android:textSize="@dimen/button_ts" />
 
@@ -92,7 +92,7 @@
                         android:layout_margin="25dp"
                         android:background="@drawable/counsellcodeborder"
                         android:gravity="center"
-                        android:hint="Enter Coupon Code"
+                        android:hint="Enter Ruby Code"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey_bar" />
 

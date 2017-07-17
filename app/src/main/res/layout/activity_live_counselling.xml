@@ -60,6 +60,9 @@
     </RelativeLayout>
 
 
+
+
+
     <RelativeLayout
         android:id="@+id/chatscreen"
         android:layout_width="match_parent"
@@ -130,6 +133,34 @@
 
     </RelativeLayout>
 
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="50dp"
+        android:id="@+id/ten_min_remain"
+        android:text="10 minutes remaining"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:background="@color/last_item"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:id="@+id/book_appoint_remingder"
+        android:layout_marginTop="50dp"
+        android:text="Book appointment"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:background="@color/white"/>
+
     <RelativeLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
@@ -162,6 +193,9 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+
             android:text="00:00"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -173,6 +207,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
+
             android:layout_toLeftOf="@+id/show_counsel_timer"
             android:background="@drawable/call_icon"
             android:visibility="gone" />
