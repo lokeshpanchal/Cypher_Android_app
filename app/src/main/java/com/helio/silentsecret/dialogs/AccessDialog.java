@@ -27,6 +27,7 @@ import com.helio.silentsecret.activities.ActionSecretActivity;
 import com.helio.silentsecret.activities.CommentSecretActivity;
 import com.helio.silentsecret.activities.MainActivity;
 import com.helio.silentsecret.activities.MySecretsActivity;
+import com.helio.silentsecret.activities.SettingsActivity;
 import com.helio.silentsecret.appCounsellingDTO.CommonRequestTypeDTO;
 import com.helio.silentsecret.appCounsellingDTO.FinalObjectDTO;
 import com.helio.silentsecret.connection.ConnectionDetector;
@@ -381,6 +382,8 @@ LoginConditionDTO loginConditionDTO = null;
         try {
             if (getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MOOD)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_VERIFY)
+            || (getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_ROOM))
+                    || getArguments().getString(Constants.ACCESS_UNVERIFY_ME).equals(Constants.ACCESS_UNVERIFY_ME)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MY_SECRETS)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_STATS)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_CLEAR_SECRET)
@@ -392,7 +395,8 @@ LoginConditionDTO loginConditionDTO = null;
                     ||  getArguments().getString(Constants.DIALOG_KEY).equals(Constants.LIVE_SCREEN)
                     ||  getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_PENDING_RATING)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_BOOK_APPONTMENT)
-                    ) {
+                    )
+            {
 
                 try {
                     ((MainActivity) getActivity()).hideSearchBar();
@@ -414,6 +418,8 @@ LoginConditionDTO loginConditionDTO = null;
         try {
             if (getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MOOD)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_VERIFY)
+                    || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_ROOM)
+                    || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_UNVERIFY_ME)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MY_SECRETS)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_STATS)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_CLEAR_SECRET)
@@ -609,31 +615,48 @@ LoginConditionDTO loginConditionDTO = null;
         }
         else if (type.equals(Constants.ACCESS_CLEAR_SECRET))
         {
-            ((MainActivity) getActivity()).runMineSecrets(false);
+            ((SettingsActivity) getActivity()).runMineSecrets(false);
         } else if (type.equals(Constants.ACTION_SECRETS_ACCESS))
         {
             //((ActionSecretActivity) getActivity()).loadData();
-        } else if (type.equals(Constants.ACCESS_COMMENTS_SECRET))
+        }
+        else if (type.equals(Constants.ACTION_SECRETS_ACCESS))
         {
-         //   ((CommentSecretActivity) getActivity()).loadData();
-        } else if (type.equals(Constants.ACCESS_MY_SECRETS_BACKEND)) {
+            //((ActionSecretActivity) getActivity()).loadData();
+        }else if (type.equals(Constants.ACCESS_IFRIEND))
+        {
+            ((MainActivity) getActivity()).runIFriend();
+        } else if (type.equals(Constants.ACCESS_MY_SECRETS_BACKEND))
+        {
             ((MySecretsActivity) getActivity()).loadAccessData();
         } else if (type.equals(Constants.ACCESS_NOTIFICATIONS)) {
             ((MainActivity) getActivity()).runNotifications();
         } else if (type.equals(Constants.ACCESS_STATS)) {
             ((MainActivity) getActivity()).runStats();
-        } else if (type.equals(Constants.ACCESS_VERIFY)) {
+        }
+        else if (type.equals(Constants.ACCESS_UNVERIFY_ME))
+        {
+            ((SettingsActivity) getActivity()).unverifyUser();
+
+        }
+
+        else if (type.equals(Constants.ACCESS_VERIFY))
+        {
             ((MainActivity) getActivity()).unverifyUser();
-        } else if (type.equals(Constants.ACCESS_MOOD)) {
+
+        } else if (type.equals(Constants.ACCESS_MOOD))
+        {
             ((MainActivity) getActivity()).runMood();
-        } else if (type.equals(Constants.ACCESS_HIGHTLIGHTS)) {
+        }
+        else if (type.equals(Constants.ACCESS_ROOM))
+        {
+            ((MainActivity) getActivity()).runRoom();
+        }
+        else if (type.equals(Constants.ACCESS_HIGHTLIGHTS)) {
             ((MainActivity) getActivity()).runHighLights();
         } else if (type.equals(Constants.ACCESS_YEAR_COMMENTS)) {
             ((MainActivity) getActivity()).runYearComments();
-        } else if (type.equals(Constants.ACCESS_IFRIEND)) {
-            ((MainActivity) getActivity()).runIFriend();
         }
-
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 

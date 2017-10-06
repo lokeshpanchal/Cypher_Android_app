@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.helio.silentsecret.activities.RoomsActivity">
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="fill_parent"
+
+
+        android:layout_height="@dimen/header_height"
+        android:background="@color/ifriend_top_bar">
+
+        <TextView
+            android:id="@+id/back_iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/back"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_centerInParent="true"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:text="Rooms"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottombar"
+        android:layout_below="@+id/toolbar"
+        android:layout_margin="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="@dimen/room_icon_height"
+                android:layout_height="@dimen/room_icon_height"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/ic_rooms" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:text="let's get you started"
+                android:textColor="@color/grey_bar"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/create_room_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/room_button_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/theme_shape"
+                android:gravity="center"
+                android:text="create a room"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/private_room"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/room_button_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/private_room_button"
+                android:gravity="center"
+                android:visibility="gone"
+                android:text="private rooms"
+                android:textColor="@color/add_as_ifreind_color"
+                android:textSize="20sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/header_height"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/search_room_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/room_button_height"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/gray_round_border"
+                    android:gravity="center"
+                    android:hint="Search for rooms"
+                    android:paddingLeft="50dp"
+                    android:paddingRight="50dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/grey_bar" />
+
+                <TextView
+                    android:layout_width="@dimen/room_search_icon_height"
+                    android:layout_height="@dimen/room_search_icon_height"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/search_room_trans" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottombar"
+        android:layout_below="@+id/toolbar"
+        android:visibility="gone" />
+
+
+    <RelativeLayout
+        android:id="@+id/my_room_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:clickable="true"
+        android:layout_marginBottom="@dimen/room_bottom_height"
+        android:background="@color/glimpse_gray"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/my_room_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:divider="@color/devidercolor"
+            android:dividerHeight="4dp">
+
+        </ListView>
+
+
+        <TextView
+            android:id="@+id/myroom_no_result_found"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No result found"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/search_room_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottombar"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/white"
+        android:clickable="true"
+
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/edt_search"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/gray_round_border"
+                android:gravity="center"
+                android:hint="Search for rooms"
+                android:imeOptions="actionSearch"
+                android:paddingLeft="10dp"
+                android:paddingRight="50dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey_bar" />
+
+            <TextView
+                android:id="@+id/search_room_text"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/search_room_trans" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/room_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:divider="@color/devidercolor"
+            android:dividerHeight="4dp">
+
+        </ListView>
+
+        <TextView
+            android:id="@+id/no_result_found"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No result found"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/bottombar"
+        android:background="@color/grey" />
+
+    <LinearLayout
+        android:id="@+id/bottombar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/room_bottom_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:id="@+id/rooms_home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="@dimen/room_bottom_icon_height"
+                android:layout_height="@dimen/room_bottom_icon_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/ic_rooms" />
+
+            <TextView
+                android:id="@+id/rooms_home_bar"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+
+                android:layout_marginTop="6dp"
+                android:background="@color/room_bar" />
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".15"
+            android:background="@color/grey" />
+
+        <LinearLayout
+            android:id="@+id/create_room"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="@dimen/room_bottom_icon_height"
+                android:layout_height="@dimen/room_bottom_icon_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/create_room" />
+
+            <TextView
+                android:id="@+id/create_room_bar"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/room_bar"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".15"
+            android:background="@color/grey" />
+
+        <LinearLayout
+            android:id="@+id/search_room"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="@dimen/room_bottom_icon_height"
+                android:layout_height="@dimen/room_bottom_icon_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/search_room" />
+
+            <TextView
+                android:id="@+id/search_room_bar"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/room_bar"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".15"
+            android:background="@color/grey" />
+
+        <LinearLayout
+            android:id="@+id/my_rooms"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="@dimen/room_bottom_icon_height"
+                android:layout_height="@dimen/room_bottom_icon_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/my_rooms" />
+
+            <TextView
+                android:id="@+id/my_rooms_bar"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/room_bar"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <include layout="@layout/caution_layout" />
+
+
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/room_bottom_height"
+            android:background="@color/glimpse_gray" />
+
+        <ProgressBar
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -82,6 +82,12 @@ RelativeLayout qrstart_layout = null;
         });
         ct = this;
 
+
+
+
+
+
+
         qrstart.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -136,6 +142,35 @@ RelativeLayout qrstart_layout = null;
         }
     }
 
+    @Override
+    protected void onResume() {
+
+
+        try {
+            if (ConnectionDetector.isNetworkAvailable(ct) && is_click == false)
+            {
+                String code_type = AppSession.getValue(ct,Constants.USER_CODE_TYPE);
+                appcounsellcode = AppSession.getValue(ct,Constants.USER_CODE);
+
+                if(code_type!= null && code_type.equalsIgnoreCase("appcounselling") && appcounsellcode!= null && !appcounsellcode.equalsIgnoreCase(""))
+                {
+                    is_click = true;
+                    appcounsellcode = appcounsellcode.trim();
+                    redeemCounsellingCodeeDataDTO = new RedeemCounsellingCodeeDataDTO(MainActivity.enc_username, appcounsellcode);
+                    new ReddemCounsellingCode().execute();
+                }
+
+            } else {
+                new ToastUtil(ct, "Please check your internet connection.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        super.onResume();
+    }
 
     private class ReddemCounsellingCode extends android.os.AsyncTask<String, String, Bitmap> {
 

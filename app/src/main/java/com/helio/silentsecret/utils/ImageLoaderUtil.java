@@ -56,6 +56,11 @@ public class ImageLoaderUtil {
         mImageLoader.displayImage(ASSETS_BACKS + id, imageView, mOptionsBuilderFromAssets.build());
     }
 
+
+    public String getBackground(String id) {
+        return "file:///android_asset/backs/" + id;
+    }
+
     public void loadFruit(String id, ImageView imageView) {
         mImageLoader.displayImage(ASSETS_FRUITS + id, imageView, mOptionsBuilderCacheAlpha.build());
     }

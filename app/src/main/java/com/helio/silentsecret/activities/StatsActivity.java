@@ -167,9 +167,14 @@ public class StatsActivity extends BaseActivity implements View.OnClickListener 
                     try {
                         pet_name = pet_name_input.getText().toString().trim();
 
-                        if (pet_name != null && !pet_name.equalsIgnoreCase("")) {
+                        if (pet_name != null && !pet_name.equalsIgnoreCase(""))
+                        {
                             pet_name = CryptLib.encrypt(pet_name);
+                            if(!pet_name.equalsIgnoreCase(MainActivity.enc_username))
                             new SetPetName().execute();
+                            else
+                                Toast.makeText(ct, "Please don't use user name.", Toast.LENGTH_SHORT).show();
+
                         } else {
                             Toast.makeText(ct, "Please enter pet name.", Toast.LENGTH_SHORT).show();
                         }
@@ -727,20 +732,6 @@ public class StatsActivity extends BaseActivity implements View.OnClickListener 
                         petimage.getSettings().setLoadWithOverviewMode(true);
                         petimage.getSettings().setUseWideViewPort(true);
 
-                        // petimage.setImageResource(petimagearrayhappy[i]);
-                        // Glide.with(StatsActivity.this).load(petimagearrayhappy[i]).asGif().into(petimage);
-
-                        /*Glide.with(StatsActivity.this)
-                                .load(petimagearrayhappy[i])
-                                .into(pe
-                    if (petname.equalsIgnoreCase(petnametimage);*/
-
-                        //Glide.with(StatsActivity.this).load(petimagearrayhappy[i]).into(new GlideDrawableImageViewTarget(petimage));
-                        // Glide.with(StatsActivity.this).load(petimagearrayhappy[i]).asGif().into(petimage);
-                        //petimage.setGifImageResource(petimagearrayhappy[i]);
-                        //petimage.setBackgroundResource(petimagearrayhappy[i]);
-                        //  petimage.setGifImageResource(R.drawable.android);
-                        // petimage.setGifImageUri(uri);
                         break;
                     }
 
@@ -767,26 +758,6 @@ public class StatsActivity extends BaseActivity implements View.OnClickListener 
                     }
                 }, 1000);*/
 
-            } else {
-                petimage_normal.setVisibility(View.VISIBLE);
-                petimage.setVisibility(View.GONE);
-                int[] petimagearray = {R.drawable.monkey, R.drawable.panda,
-                        R.drawable.horse, R.drawable.rabbit,
-                        R.drawable.donkey, R.drawable.sheep,
-                        R.drawable.deer, R.drawable.tiger,
-                        R.drawable.parrot, R.drawable.meerkat,
-                        R.drawable.mermain, R.drawable.cat,
-                        R.drawable.dog, R.drawable.unicorn,
-                        R.drawable.dragon, R.drawable.dynasore,
-                        R.drawable.starfish};
-
-
-                for (int i = 0; i < petnamearray.length; i++) {
-                    if (petname.equalsIgnoreCase(petnamearray[i])) {
-                        petimage_normal.setImageResource(petimagearray[i]);
-                        break;
-                    }
-                }
             }
 
 

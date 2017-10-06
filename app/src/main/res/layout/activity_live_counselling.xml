@@ -174,7 +174,7 @@
             android:layout_height="40dp"
             android:layout_centerVertical="true"
 
-            android:background="@drawable/ic_back" />
+            android:background="@drawable/back" />
 
         <TextView
             android:id="@+id/appointmenttext"
@@ -594,6 +594,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <include layout="@layout/caution_layout" />
 
     <RelativeLayout
         android:id="@+id/progress_bar"

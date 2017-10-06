@@ -3,8 +3,11 @@ package com.helio.silentsecret.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,8 +16,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.helio.silentsecret.R;
-import com.helio.silentsecret.WebserviceDTO.GetSupportListDTO;
-import com.helio.silentsecret.WebserviceDTO.GetSupportObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.SeenSupportRatingDataDTO;
 import com.helio.silentsecret.WebserviceDTO.SendSupportRatingObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.SendUpoortRatingDTO;
@@ -27,12 +28,17 @@ import com.helio.silentsecret.dialogs.WebViewDialog;
 import com.helio.silentsecret.location.GPSCoordinateReceiver;
 import com.helio.silentsecret.location.GeoHelper;
 import com.helio.silentsecret.models.SupportOrganisation;
+import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.ImageLoaderUtil;
 import com.helio.silentsecret.utils.Preference;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class SupportActivity extends BaseActivity implements View.OnClickListener, GPSCallback {
@@ -44,23 +50,45 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
     private List<SupportOrganisation> mList;
     private SupportOrganisation currentOrganisation;
     private ImageLoaderUtil mImageUtil;
-
+    String country = null;
     SeenSupportRatingDataDTO seenSupportRatingDataDTO = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ct = this;
+        try
+        {
+            double   latitude = Double.parseDouble(Preference.getUserLat());
+            double    longitude = Double.parseDouble(Preference.getUserLon());
+            country = getCountryName(ct, latitude, longitude);
+            if (country == null)
+                country = "GB";
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+
         try {
-            ct = this;
             setContentView(R.layout.activity_support);
+
             initViews();
             startTracking(Constants.TRACK_SUPPORT);
             GPS = new GPSCoordinateReceiver(this, this);
             showProgress();
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
 
     }
 
@@ -78,7 +106,7 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
             adapter = new SupportAdapter(LayoutInflater.from(this), mList, this);
 
             listView.setAdapter(adapter);
-            new GetSupportList().execute();
+            new GetSupportList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             /*int age = Integer.parseInt(Preference.getUserAge());
 
             if (age == 11 || age == 12 || age == 13) {
@@ -189,6 +217,7 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
                 break;
         }
     }
+
     public void showProgress() {
         try {
             findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
@@ -201,7 +230,7 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
 
         try {
             findViewById(R.id.progress_bar).setVisibility(View.GONE);
-         //   ProgressDialog.hideDialog(findViewById(R.id.support_progress_bg_iv), findViewById(R.id.support_progress_pb));
+            //   ProgressDialog.hideDialog(findViewById(R.id.support_progress_bg_iv), findViewById(R.id.support_progress_pb));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -224,8 +253,7 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-    public void webViewClosed()
-    {
+    public void webViewClosed() {
         if (!ConnectionDetector.isNetworkAvailable(this))
             return;
 
@@ -235,15 +263,14 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
         if (currentOrganisation.getUsersClicked() == null)
             return;
 
-        if (!currentOrganisation.getUsersClicked().contains(MainActivity.enc_username))
-        {
+        if (!currentOrganisation.getUsersClicked().contains(MainActivity.enc_username)) {
             try {
                 final List<String> rateUsers = currentOrganisation.getUsersClicked();
                 rateUsers.add(MainActivity.enc_username);
 
-                if(seenSupportRatingDataDTO!= null)
+                if (seenSupportRatingDataDTO != null)
                     seenSupportRatingDataDTO = null;
-                seenSupportRatingDataDTO = new SeenSupportRatingDataDTO(currentOrganisation.getOrg(), rateUsers, 0,"clicked");
+                seenSupportRatingDataDTO = new SeenSupportRatingDataDTO(currentOrganisation.getOrg(), rateUsers, 0, "clicked");
                 currentOrganisation.setUsersClicked(rateUsers);
                 new SaveClicked().execute();
             } catch (Exception e) {
@@ -266,9 +293,9 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
             final List<String> rateUsers = currentOrganisation.getUserRated();
             rateUsers.add(MainActivity.enc_username);
 
-    if(seenSupportRatingDataDTO!= null)
-    seenSupportRatingDataDTO = null;
-            seenSupportRatingDataDTO = new SeenSupportRatingDataDTO(currentOrganisation.getOrg(), rateUsers, rate,"ratted");
+            if (seenSupportRatingDataDTO != null)
+                seenSupportRatingDataDTO = null;
+            seenSupportRatingDataDTO = new SeenSupportRatingDataDTO(currentOrganisation.getOrg(), rateUsers, rate, "ratted");
             currentOrganisation.setUserRated(rateUsers);
             new Saverating().execute();
         } catch (Exception e) {
@@ -335,8 +362,7 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
                 }
 
 
-            } else
-            {
+            } else {
 
                 GPS.removeCallback();
             }
@@ -403,10 +429,38 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
             try {
 
 
-                IfriendRequest http = new IfriendRequest(ct);
+             /*   IfriendRequest http = new IfriendRequest(ct);
 
                 GetSupportObjectDTO findbynameObjectDTO = new GetSupportObjectDTO(new GetSupportListDTO());
                 data = http.GetSupportlist(findbynameObjectDTO);
+
+*/
+
+
+
+
+                IfriendRequest httpRequest = new IfriendRequest(ct);
+
+                String age = AppSession.getValue(ct, Constants.USER_AGE);
+
+
+                JSONObject mJsonObjectSub = new JSONObject();
+                JSONObject requestdata = new JSONObject();
+                JSONObject main_object = new JSONObject();
+
+
+              //  mJsonObjectSub.put("country", country);
+                mJsonObjectSub.put("country", country);
+
+                requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
+                requestdata.put("data", mJsonObjectSub);
+                requestdata.put("requestType", "getSupportData");
+                main_object.put("requestData", requestdata);
+                try {
+                    data = httpRequest.GetSupportlistWihtCountry(main_object.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -424,9 +478,17 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
                     listView.setVisibility(View.VISIBLE);
                     findViewById(R.id.support_not_found).setVisibility(View.GONE);
                     listView.setSelection(0);
-                } else {
-                    listView.setVisibility(View.INVISIBLE);
-                    findViewById(R.id.support_not_found).setVisibility(View.VISIBLE);
+                } else
+                {
+                    if (country != null && !country.equalsIgnoreCase("GB"))
+                    {
+                        country = "GB";
+                        new GetSupportList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+                    else {
+                        listView.setVisibility(View.INVISIBLE);
+                        findViewById(R.id.support_not_found).setVisibility(View.VISIBLE);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -435,6 +497,25 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
+
+    public static String getCountryName(Context context, double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            Address result;
+
+            if (addresses != null && !addresses.isEmpty())
+            {
+               String country_code =  addresses.get(0).getCountryCode();
+                return country_code;
+            }
+            return null;
+        } catch (IOException ignored) {
+            //do something
+        }
+        return null;
+    }
 
     private class Saverating extends android.os.AsyncTask<String, String, Bitmap> {
 
@@ -457,7 +538,7 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
 
                 IfriendRequest http = new IfriendRequest(ct);
 
-                SendSupportRatingObjectDTO findbynameObjectDTO = new SendSupportRatingObjectDTO(new SendUpoortRatingDTO(seenSupportRatingDataDTO,"sendSupportRating"));
+                SendSupportRatingObjectDTO findbynameObjectDTO = new SendSupportRatingObjectDTO(new SendUpoortRatingDTO(seenSupportRatingDataDTO, "sendSupportRating"));
                 data = http.SendSupportRating(findbynameObjectDTO);
 
             } catch (Exception e) {
@@ -471,7 +552,6 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
             hideProgress();
         }
     }
-
 
 
     private class SaveClicked extends android.os.AsyncTask<String, String, Bitmap> {
@@ -495,7 +575,7 @@ public class SupportActivity extends BaseActivity implements View.OnClickListene
 
                 IfriendRequest http = new IfriendRequest(ct);
 
-                SendSupportRatingObjectDTO findbynameObjectDTO = new SendSupportRatingObjectDTO(new SendUpoortRatingDTO(seenSupportRatingDataDTO,"sendSupportClicked"));
+                SendSupportRatingObjectDTO findbynameObjectDTO = new SendSupportRatingObjectDTO(new SendUpoortRatingDTO(seenSupportRatingDataDTO, "sendSupportClicked"));
                 data = http.SendSupportRating(findbynameObjectDTO);
 
             } catch (Exception e) {

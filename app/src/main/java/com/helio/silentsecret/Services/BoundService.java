@@ -12,7 +12,7 @@ import com.helio.silentsecret.EncryptionDecryption.CryptLib;
 import com.helio.silentsecret.WebserviceDTO.GetUnreadMessageDataDTO;
 import com.helio.silentsecret.WebserviceDTO.GetUnreadMessageObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.GetUnreadtChatMessageDTO;
-import com.helio.silentsecret.activities.MainActivity;
+import com.helio.silentsecret.activities.MySecretsActivity;
 import com.helio.silentsecret.connection.IfriendRequest;
 import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.Constants;
@@ -83,7 +83,7 @@ public class BoundService extends Service {
 
                 GetUnreadMessageObjectDTO getUnreadMessageObjectDTO = new GetUnreadMessageObjectDTO(new GetUnreadtChatMessageDTO(getUnreadMessageDataDTO,"getUnreadMesssage", Constants.ENCRYPT_IFRIEND_CHAT_TABLE, Constants.ENCRYPT_FIND_METHOD));
 
-                MainActivity.chatcount = http.GetUnreadmessage(getUnreadMessageObjectDTO);
+                MySecretsActivity.chatcount = http.GetUnreadmessage(getUnreadMessageObjectDTO);
 
 
             } catch (Exception e) {
@@ -96,16 +96,15 @@ public class BoundService extends Service {
 
             try
             {
-                if(MainActivity.is_running )
-
-                {
+               // if(MainActivity.is_running )
+                //{
                     refreshcount.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             new GetunreadMessage().execute();
                         }
                     }, 5000);
-                }
+               // }
             }
             catch (Exception e)
             {

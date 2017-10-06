@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
@@ -15,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.helio.silentsecret.R;
 import com.helio.silentsecret.WebserviceDTO.FindNameDTO;
 import com.helio.silentsecret.WebserviceDTO.FindbyNameDTO;
@@ -25,6 +31,7 @@ import com.helio.silentsecret.activities.MoodActivity;
 import com.helio.silentsecret.activities.SupportActivity;
 import com.helio.silentsecret.connection.ConnectionDetector;
 import com.helio.silentsecret.connection.IfriendRequest;
+import com.helio.silentsecret.models.FlickerImagload;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.social.SocialOperations;
 import com.helio.silentsecret.utils.AppSession;
@@ -32,9 +39,8 @@ import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.ImageLoaderUtil;
 import com.helio.silentsecret.utils.Preference;
 import com.helio.silentsecret.utils.ToastUtil;
-import com.helio.silentsecret.utils.Utils;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +54,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
     private ImageLoaderUtil mLoader;
     private Typeface mSecond;
 
-
+    List<FlickerImagload> flickerImagloads = new ArrayList<>();
     String newText = "";
     private String wordArray[] = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"};
 
@@ -90,7 +96,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.feed_item, parent, false);
+            convertView = inflater.inflate(R.layout.newfeed_item, parent, false);
 
             holder.root = (ImageView) convertView.findViewById(R.id.feed_root);
             holder.text = (TextView) convertView.findViewById(R.id.feed_text);
@@ -98,6 +104,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
             holder.hugs = (TextView) convertView.findViewById(R.id.feed_hugs_count);
             holder.hearts = (TextView) convertView.findViewById(R.id.feed_hearts_count);
             holder.me2s = (TextView) convertView.findViewById(R.id.feed_me2s_count);
+            holder.iFriend_icon = (TextView) convertView.findViewById(R.id.iFriend_icon);
             holder.hug = (ImageView) convertView.findViewById(R.id.feed_hug);
             holder.heart = (ImageView) convertView.findViewById(R.id.feed_heart);
             holder.me2 = (ImageView) convertView.findViewById(R.id.feed_me2);
@@ -113,9 +120,11 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
         }
 
         item = mDataList.get(position);
+        holder.iFriend_icon.setVisibility(View.GONE);
 
+        holder.text.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/ubuntu.ttf"));
 
-        if (getItem(position).getFont() != 2) {
+       /* if (getItem(position).getFont() != 2) {
             if (Utils.checkBackgroundImage(getItem(position).getBgImageName())) {
                 holder.text.setTextAppearance(mContext, R.style.ShadowText);
             } else {
@@ -125,7 +134,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
             holder.text.setTextAppearance(mContext, R.style.NormalText);
 
             holder.text.setTypeface(mSecond);
-        }
+        }*/
 
 
        // holder.text.setText(item.getText() != null ? item.getText() : "");
@@ -318,8 +327,98 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
         holder.mainPanel.setVisibility(View.INVISIBLE);
         holder.mainPanel.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
 
-        if (item.getBgImageName() != null)
+       /* if (item.getBgImageName() != null)
             mLoader.loadSimpleDraw(item.getBgImageName(), holder.root);
+*/
+
+
+        final String img_url = item.getFlicker_image();
+        if (img_url != null && !img_url.isEmpty())
+        {
+            boolean is_download = false;
+            if (flickerImagloads.size() > 0)
+            {
+                for (int i = 0; i < flickerImagloads.size(); i++)
+                {
+                    if (img_url.equalsIgnoreCase(flickerImagloads.get(i).getFliker_image_url()))
+                    {
+                        is_download = true;
+                        holder.root.setImageBitmap(flickerImagloads.get(i).getFliker_image_bitmap());
+                        /*Drawable drawable = new BitmapDrawable(flickerImagloads.get(i).getFliker_image_bitmap());
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            holder.root.setBackground(drawable);
+                        }*/
+                        break;
+                    }
+
+                }
+            }
+
+            if (!is_download)
+            {
+                Glide.with(mContext)
+                        .load(item.getFlicker_image()).asBitmap()
+                        .placeholder(R.drawable.bg0)
+                        .into(new SimpleTarget<Bitmap>(200, 200)
+                        {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
+                            {
+                                Drawable drawable = new BitmapDrawable(resource);
+                                flickerImagloads.add(new FlickerImagload(img_url, resource));
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                {
+                                    holder.root.setBackground(drawable);
+                                }
+                            }
+                        });
+            }
+
+    /*        Glide.with(mContext)
+                    .load(secret.getFlicker_image())
+                    .placeholder(R.drawable.ic_default_bg)
+                    .into(holder.root);*/
+
+
+        } else if (item.getBgImageName() != null)
+        {
+            try
+            {
+                String url = mLoader.getBackground(item.getBgImageName());
+                holder.root.setScaleType(ImageView.ScaleType.FIT_XY);
+                Glide.with(mContext)
+                        .load(url)
+                        .into(holder.root);
+
+                // holder.root.setScaleType(ImageView.ScaleType.FIT_XY);
+                /*Glide.with(mContext).load(url).asBitmap().into(new SimpleTarget<Bitmap>(200, 200)
+                {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
+                    {
+                        Drawable drawable = new BitmapDrawable(resource);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        {
+                            holder.root.setBackground(drawable);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                    }
+                });*/
+
+                //mLoader.loadSimpleDraw(secret.getBgImageName(), holder.root);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
 
         if (item.getHugUsers().contains(Preference.getUserName())) {
             holder.hug.setImageResource(R.drawable.ic_hug);
@@ -345,7 +444,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 item = mDataList.get(position);
-                ((MoodActivity) mContext).showProgress();
+               // ((MoodActivity) mContext).showProgress();
                 if (!ConnectionDetector.isNetworkAvailable(mContext))
                     return;
 
@@ -410,6 +509,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
         TextView hugs;
         TextView hearts;
         TextView me2s;
+        TextView iFriend_icon;
         View verify;
         ImageView hug;
         ImageView heart;
@@ -432,7 +532,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ((MainActivity) mContext).showProgress();
+            //((MoodActivity) mContext).showProgress();
 
         }
 
@@ -465,16 +565,16 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
 
                     if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true")) {
 
-                        MainActivity.isIAMVerified = true;
+                        runComments(secret);
+                        /*MainActivity.isIAMVerified = true;
 
                         if (findsecretuserDTO != null)
                             findsecretuserDTO = null;
 
                         findsecretuserDTO = new FindbyNameDTO(secret.getCreatedByUser());
-                        new CheckSecretFlagverified().execute();
+                        new CheckSecretFlagverified().execute();*/
 
                     } else {
-                        ((MainActivity) mContext).stopProgress();
                         MainActivity.isIAMVerified = false;
                         new ToastUtil(mContext, mContext.getString(R.string.sorry_not_verified));
                     }
@@ -482,7 +582,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
 
                 } else {
                     try {
-                        ((MainActivity) mContext).stopProgress();
+
                         Toast.makeText(mContext, "You are not permitted to comment.", Toast.LENGTH_SHORT).show();
                     } catch (Exception e2) {
                         e2.printStackTrace();
@@ -509,7 +609,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ((MainActivity) mContext).showProgress();
+            ((MoodActivity) mContext).showProgress();
 
         }
 
@@ -519,9 +619,28 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
 
                 IfriendRequest http = new IfriendRequest(mContext);
 
+
                 FindNameDTO findNameDTO = new FindNameDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, findsecretuserDTO);
-                FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
-                response = http.Getsecretflagverified(findbynameObjectDTO);
+                FindbynameObjectDTO  findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
+                response =   http.Getsecretflagverified(findbynameObjectDTO);
+
+                /*
+                IfriendRequest http = new IfriendRequest(mContext);
+                JSONObject mJsonObjectSub = new JSONObject();
+                JSONObject requestdata = new JSONObject();
+                JSONObject main_object = new JSONObject();
+                mJsonObjectSub.put("clun01", secret.getCreatedByUser());
+                requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
+                requestdata.put("data", mJsonObjectSub);
+                requestdata.put("requestType", "checkUserVerifyAndroid");
+
+                main_object.put("requestData", requestdata);
+                try {
+                    response = http.Getsecretflagverified(main_object.toString());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -533,13 +652,13 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
             try {
 
 
-
+                ((MoodActivity) mContext).stopProgress();
                 if (response != null && response.equalsIgnoreCase("true"))
                 {
 
                     if (secret.getFlags() >= 3 && secret.getCreatedByUser().equals(Preference.getUserName()))
                     {
-                        ((MainActivity) mContext).stopProgress();
+
                         new ToastUtil(mContext, mContext.getString(R.string.comments_are_disabled));
                         return;
                     }
@@ -547,7 +666,7 @@ public class MoodGraphSecretAdapter extends BaseAdapter {
 
 
                 } else {
-                    ((MainActivity) mContext).stopProgress();
+
                     new ToastUtil(mContext, mContext.getString(R.string.sorry_this_user));
                 }
 

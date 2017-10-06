@@ -19,7 +19,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_back" />
+            android:background="@drawable/back" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
             android:layout_centerInParent="true"
             android:focusable="true"
             android:gravity="center"
-            android:text="Coupon Code"
+            android:text="Ruby Code"
             android:textColor="@color/white"
             android:textSize="20sp" />
     </RelativeLayout>
@@ -48,6 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:id="@+id/ruby_code_layout"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:layout_weight="10"
@@ -92,6 +93,7 @@
                         android:layout_margin="25dp"
                         android:background="@drawable/counsellcodeborder"
                         android:gravity="center"
+                        android:singleLine="true"
                         android:hint="Enter Ruby Code"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey_bar" />
@@ -125,6 +127,82 @@
 
     </LinearLayout>
 
+
+    <RelativeLayout
+        android:id="@+id/Email_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#55777777"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/search_top_header">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="Email for prize "
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/search_center"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/edt_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_margin="20dp"
+                        android:background="@drawable/gray_border"
+                        android:gravity="top"
+                        android:hint="Enter your email id."
+                        android:inputType="textEmailAddress"
+                        android:padding="10dp"
+                        android:singleLine="true" />
+
+
+                    <TextView
+                        android:id="@+id/submit_button"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/search_cancel_button"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:text="Cancel"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
     <ProgressBar
         android:id="@+id/main_progress_pb"
         android:layout_width="wrap_content"
@@ -138,5 +216,7 @@
         android:layout_height="match_parent"
         android:background="#44999999"
         android:visibility="gone" />
+
+
 
 </RelativeLayout>

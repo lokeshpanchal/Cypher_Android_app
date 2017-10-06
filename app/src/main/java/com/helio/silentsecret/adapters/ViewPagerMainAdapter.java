@@ -25,16 +25,16 @@ public class ViewPagerMainAdapter extends FragmentStatePagerAdapter {
         switch (num) {
             case 0:
                 target = new TrendingFragment();
-
                 break;
             case 1:
-                target = new GlimpseFragment();
-                break;
-            case 2:
                 target = new HappyFragment();
                 break;
-            case 3:
+            case 2:
                 target = new FilterFragment();
+                break;
+            case 3:
+                target = new GlimpseFragment();
+
                 break;
         }
 

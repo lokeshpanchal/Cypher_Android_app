@@ -19,6 +19,9 @@ import android.widget.TextView;
 
 import com.helio.silentsecret.R;
 import com.helio.silentsecret.WebserviceDTO.DeniedFriendRequestDTO;
+import com.helio.silentsecret.WebserviceDTO.FindbyNameDTO;
+import com.helio.silentsecret.WebserviceDTO.GetSecretUserInfoDTO;
+import com.helio.silentsecret.WebserviceDTO.GetSecretUserinfoObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.GetUnreadMessageDataDTO;
 import com.helio.silentsecret.WebserviceDTO.GetUnreadMessageObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.GetUnreadtChatMessageDTO;
@@ -37,6 +40,7 @@ import com.helio.silentsecret.models.IfriendRequestRejectObjectDTO;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.ToastUtil;
 
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,15 +175,48 @@ public class IFriendsFragment extends Fragment {
         protected void onPostExecute(Bitmap image) {
             try {
 
-
+                is_proceesing = false;
                 if (userList != null)
                 {
                     if (userList != null && userList.size() > 0)
                     {
 
+
+                        IfriendRequest http = new IfriendRequest(mActivity);
+
+                        if (iFriendList.size() > 0) {
+                            iFriendList.clear();
+                        }
+
+                        for (int i = 0; i < userList.size(); i++)
+                        {
+
+                            currentuser = userList.get(i).getUsername();
+                            requestuser = userList.get(i).getFriend();
+                            requestId = userList.get(i).getRequestid();
+                            int profilepic = userList.get(i).getProfilepic();
+
+                            final IFriendsBean bean = new IFriendsBean();
+                            bean.setUsername(currentuser);
+                            bean.setFriend(requestuser);
+                            bean.setProfilepic(profilepic);
+                            bean.setMe(true);
+                            bean.setiFriendName("iFriend ");
+                            bean.setDummyName(requestuser);
+                            bean.setUnreadcount(0);
+                            iFriendList.add(bean);
+
+                        }
+                        Emptyview.setVisibility(View.GONE);
+                        iFriends_listview.setVisibility(View.VISIBLE);
+                        mIFriendsListAdapter = new IFriendsListAdapter(mActivity, iFriendList);
+                        GlimpseFragment.count = iFriendList.size();
+                        iFriends_listview.setAdapter(mIFriendsListAdapter);
+
                         new GetunreadMessage().execute();
 
-                    } else {
+                    } else
+                    {
                         is_proceesing = false;
                         progress_bar_friends.setVisibility(View.GONE);
                         iFriends_listview.setVisibility(View.GONE);
@@ -210,7 +247,7 @@ public class IFriendsFragment extends Fragment {
         String data = "0";
         Bitmap bitmap;
 
-        //  List<IfriendListDTO> userList = null;
+
 
         @Override
         protected void onPreExecute() {
@@ -225,29 +262,35 @@ public class IFriendsFragment extends Fragment {
 
                 IfriendRequest http = new IfriendRequest(mActivity);
 
-                if (iFriendList.size() > 0) {
-                    iFriendList.clear();
-                }
 
-                for (int i = 0; i < userList.size(); i++) {
 
-                    currentuser = userList.get(i).getUsername();
-                    requestuser = userList.get(i).getFriend();
-                    requestId = userList.get(i).getRequestid();
-                    int profilepic = userList.get(i).getProfilepic();
-
-                    final IFriendsBean bean = new IFriendsBean();
-                    bean.setUsername(currentuser);
-                    bean.setFriend(requestuser);
-                    bean.setProfilepic(profilepic);
-                    bean.setMe(true);
-                    bean.setiFriendName("iFriend ");
-                    bean.setDummyName(requestuser);
+                for (int i = 0; i < iFriendList.size(); i++)
+                {
+                    requestuser = iFriendList.get(i).getFriend();
                     GetUnreadMessageDataDTO getUnreadMessageDataDTO = new GetUnreadMessageDataDTO(MainActivity.enc_username, requestuser);
                     GetUnreadMessageObjectDTO getUnreadMessageObjectDTO = new GetUnreadMessageObjectDTO(new GetUnreadtChatMessageDTO(getUnreadMessageDataDTO, "getUnreadMesssage", Constants.ENCRYPT_IFRIEND_CHAT_TABLE, Constants.ENCRYPT_FIND_METHOD));
-                    bean.setUnreadcount(http.GetUnreadmessage(getUnreadMessageObjectDTO));
-                    iFriendList.add(bean);
+                    iFriendList.get(i).setUnreadcount(http.GetUnreadmessage(getUnreadMessageObjectDTO));
 
+                    FindbyNameDTO findbyNameDTO = new FindbyNameDTO(requestuser);
+
+                    GetSecretUserInfoDTO findNameDTO = new GetSecretUserInfoDTO(findbyNameDTO);
+                    GetSecretUserinfoObjectDTO findbynameObjectDTO = new GetSecretUserinfoObjectDTO(findNameDTO);
+                    JSONObject userjsonObject = http.GetSecretUserInfo(findbynameObjectDTO);
+
+                    try
+                    {
+                        if (userjsonObject != null) {
+                            iFriendList.get(i).setHearts(userjsonObject.getString("hearts"));
+                            iFriendList.get(i).setHugs(userjsonObject.getString("hugs"));
+                            iFriendList.get(i).setMe2s(userjsonObject.getString("me2s"));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    //iFriendList.get(i).setUnreadcount(5);
                 }
 
             } catch (Exception e) {
@@ -259,26 +302,15 @@ public class IFriendsFragment extends Fragment {
         protected void onPostExecute(Bitmap image) {
 
             try {
-                is_proceesing = false;
-                if (iFriendList.size() > 0)
-                {
 
-                    Emptyview.setVisibility(View.GONE);
-                    iFriends_listview.setVisibility(View.VISIBLE);
-                    mIFriendsListAdapter = new IFriendsListAdapter(mActivity, iFriendList);
-                    GlimpseFragment.count = iFriendList.size();
-                    iFriends_listview.setAdapter(mIFriendsListAdapter);
-                } else {
 
-                    iFriends_listview.setVisibility(View.GONE);
-                    Emptyview.setVisibility(View.VISIBLE);
+                    mIFriendsListAdapter.notifyDataSetChanged();
 
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            progress_bar_friends.setVisibility(View.GONE);
+
 
         }
     }
@@ -556,6 +588,7 @@ public class IFriendsFragment extends Fragment {
 
         }
     }
+
 
 
 }

@@ -36,16 +36,18 @@ String  age = "";
     String me2s = "";
     String comment_count ="";
     String risk_word = "";
+    String flicker_image ="";
     int secrets  = 0;
     String school_id = "";
     String school_code = "";
     String clstxt01 = "";
     boolean is_updated = true;
     List<String> school_users = null;
+    String skin_pattern = "";
 
     public SecretDataDTO(String secret_id ,String username , String gender , String age,String cladd01, String category, List tag_friend, String flags, String feel
    ,int font ,String bg_image_name, String cltxt01,String risk_state ,int secrets,String risk_word,List<String> users,
-                         String school_id, String school_code, String clstxt01)
+                         String school_id, String school_code, String clstxt01, String  flicker_image , String skin_pattern)
     {
         super();
         this.secret_id = secret_id;
@@ -76,5 +78,7 @@ String  age = "";
         this.school_code = school_code;
         this.clstxt01 = clstxt01;
         this.is_updated = true;
+        this.flicker_image = flicker_image;
+        this.skin_pattern = skin_pattern;
     }
 }

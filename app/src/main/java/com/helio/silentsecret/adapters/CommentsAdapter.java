@@ -3,6 +3,7 @@ package com.helio.silentsecret.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -164,6 +165,10 @@ public class CommentsAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
+
+        holder.textMe.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/ubuntu.ttf"));
+
+        holder.textOther.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/ubuntu.ttf"));
 
 
 

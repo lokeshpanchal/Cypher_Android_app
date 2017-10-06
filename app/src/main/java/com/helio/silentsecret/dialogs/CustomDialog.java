@@ -377,7 +377,7 @@ int secrets_count = 0;
                             List<String> school_users = null;
                             secretDataDTO = new SecretDataDTO(user_id, CryptLib.encrypt(AppSession.getValue(getContext(), Constants.USER_NAME)), AppSession.getValue(getContext(), Constants.USER_GENDER), AppSession.getValue(getContext(), Constants.USER_AGE), addrs, CategoryHelper.returnCategory(currentMood), null, "" + integer,
                                     currentMood, 1, currentBackground, CryptLib.encrypt(text), null, 0, "", school_users,
-                                    "", "","");
+                                    "", "","","","");
                             new CreatSecret().execute();
                         } catch (Exception e) {
                             e.printStackTrace();

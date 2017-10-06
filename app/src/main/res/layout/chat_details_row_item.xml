@@ -11,45 +11,58 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
-        android:background="@drawable/chat_receview_new"
-        android:orientation="vertical"
+
+        android:orientation="horizontal"
         android:paddingBottom="5dp"
         android:paddingLeft="20dp"
         android:paddingRight="10dp"
         android:paddingTop="5dp">
 
 
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/photo1" />
+
+        <TextView
+            android:layout_width="2dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:background="#9b489b" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
 
             <TextView
                 android:id="@+id/receive_message_text"
                 android:layout_width="match_parent"
-                android:layout_marginLeft="5dp"
-                android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="4dp"
+                android:paddingBottom="3dp"
+                android:paddingRight="10dp"
+                android:paddingTop="3dp"
                 android:text="Hi! new message received.. "
-                android:textColor="@color/blue"
+                android:textColor="@color/black"
                 android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/receive_message_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:gravity="right"
+                android:text="Time"
+                android:textColor="@color/black"
+                android:textSize="10sp" />
+
         </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/receive_message_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:gravity="right"
-            android:text="Time"
-            android:textColor="@color/blue"
-            android:textSize="10sp" />
-
-
     </LinearLayout>
 
 
@@ -57,50 +70,71 @@
         android:id="@+id/sent_msg_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/chat_send_new"
         android:gravity="center_vertical"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="20dp"
         android:paddingTop="5dp">
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/blue_circle">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/rocket" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
 
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/me_chat" />
 
-            <TextView
-                android:id="@+id/sent_message_text"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:paddingTop="3dp"
-                android:paddingRight="5dp"
-                android:layout_gravity="center_vertical"
-                android:text="Hi! new message send.."
-                android:textColor="@color/green"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="25dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/sent_message_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="3dp"
+                    android:text="Hi! new message send.."
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
 
 
-        <TextView
-            android:id="@+id/sent_message_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:gravity="right"
-            android:text="Time as fs asd "
-            android:textColor="@color/green"
-            android:textSize="10sp" />
-
-
-
+                <TextView
+                    android:id="@+id/sent_message_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:gravity="right"
+                    android:text="Time as fs asd "
+                    android:textColor="@color/black"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </RelativeLayout>
 
 
     </LinearLayout>

@@ -64,9 +64,11 @@ public class SchoolRateAdapter extends BaseAdapter {
         holder.rate.setRating(rateMap.containsKey(Constants.rateKeySet[position]) ? rateMap.get(Constants.rateKeySet[position]) : 0f);
 
         LayerDrawable stars = (LayerDrawable) holder.rate.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(mContext.getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(1).setColorFilter(mContext.getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(0).setColorFilter(mContext.getResources().getColor(R.color.grey), PorterDuff.Mode.SRC_ATOP);
+       // stars.getDrawable(2).setColorFilter(mContext.getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+       // stars.getDrawable(1).setColorFilter(mContext.getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(2).setColorFilter(mContext.getResources().getColor(R.color.top_bar), PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(0).setColorFilter(mContext.getResources().getColor(R.color.glimpse_gray), PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(1).setColorFilter(mContext.getResources().getColor(R.color.glimpse_gray), PorterDuff.Mode.SRC_ATOP);
 
         holder.rate.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             public void onRatingChanged(RatingBar ratingBar, float rating,

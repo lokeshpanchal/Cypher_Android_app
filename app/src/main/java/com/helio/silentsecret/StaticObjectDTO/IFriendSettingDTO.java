@@ -40,9 +40,17 @@ public class IFriendSettingDTO {
 
     String quotes = "", author_name = "";
 
+    public String getBanned_word() {
+        return banned_word;
+    }
 
+    public String getDefault_word() {
+        return default_word;
+    }
 
-    public IFriendSettingDTO(String requestduration, String  maxfriend, String session_duration, String safeguard_update_date , String quotes , String author_name)
+    String banned_word = "", default_word = "";
+
+    public IFriendSettingDTO(String requestduration, String  maxfriend, String session_duration, String safeguard_update_date , String quotes , String author_name , String banned_word , String default_word)
     {
         super();
 
@@ -52,6 +60,8 @@ public class IFriendSettingDTO {
         this.safeguard_update_date= safeguard_update_date;
         this.quotes = quotes;
         this.author_name = author_name;
+        this.banned_word = banned_word;
+        this.default_word = default_word;
 
 
     }

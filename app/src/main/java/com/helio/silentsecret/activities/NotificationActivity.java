@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.helio.silentsecret.R;
@@ -31,6 +32,7 @@ public class NotificationActivity extends BaseActivity implements View.OnClickLi
     private ListView listView;
     private NotificationAdapter adapter;
     private List<Notification> mList;
+    TextView back = null;
     Context ct = null;
 
     @Override
@@ -54,6 +56,14 @@ public class NotificationActivity extends BaseActivity implements View.OnClickLi
     private void initViews() {
 
         listView = (ListView) findViewById(R.id.notifications_list_view);
+        back = (TextView) findViewById(R.id.back);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         mList = new ArrayList<>();
         adapter = new NotificationAdapter(LayoutInflater.from(this), mList, this);
         listView.setAdapter(adapter);

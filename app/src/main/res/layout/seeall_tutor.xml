@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="10"
+
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:layout_width="@dimen/seeall_tutor_width"
+        android:layout_height="@dimen/seeall_tutor_height"
+      android:layout_marginTop="13dp"
+        android:layout_marginLeft="@dimen/seeall_left_margin"
+
+        android:background="@drawable/see_all_tutor" />
+
+</RelativeLayout>

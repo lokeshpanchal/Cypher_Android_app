@@ -13,54 +13,47 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Typeface;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.helio.silentsecret.BuildConfig;
 import com.helio.silentsecret.EncryptionDecryption.CryptLib;
 import com.helio.silentsecret.R;
 import com.helio.silentsecret.Services.BoundService;
 import com.helio.silentsecret.Services.InactiveNotification;
 import com.helio.silentsecret.StaticObjectDTO.StataicObjectDTO;
-import com.helio.silentsecret.WebserviceDTO.DevicetokendataDTO;
 import com.helio.silentsecret.WebserviceDTO.FindNameDTO;
 import com.helio.silentsecret.WebserviceDTO.FindbyCreateSecUserDTO;
 import com.helio.silentsecret.WebserviceDTO.FindbyNameDTO;
@@ -68,39 +61,30 @@ import com.helio.silentsecret.WebserviceDTO.FindbynameObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.GetLastPostdateDTO;
 import com.helio.silentsecret.WebserviceDTO.GetLastPostdateObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.GetPetConditionDTO;
-import com.helio.silentsecret.WebserviceDTO.GetPetInfoDTO;
-import com.helio.silentsecret.WebserviceDTO.GetPetInfoObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.IfriendSecretpushNotiDataDTO;
 import com.helio.silentsecret.WebserviceDTO.PetAvtarInfoDTO;
-import com.helio.silentsecret.WebserviceDTO.ScratchCouponDTO;
-import com.helio.silentsecret.WebserviceDTO.ScratchCouponObjectDTO;
-import com.helio.silentsecret.WebserviceDTO.ScratchCoupondataDTO;
 import com.helio.silentsecret.WebserviceDTO.SetPetConditionDTO;
 import com.helio.silentsecret.WebserviceDTO.SetPetInfoDTO;
 import com.helio.silentsecret.WebserviceDTO.SetPetInfoObjectDTO;
 import com.helio.silentsecret.WebserviceDTO.SetVerifyFlagConditionDTO;
 import com.helio.silentsecret.WebserviceDTO.SetVerifyFlagDTO;
 import com.helio.silentsecret.WebserviceDTO.SetVerifyFlagObjectDTO;
-import com.helio.silentsecret.adapters.PendingIFriendsAdapter;
+import com.helio.silentsecret.WebserviceDTO.StaticDataDTO;
+import com.helio.silentsecret.WebserviceDTO.StaticObjectDTO;
+import com.helio.silentsecret.adapters.Tutorial_adapter;
 import com.helio.silentsecret.adapters.ViewPagerMainAdapter;
 import com.helio.silentsecret.appCounsellingDTO.CheckUserSessionDTO;
 import com.helio.silentsecret.appCounsellingDTO.CheckUserSessionDataDTO;
 import com.helio.silentsecret.appCounsellingDTO.CheckUserSessionObjectDTO;
 import com.helio.silentsecret.appCounsellingDTO.CommonRequestTypeDTO;
 import com.helio.silentsecret.appCounsellingDTO.FinalObjectDTO;
-import com.helio.silentsecret.application.SilentSecretApplication;
 import com.helio.silentsecret.callbacks.FilterUpdateCallback;
-import com.helio.silentsecret.callbacks.SearchUpdateCallback;
-import com.helio.silentsecret.callbacks.UpdateCallback;
 import com.helio.silentsecret.connection.ConnectionDetector;
 import com.helio.silentsecret.connection.IfriendRequest;
 import com.helio.silentsecret.controller.Controller;
 import com.helio.silentsecret.dialogs.AccessDialog;
 import com.helio.silentsecret.dialogs.CustomDialog;
 import com.helio.silentsecret.dialogs.ProgressDialog;
-import com.helio.silentsecret.dialogs.ScratchTextView;
-import com.helio.silentsecret.fragments.FeeListFragment;
-import com.helio.silentsecret.fragments.FeedViewFragment;
 import com.helio.silentsecret.fragments.MineSecretsFragment;
 import com.helio.silentsecret.fragments.SearchFragment;
 import com.helio.silentsecret.models.AllIfriendDTO;
@@ -109,55 +93,71 @@ import com.helio.silentsecret.models.IfriendSecretPushDTO;
 import com.helio.silentsecret.models.IfriendsecrtpushobjectDTO;
 import com.helio.silentsecret.pushnotification.GCMPushNotifHandler;
 import com.helio.silentsecret.pushnotification.GcmIntentService;
-import com.helio.silentsecret.tutorial.MainViewTutorial;
 import com.helio.silentsecret.utils.AppSession;
-import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.KeyboardUtil;
 import com.helio.silentsecret.utils.Preference;
 import com.helio.silentsecret.utils.TimeUtil;
 import com.helio.silentsecret.utils.ToastUtil;
 import com.helio.silentsecret.views.OwnPager;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.nineoldandroids.animation.Animator;
-import com.plattysoft.leonids.ParticleSystem;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.jsoup.Jsoup;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends BaseActivity implements
-        View.OnClickListener, ViewPager.OnPageChangeListener {
+        View.OnClickListener, ViewPager.OnPageChangeListener
+{
+
+    private double latitude;
+    private double longitude;
+    Location location;
+
+    RelativeLayout landing_page = null, ruby_code_layout = null;
+    ImageView skip = null;
+
+    TextView special_code = null, submit_button = null , privacy_policy = null;
+
+    String code = "";
+    EditText edt_search = null;
+    SlidingDrawer simpleSlidingDrawer;
+
+
+
+
+
+
 
     LinearLayout whole_layout = null;
 
     public static StataicObjectDTO stataicObjectDTO = null;
 
     static MainActivity mainActivity = null;
-    DevicetokendataDTO devicetokendataDTO = null;
+
     public static PetAvtarInfoDTO petAvtarInfoDTO = null;
 
-    private int doowappCount;
-    private int doowappMaxCount;
+
     public static int scratch_count = 10;
     public static int comments_count = 0;
     boolean is_done_in_oncreate = false;
     AllIfriendDTO allIfriendDTO = null;
     public static boolean is_flag = false;
     public static String pet_name = "";
-    public static boolean is_From_glimpse = false;
     public static boolean is_From_feeling_post = false;
 
-    public static boolean is_from_doowapp = false;
+    public static boolean is_from_secret_post = false;
+
     public static boolean is_from_login = true;
 
     public static boolean is_Refresh_Latest = false;
@@ -175,80 +175,51 @@ public class MainActivity extends BaseActivity implements
     SharedPreferences myPrefs;
 
 
-
-
-
-
-
-    public static String[] petnamearray = {"Monkey", "Panda", "Horse", "Rabbit", "Donkey", "Sheep", "Deer", "Tiger", "Parrot", "Meerkat","Mermaid",
-            "Cat","Dog","Unicorn","Dragon","Dinosaur","Starfish"};
+    public static String[] petnamearray = {"Monkey", "Panda", "Horse", "Rabbit", "Donkey", "Sheep", "Deer", "Tiger", "Parrot", "Meerkat", "Mermaid",
+            "Cat", "Dog", "Unicorn", "Dragon", "Dinosaur", "Starfish"};
     public static boolean is_booking = false;
-    private String datepen1 = "";
-    private String datepen = "";
-    private Date date;
-    public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
-    private ImageView mPostEmotion;
+
+   // public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
+
     private String get_date = "";
     public static String AgencyId = "";
-    static TextView runAnime = null;
-    ImageView img1, img2, img3, img4, img5, img6, img7, img8;
+    static TextView runAnime = null, settings = null ;
+
     private int width = 0, height;
-    private SlidingMenu menu;
-    private View mSecrets;
-    private View mLatestFiltering;
-    private View mLight;
-    private View mTense;
-    private View mDeep;
-    private View mSeeAll;
-    private View mSettings;
-    private View mHowToStaySafe;
-    private View mResetTutorial;
-    private View mClearMySecret;
-    static private View mUnverifyMe;
-    private View mRateSchool;
-    private View mReferFriends;
-    private View mStats;
-    private View left_chats;
+
+
     public static int session_left = 0;
     ImageView search_button = null, notification_button = null, home_button = null;
-    private View left_book_appointment;
-    public static String friend_table_name = "IFriend_Temp";
-    //private IabHelper mHelper;
+
     public static ArrayList<String> users = null;
 
     public static ArrayList<String> scratchscretid = null;
-
+TextView deep_filter = null , seeall_filter ,tense_filter ,light_filter ;
     public static boolean is_running = false;
-    // private View mGetComments;
-    private View mNotifications;
+
 
     public interface OnReplace {
         void runMood();
+        void runRoom();
     }
 
     public OnReplace mMoodRunner;
 
-    private static final int POS = 1;
-    private static final int NEG = 0;
-
-    public static int[] trendingData = new int[3];
 
     private static OwnPager mMainPager;
     private ViewPagerMainAdapter adapter;
 
-    private UpdateCallback mTrendingUpdate;
-    private UpdateCallback mHappyUpdate;
+
     private static FilterUpdateCallback mLatestUpdate;
-    private SearchUpdateCallback mSearchCallback;
 
-    private int filterState;
 
-    private EditText mSearchEdit;
-    private ImageView mSearchToggle;
+
+
+    //private EditText mSearchEdit;
+
 
     private boolean isKeyBoard = false;
 
-    private ImageView menuButton;
     private Handler mActivityHandler;
     private Runnable mActivityRunnable;
 
@@ -257,88 +228,398 @@ public class MainActivity extends BaseActivity implements
 
     private static Handler mBannerHandler;
     private static Runnable mBannerRunnable;
-    private int settingsState = Constants.SETTINGS_NONE;
-    private static final String PURCHASE_ITEM = "com.helio.silentsecret.get_unlimited_comments";
-    private static final int REQUEST_CODE = 0;
 
-    //  private static AtomicBoolean isRunning = new AtomicBoolean();
+    LinearLayout viewPagerCountDots = null;
 
-    private MainViewTutorial mMainTutorial;
+    Tutorial_adapter mAdapter = null;
+    ViewPager tutorial_viewpager = null;
 
     public String searchText = null;
 
-    private String currentTracking = null;
 
-    public boolean mainVerified = false;
-    public boolean superVerified = false;
-    public boolean showUnverify = false;
 
-/*    private static final int TRENDING_STATE = 0;
-    private static final int GLIMPSE_STATE = 1;
-    private static final int HAPPY_STATE = 2;
-    private static final int LATEST_STATE = 3;*/
 
     private PagerTabStrip tabStrip;
 
-    // public static LinearLayout caution_view = null;
 
-    private String deviceTOken = "";
     GCMPushNotifHandler mGcmPushNotifHandler;
-    private boolean FROMNOTIF = false, UNFRIEND = false, FINDSECRET = false, APPCOUNSELLING = false, SECRET_SHARING = false, ENTERTAINMENT_GLIMPSE = false, TRENDING_PAGE = false;
+    private boolean FROMNOTIF = false, UNFRIEND = false, APPCOUNSELLING = false, SECRET_SHARING = false, ENTERTAINMENT_GLIMPSE = false, TRENDING_PAGE = false;
     private boolean CHAT = false, LATEST_FILTERING = false, RATE_SCHOOL_COLLEGE = false, STATS_PAGE = false;
     private boolean USERNAME = false, MY_SECRET_PAGE = false, GET_SUPPORT_PAGE = false;
     private boolean SECRET = false, MOOD_PAGE = false, LIFESTYLE_GLIMPSE = false, NEWS_GLIMPSE = false, FITNESS_TRACKING = false;
     public static Context ct;
     public static boolean is_chat = false;
     TextView loaddata = null;
-    private boolean isNoti_Click = false;
-    TextView pGif = null;
-    private String senderW = "";
-    private String targetW = "";
-    TextView chat_count = null;
-    String imei_numer = "";
+
+
+
     public static ArrayList<String> userListNamesOnlyWaiting = new ArrayList<>();
     public static CustomDialog cd;
-    public static RelativeLayout webview_layout = null;
-    LinearLayout feed_view_back = null, pet_main_layout;
-    static WebView mWebView = null;
+
+    LinearLayout pet_main_layout = null ,filter_layout = null;
+
     private static View view = null;
-    private View mCouponCode;
+
     RelativeLayout pet_layout = null, petlayout;
 
-    TextView skip_pet, done_pet = null, cancel_search = null, search_ok = null;
+ImageView exit_tutorials = null , hand_icon = null;
+    TextView skip_pet, done_pet = null,  search_ok = null;
 
     public static int oxygen = 10, food = 10, water = 10;
     public static ImageView petimage = null;
     String petname = "";
-    public static TextView oxygenlevel ;
-    TextView show_safeguard , disclaimer_ok ,safeguard_ok;
+    public static TextView oxygenlevel;
+    TextView show_safeguard, disclaimer_ok, safeguard_ok;
     public static ProgressBar water_progress, food_progress;
 
-    public static String[] colorsking = {"#aa222222", "#99222222", "#88222222", "#77222222", "#66222222", "#55222222", "#33222222", "#22222222", "#11222222", "#00222222"};
-    public static RelativeLayout scratch_layout = null;
+       //public static RelativeLayout scratch_layout = null;
+    //public static int[] colorsking = {R.drawable.circle_shape, R.drawable.circle_shape1, R.drawable.circle_shape2, R.drawable.circle_shape3, R.drawable.circle_shape4, R.drawable.circle_shape5, R.drawable.circle_shape6, R.drawable.circle_shape7, R.drawable.circle_shape8, R.drawable.circle_shape9};
 
-    public static RelativeLayout scratchtextview = null;
-    RelativeLayout search_layout = null , disclaimer_layout = null, safeguard_layout = null;
+    RelativeLayout viewPagerIndicator = null, disclaimer_layout = null, safeguard_layout = null;
 
     public static String enc_username = "";
-    boolean is_from_notification = false;
-    static TextView cancelscratch = null;
+    boolean is_from_notification = false, is_from_tutorials = false;
+
+
+
+    TextView trending_tab_selected = null, happy_tab_selected = null,
+            glimplse_tab_selected = null, seeall_tab_selected = null;
+
+    TextView trending_tab = null, happy_tab = null,
+            glimplse_tab = null, seeall_tab = null , chat_boat = null;
+
+    LinearLayout tab_layout = null;
+RelativeLayout tutor_layout = null , location_detecter = null;
+    TextView shaaremood = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ct = this;
-
+        landing_page = (RelativeLayout) findViewById(R.id.landing_page);
+        location_detecter = (RelativeLayout) findViewById(R.id.location_detecter);
         try {
+            String userna = AppSession.getValue(ct, Constants.USER_NAME);
+            if (userna == null || userna.equalsIgnoreCase(""))
+            {
+                enc_username = AppSession.getValue(ct,Constants.GUEST_USER_NAME);
+                String done_landing = AppSession.getValue(ct,Constants.DONE_LANDING_SCREEN);
+                if (done_landing == null || done_landing.equalsIgnoreCase(""))
+                {
+                    landing_page.setVisibility(View.VISIBLE);
+                }
+            }
+            else
             enc_username = CryptLib.encrypt(AppSession.getValue(ct, Constants.USER_NAME));
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
 
         }
+
         try {
 
 
+
+
+            try {
+                latitude = Double.parseDouble(Preference.getUserLat());
+                longitude = Double.parseDouble(Preference.getUserLon());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            if (longitude == 0.0 && latitude == 0.0)
+            {
+                location_detecter.setVisibility(View.VISIBLE);
+                LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                if (location == null)
+                    location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 10, new android.location.LocationListener()
+                {
+                    @Override
+                    public void onLocationChanged(Location location)
+                    {
+                        longitude = location.getLongitude();
+                        latitude = location.getLatitude();
+                        Preference.saveUserLat("" + latitude);
+                        Preference.saveUserLon("" + longitude);
+
+                        location_detecter.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                });
+            }
+
+
+
+            location_detecter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        latitude = Double.parseDouble(Preference.getUserLat());
+                        longitude = Double.parseDouble(Preference.getUserLon());
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    if (longitude == 0.0 && latitude == 0.0)
+                    {
+                        location_detecter.setVisibility(View.VISIBLE);
+                        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                        if (location == null)
+                            location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                        if (location == null)
+                        {
+
+
+                                try {
+                                    AlertDialog.Builder dialog2 = new AlertDialog.Builder(ct);
+                                    dialog2.setMessage(getResources().getString(R.string.gps_guest_enabled));
+                                    dialog2.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                            // TODO Auto-generated method stub
+                                            Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                            startActivity(myIntent);
+                                            //get gps
+                                        }
+                                    });
+
+                                    dialog2.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                            // TODO Auto-generated method stub
+
+
+                                        }
+                                    });
+
+                                    AlertDialog gps = dialog2.create();
+                                    gps.setCanceledOnTouchOutside(false);
+                                    gps.show();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+
+
+                        }
+                        else
+                        {
+
+
+                                longitude = location.getLongitude();
+                                latitude = location.getLatitude();
+                                Preference.saveUserLat("" + latitude);
+                                Preference.saveUserLon("" + longitude);
+
+                            location_detecter.setVisibility(View.GONE);
+
+                        }
+
+                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 10, new android.location.LocationListener()
+                        {
+                            @Override
+                            public void onLocationChanged(Location location)
+                            {
+                                longitude = location.getLongitude();
+                                latitude = location.getLatitude();
+                                Preference.saveUserLat("" + latitude);
+                                Preference.saveUserLon("" + longitude);
+
+                                location_detecter.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                            }
+
+                            @Override
+                            public void onProviderEnabled(String provider) {
+
+                            }
+
+                            @Override
+                            public void onProviderDisabled(String provider) {
+
+                            }
+                        });
+                    }
+                    else
+                        location_detecter.setVisibility(View.GONE);
+                }
+            });
+
+            simpleSlidingDrawer =(SlidingDrawer) findViewById(R.id.slidingDrawer); // initiate the SlidingDrawer
+            simpleSlidingDrawer.open();
+
+            simpleSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener()
+            {
+                @Override
+                public void onDrawerClosed()
+                {
+                    landing_page.setVisibility(View.GONE);
+
+                    AppSession.save(ct,Constants.DONE_LANDING_SCREEN,"done");
+
+                    code = AppSession.getValue(ct, Constants.USER_CODE);
+                    if (code == null || code.equalsIgnoreCase(""))
+                    {
+                        try {
+                            AlertDialog.Builder dialog2 = new AlertDialog.Builder(ct);
+                            dialog2.setMessage(getResources().getString(R.string.have_a_code));
+                            dialog2.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface paramDialogInterface, int paramInt)
+                                {
+                                    paramDialogInterface.dismiss();
+                                    ruby_code_layout.setVisibility(View.VISIBLE);
+                                }
+                            });
+
+                            dialog2.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                    // TODO Auto-generated method stub
+                                    paramDialogInterface.dismiss();
+
+                                }
+                            });
+
+                            AlertDialog gps = dialog2.create();
+                            gps.setCanceledOnTouchOutside(false);
+                            gps.show();
+                        } catch (Exception e) {
+
+
+                            e.printStackTrace();
+                        }
+                    }
+
+
+
+                }
+            });
+
+            ruby_code_layout = (RelativeLayout) findViewById(R.id.ruby_code_layout);
+            skip = (ImageView) findViewById(R.id.skip);
+            special_code = (TextView) findViewById(R.id.special_code);
+            privacy_policy = (TextView) findViewById(R.id.privacy_policy);
+            submit_button = (TextView) findViewById(R.id.submit_button);
+            chat_boat = (TextView) findViewById(R.id.chat_boat);
+            edt_search = (EditText) findViewById(R.id.edt_search);
+
+
+            chat_boat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder updateAlert = new AlertDialog.Builder(ct);
+                    updateAlert.setIcon(R.drawable.ic_launcher);
+                    updateAlert.setTitle("Cypher");
+                    updateAlert.setMessage("Chatbot coming soon");
+                    updateAlert.setPositiveButton(
+                            "Ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alertUp = updateAlert.create();
+                    alertUp.setCanceledOnTouchOutside(false);
+
+                    alertUp.show();
+                }
+            });
+
+
+            privacy_policy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    runPolicy();
+                }
+            });
+
+            special_code.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ruby_code_layout.setVisibility(View.VISIBLE);
+
+                    edt_search.setFocusable(true);
+                    edt_search.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edt_search, InputMethodManager.SHOW_IMPLICIT);
+                }
+            });
+
+            edt_search.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {
+                }
+
+                public void beforeTextChanged(CharSequence s, int start,
+                                              int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
+                    if (s.length() > 0) {
+                        submit_button.setText("Submit");
+                    } else
+                        submit_button.setText("Cancel");
+
+                }
+            });
+
+            submit_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    code = edt_search.getText().toString().trim();
+                    if (code != null && !code.equalsIgnoreCase("")) {
+                        new CHeckRubyCode().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    } else
+                        ruby_code_layout.setVisibility(View.GONE);
+
+                    KeyboardUtil.hideKeyBoard(edt_search, ct);
+
+                }
+            });
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        try {
             mainActivity = this;
             is_from_commNotif = false;
             is_booking = false;
@@ -347,14 +628,23 @@ public class MainActivity extends BaseActivity implements
 
             users = new ArrayList<>();
             whole_layout = (LinearLayout) findViewById(R.id.whole_layout);
-            mWebView = (WebView) findViewById(R.id.feed_view_vb);
-            webview_layout = (RelativeLayout) findViewById(R.id.webview_layout);
+            tab_layout = (LinearLayout) findViewById(R.id.tab_layout);
+           // mWebView = (WebView) findViewById(R.id.feed_view_vb);
+
             pet_main_layout = (LinearLayout) findViewById(R.id.pet_main_layout);
+            filter_layout = (LinearLayout) findViewById(R.id.filter_layout);
+            viewPagerCountDots = (LinearLayout) findViewById(R.id.viewPagerCountDots);
             pet_layout = (RelativeLayout) findViewById(R.id.pet_layout);
+            tutor_layout = (RelativeLayout) findViewById(R.id.tutor_layout);
             disclaimer_layout = (RelativeLayout) findViewById(R.id.disclaimer_layout);
             safeguard_layout = (RelativeLayout) findViewById(R.id.safeguard_layout);
             skip_pet = (TextView) findViewById(R.id.skip_pet);
             done_pet = (TextView) findViewById(R.id.done_pet);
+
+
+
+
+
             view = findViewById(R.id.banner_text);
             petimage = (ImageView) findViewById(R.id.petimage);
             petlayout = (RelativeLayout) findViewById(R.id.petlayout);
@@ -363,18 +653,205 @@ public class MainActivity extends BaseActivity implements
             oxygenlevel = (TextView) findViewById(R.id.oxygenlevel);
             disclaimer_ok = (TextView) findViewById(R.id.disclaimer_ok);
             safeguard_ok = (TextView) findViewById(R.id.safeguard_ok);
+            settings = (TextView) findViewById(R.id.settings);
             show_safeguard = (TextView) findViewById(R.id.show_safeguard);
-            cancelscratch = (TextView) findViewById(R.id.cancelscratch);
-            scratch_layout = (RelativeLayout) findViewById(R.id.scratch_layout);
-            scratchtextview = (RelativeLayout) findViewById(R.id.scratchtextview);
-            search_layout = (RelativeLayout) findViewById(R.id.search_layout);
+            shaaremood = (TextView) findViewById(R.id.shaaremood);
+
+
+            viewPagerIndicator = (RelativeLayout) findViewById(R.id.viewPagerIndicator);
+
             search_button = (ImageView) findViewById(R.id.search_button);
+            exit_tutorials = (ImageView) findViewById(R.id.exit_tutorials);
+            hand_icon = (ImageView) findViewById(R.id.hand_icon);
             notification_button = (ImageView) findViewById(R.id.notification_button);
             home_button = (ImageView) findViewById(R.id.home_button);
-            cancel_search = (TextView) findViewById(R.id.cancel_search);
+
+            tutorial_viewpager = (ViewPager) findViewById(R.id.tutorial_viewpager);
+
+            trending_tab_selected = (TextView) findViewById(R.id.trending_tab_selected);
+            happy_tab_selected = (TextView) findViewById(R.id.happy_tab_selected);
+            glimplse_tab_selected = (TextView) findViewById(R.id.glimpse_tab_selected);
+            seeall_tab_selected = (TextView) findViewById(R.id.seeall_tab_selected);
+
+            deep_filter = (TextView) findViewById(R.id.deep_filter);
+            light_filter = (TextView) findViewById(R.id.light_filter);
+            tense_filter = (TextView) findViewById(R.id.tense_filter);
+            seeall_filter = (TextView) findViewById(R.id.see_all_filter);
+
+            trending_tab = (TextView) findViewById(R.id.trending_tab);
+            happy_tab = (TextView) findViewById(R.id.happy_tab);
+            glimplse_tab = (TextView) findViewById(R.id.glimpse_tab);
+            seeall_tab = (TextView) findViewById(R.id.seeall_tab);
+
+            int state = Preference.getFilter();
+
+            if (state == Constants.STATE_SEE_ALL)
+            {
+                seeall_tab.setBackgroundResource(R.drawable.seeall_icon);
+            } else if (state == Constants.STATE_LIGHT)
+            {
+                seeall_tab.setBackgroundResource(R.drawable.light_icon);
+
+            } else if (state == Constants.STATE_DEEP)
+            {
+                seeall_tab.setBackgroundResource(R.drawable.deep_icon);
+            } else if (state == Constants.STATE_TENSE)
+            {
+                seeall_tab.setBackgroundResource(R.drawable.tense_icon);
+            }
+
+
+            petlayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String userna = AppSession.getValue(ct, Constants.USER_NAME);
+                    if (userna == null || userna.equalsIgnoreCase(""))
+                    {
+                        Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
+                        startActivity(intent);
+                    }
+                    else
+                    {
+                        AccessMysecret();
+                    }
+                }
+            });
+            deep_filter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    filter_layout.setVisibility(View.GONE);
+                    Preference.saveFilter(Constants.STATE_DEEP);
+                    seeall_tab.setBackgroundResource(R.drawable.deep_icon);
+                    MainActivity.is_Refresh_Latest = true;
+                    mMainPager.setCurrentItem(2);
+                    mLatestUpdate.onUpdate();
+
+                }
+            });
+            light_filter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    filter_layout.setVisibility(View.GONE);
+                    Preference.saveFilter(Constants.STATE_LIGHT);
+                    seeall_tab.setBackgroundResource(R.drawable.light_icon);
+                    MainActivity.is_Refresh_Latest = true;
+                    mMainPager.setCurrentItem(2);
+                    mLatestUpdate.onUpdate();
+                }
+            });
+            tense_filter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    filter_layout.setVisibility(View.GONE);
+                    Preference.saveFilter(Constants.STATE_TENSE);
+                    seeall_tab.setBackgroundResource(R.drawable.tense_icon);
+                    MainActivity.is_Refresh_Latest = true;
+                    mMainPager.setCurrentItem(2);
+                    mLatestUpdate.onUpdate();
+                }
+            });
+            seeall_filter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    filter_layout.setVisibility(View.GONE);
+                    Preference.saveFilter(Constants.STATE_SEE_ALL);
+                    seeall_tab.setBackgroundResource(R.drawable.seeall_icon);
+                    MainActivity.is_Refresh_Latest = true;
+                    mMainPager.setCurrentItem(2);
+                    mLatestUpdate.onUpdate();
+                }
+            });
+
+            tab_layout.setOnClickListener(this);
+
+            final String tutor = AppSession.getValue(ct,Constants.CYPHER_TUTORIALS );
+
+            if(tutor == null || tutor.equalsIgnoreCase(""))
+            {
+                tutor_layout.setVisibility(View.VISIBLE);
+                is_from_tutorials = true;
+            }
+
+           // tutor_layout.setVisibility(View.VISIBLE);
+
+            exit_tutorials.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tutor_layout.setVisibility(View.GONE);
+                    is_from_tutorials = false;
+                    AppSession.save(ct,Constants.CYPHER_TUTORIALS ,"true");
+                }
+            });
+
+
+
+            hand_icon.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent)
+                {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                    {
+                        tutorial_viewpager.setVisibility(View.VISIBLE);
+                        viewPagerIndicator.setVisibility(View.VISIBLE);
+                        hand_icon.setVisibility(View.GONE);
+                    }
+                    return true;
+                }
+            });
+
+            showTutorials();
+            trending_tab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mMainPager.setCurrentItem(0);
+
+                }
+            });
+
+            happy_tab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mMainPager.setCurrentItem(1);
+
+                }
+            });
+
+
+            glimplse_tab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view)
+                {
+
+
+                        mMainPager.setCurrentItem(3);
+
+                }
+            });
+
+
+            seeall_tab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                  //  mMainPager.setCurrentItem(2);
+                    filter_layout.setVisibility(View.VISIBLE);
+
+                }
+            });
+
+            seeall_tab.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    filter_layout.setVisibility(View.VISIBLE);
+                    return true;
+                }
+            });
+
+
             is_done_in_oncreate = true;
 
             showProgress();
+
 
             show_safeguard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -384,6 +861,21 @@ public class MainActivity extends BaseActivity implements
                 }
             });
 
+
+            shaaremood.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String userna = AppSession.getValue(ct, Constants.USER_NAME);
+                    if (userna == null || userna.equalsIgnoreCase(""))
+                    {
+                        Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
+                        startActivity(intent);
+                    }
+                    else {
+                        postEmotion();
+                    }
+                }
+            });
             disclaimer_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -397,26 +889,28 @@ public class MainActivity extends BaseActivity implements
 
                 }
             });
-            new ChecUserSessionfirsttime().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-            new CheckFlagverified().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-           String returing =  AppSession.getValue(ct, Constants.USER_RETURNING);
-            if(returing == null || returing.equalsIgnoreCase(""))
+            String userna = AppSession.getValue(ct, Constants.USER_NAME);
+            if (userna != null && !userna.equalsIgnoreCase(""))
             {
-                AppSession.save(ct, Constants.USER_RETURNING,"1");
-            }else if(returing.equalsIgnoreCase("1"))
-            {
+                new ChecUserSessionfirsttime().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new CheckFlagverified().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+            }
+
+            String returing = AppSession.getValue(ct, Constants.USER_RETURNING);
+            if (returing == null || returing.equalsIgnoreCase("")) {
+                AppSession.save(ct, Constants.USER_RETURNING, "1");
+            } else if (returing.equalsIgnoreCase("1")) {
                 new UpdateReturnuing().execute();
-                AppSession.save(ct, Constants.USER_RETURNING,"2");
+                AppSession.save(ct, Constants.USER_RETURNING, "2");
             }
 
             safeguard_ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                   runPolicy();
+                    runPolicy();
                     safeguard_layout.setVisibility(View.GONE);
                 }
             });
@@ -432,20 +926,16 @@ public class MainActivity extends BaseActivity implements
 
             try {
 
-                if (getIntent().hasExtra("MY_SECRET_PAGE"))
-                {
+                if (getIntent().hasExtra("MY_SECRET_PAGE")) {
                     MY_SECRET_PAGE = getIntent().getBooleanExtra("MY_SECRET_PAGE", false);
-                    if (MY_SECRET_PAGE)
-                    {
+                    if (MY_SECRET_PAGE) {
 
                         MineSecretsFragment.envelop_secre_id = AppSession.getValue(ct, Constants.COMMENT_SECRET_ID);
 
                         showPinDialog();
                         is_from_notification = true;
                     }
-                }
-                else if (getIntent().hasExtra("COMMENT"))
-                {
+                } else if (getIntent().hasExtra("COMMENT")) {
                     {
                         SearchFragment.secret_id = AppSession.getValue(ct, Constants.COMMENT_SECRET_ID);
 
@@ -497,9 +987,9 @@ public class MainActivity extends BaseActivity implements
 
 
             // getAppintment();
-            search_ok = (TextView) findViewById(R.id.search_ok);
+           // search_ok = (TextView) findViewById(R.id.search_ok);
 
-            scratch_layout.setVisibility(View.GONE);
+
             AgencyId = "";
             if (scratchscretid != null)
                 scratchscretid = null;
@@ -507,19 +997,28 @@ public class MainActivity extends BaseActivity implements
 
             scratchscretid = new ArrayList<>();
 
-            notification_button.setOnClickListener(new View.OnClickListener()
-            {
+            notification_button.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
-                    if (isKeyBoard)
+                public void onClick(View v) {
+                  /*  if (isKeyBoard)
                         KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
 
-
+*/
                     if (ConnectionDetector.isNetworkAvailable(ct))
                     {
-                        findViewById(R.id.search_frame).setVisibility(View.GONE);
-                        showNotificationAccessDialog();
+
+                        String userna = AppSession.getValue(ct, Constants.USER_NAME);
+                        if (userna == null || userna.equalsIgnoreCase(""))
+                        {
+                            Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
+                            startActivity(intent);
+                        }
+                        else {
+
+                            findViewById(R.id.search_frame).setVisibility(View.GONE);
+                            showNotificationAccessDialog();
+                        }
+
                     } else {
                         new ToastUtil(ct, "Please check your internet connection.");
                     }
@@ -533,92 +1032,12 @@ public class MainActivity extends BaseActivity implements
                 public void onClick(View v) {
 
                     findViewById(R.id.search_frame).setVisibility(View.GONE);
-                    mMainPager.setCurrentItem(2);
-                }
-            });
-
-            search_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (ConnectionDetector.isNetworkAvailable(ct))
-                    {
-
-                        mSearchEdit.setText("");
-                        search_layout.setVisibility(View.VISIBLE);
-                    } else {
-                        new ToastUtil(ct, "Please check your internet connection.");
-                    }
-
-
-                }
-            });
-
-            cancel_search.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-                        search_layout.setVisibility(View.GONE);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
+                    mMainPager.setCurrentItem(1);
                 }
             });
 
 
-            search_layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                }
-            });
-            search_ok.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    String searcstring = mSearchEdit.getText().toString();
-                    if (!searcstring.isEmpty()) {
-                        search_layout.setVisibility(View.GONE);
-                        KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-                        makeSearch(mSearchEdit.getText().toString());
-                        mSearchEdit.setText("");
-                        startTracking(getString(R.string.analytics_SearchSecrets));
-                    } else {
-                        Toast.makeText(ct, "Please type text to search.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-            petlayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(MainActivity.this, StatsActivity.class));
-                    //  showStatsDialog();
-                }
-            });
-
-            webview_layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-
-            feed_view_back = (LinearLayout) findViewById(R.id.feed_view_back);
-            feed_view_back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    webview_layout.setVisibility(View.GONE);
-
-                    if (Build.VERSION.SDK_INT < 18) {
-                        mWebView.clearView();
-                    } else {
-                        initWebView("about:blank");
-                    }
-                }
-            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -629,25 +1048,13 @@ public class MainActivity extends BaseActivity implements
             loaddata = new TextView(this);
             runAnime = new TextView(this);
 
-            cancelscratch.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // coupon_image.setVisibility(View.VISIBLE);
-                    scratch_layout.setVisibility(View.GONE);
-                }
-            });
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        scratch_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
 
         skip_pet.setOnClickListener(new View.OnClickListener() {
@@ -660,35 +1067,13 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
 
+
                 if (select_index >= 0)
                 {
 
                     new SetPetInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     pet_layout.setVisibility(View.GONE);
 
-                    SpannableString text = new SpannableString("Feed your pet by giving out hugs, hearts, me2s and comments on posts");
-
-                    text.setSpan(new ForegroundColorSpan(Color.parseColor("#333333")), 0, text.length(), 0);
-                    text.setSpan(new ForegroundColorSpan(Color.BLACK), 27, 46, 0);
-                    text.setSpan(new StyleSpan(Typeface.BOLD), 27, 46, 0);
-                    text.setSpan(new ForegroundColorSpan(Color.BLACK), 51, 59, 0);
-                    text.setSpan(new StyleSpan(Typeface.BOLD), 51, 59, 0);
-
-                    AlertDialog.Builder updateAlert = new AlertDialog.Builder(ct);
-                    updateAlert.setIcon(R.drawable.ic_launcher);
-                    updateAlert.setTitle("Cypher");
-                    updateAlert.setMessage(text);
-                    updateAlert.setPositiveButton(
-                            "Ok",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alertUp = updateAlert.create();
-                    alertUp.setCanceledOnTouchOutside(false);
-                    alertUp.show();
 
 
 
@@ -703,14 +1088,6 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
 
-            }
-        });
-        mPostEmotion = (ImageView) findViewById(R.id.post_emotion);
-
-        mPostEmotion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postEmotion();
             }
         });
 
@@ -734,64 +1111,24 @@ public class MainActivity extends BaseActivity implements
         }
 
 
-
-        loaddata.postDelayed(new Runnable() {
-            @Override
+        Timer timerObj = new Timer();
+        TimerTask timerTaskObj = new TimerTask()
+        {
             public void run() {
                 try {
+                    if (stataicObjectDTO == null)
+                        new GetStaticData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-                    chat_count = (TextView) findViewById(R.id.chat_count);
 
-                    if (MainActivity.is_from_login)
-                    {
-                        if (ConnectionDetector.isNetworkAvailable(ct))
-                        {
+                    if (MainActivity.is_from_login) {
+                        if (ConnectionDetector.isNetworkAvailable(ct)) {
                             mGcmPushNotifHandler = new GCMPushNotifHandler((Activity) ct);
                             mGcmPushNotifHandler.register();
 
-                            /*mGcmPushNotifHandler = new GCMPushNotifHandler((Activity) ct);
-                            deviceTOken = mGcmPushNotifHandler.getRegistrationId();
-
-                            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                            imei_numer = telephonyManager.getDeviceId();
-                            deviceToken();*/
                         } else {
                             new ToastUtil(ct, "Please check your internet connection.");
                         }
                     }
-                    pGif = (TextView) findViewById(R.id.chat_friend);
-                    pGif.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            if (ConnectionDetector.isNetworkAvailable(ct))
-                            {
-                                String verify = AppSession.getValue(ct, Constants.USER_VERIFIED);
-                                if (verify != null && verify.equalsIgnoreCase("false")) {
-                                    new ToastUtil(ct, ct.getString(R.string.sorry_not_verified));
-                                    isIAMVerified = false;
-
-                                } else {
-                                    replaceDialog(Constants.ACCESS_IFRIEND);
-                                    isIAMVerified = true;
-
-                                }
-                            } else {
-                                new ToastUtil(ct, "Please check your internet connection.");
-                            }
-
-
-
-
-
-                        }
-                    });
-
-
-                    whole_layout.setVisibility(View.VISIBLE);
-                    chatcount = 0;
-
-                    chat_count.postDelayed(refreshchatcount, 1000);
 
                     myPrefs = PreferenceManager.getDefaultSharedPreferences(ct);
 
@@ -831,8 +1168,7 @@ public class MainActivity extends BaseActivity implements
                                 }
                             }
 
-                            if (getIntent().hasExtra("SECRET_SHARING"))
-                            {
+                            if (getIntent().hasExtra("SECRET_SHARING")) {
                                 SECRET_SHARING = getIntent().getBooleanExtra("SECRET_SHARING", false);
                                 if (SECRET_SHARING) {
                                     is_from_notification = true;
@@ -848,13 +1184,7 @@ public class MainActivity extends BaseActivity implements
                                 }
                             }
 
-                            if (getIntent().hasExtra("STATS_PAGE")) {
-                                STATS_PAGE = getIntent().getBooleanExtra("STATS_PAGE", false);
-                                if (STATS_PAGE) {
-                                    showStatsDialog();
-                                    is_from_notification = true;
-                                }
-                            }
+
 
                             try {
                                 if (getIntent().hasExtra("MOOD_PAGE")) {
@@ -868,50 +1198,6 @@ public class MainActivity extends BaseActivity implements
                                 e.printStackTrace();
                             }
 
-
-                            try {
-                                if (getIntent().hasExtra("LIFESTYLE_GLIMPSE")) {
-                                    LIFESTYLE_GLIMPSE = getIntent().getBooleanExtra("LIFESTYLE_GLIMPSE", false);
-                                    if (LIFESTYLE_GLIMPSE) {
-                                        is_from_notification = true;
-                                        is_from_push_noti = Constants.LIFESTYLE_PUSH;
-                                        // Controller.runGlimpse(Controller.LIFE, MainActivity.this, true);
-
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-
-                            try {
-                                if (getIntent().hasExtra("NEWS_GLIMPSE")) {
-                                    NEWS_GLIMPSE = getIntent().getBooleanExtra("NEWS_GLIMPSE", false);
-                                    if (NEWS_GLIMPSE) {
-
-                                        is_from_notification = true;
-                                        is_from_push_noti = Constants.NEWS_PUSH;
-                                        //Controller.runGlimpse(Controller.NEWS, MainActivity.this, true);
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-
-                            try {
-                                if (getIntent().hasExtra("ENTERTAINMENT_GLIMPSE")) {
-                                    ENTERTAINMENT_GLIMPSE = getIntent().getBooleanExtra("ENTERTAINMENT_GLIMPSE", false);
-                                    if (ENTERTAINMENT_GLIMPSE) {
-                                        is_from_notification = true;
-                                        is_from_push_noti = Constants.ENTERTAINMENT_PUSH;
-                                        //Controller.runGlimpse(Controller.ENTER, MainActivity.this, true);
-
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
 
 
 
@@ -933,14 +1219,7 @@ public class MainActivity extends BaseActivity implements
                                 }
                             }
 
-                            if (getIntent().hasExtra(GcmIntentService.mUsernameSecret)) {
-                                USERNAME = getIntent().getBooleanExtra(GcmIntentService.mUsernameSecret, false);
-                                if (USERNAME) {
-                                    is_from_notification = true;
-                                    String mUser = GcmIntentService.mUsernameSecret;
-                                    acceptNotification(mUser);
-                                }
-                            }
+
 
 
                         } catch (Exception e) {
@@ -949,22 +1228,15 @@ public class MainActivity extends BaseActivity implements
                     } else
                         is_from_notification = false;
 
-                    if (is_from_notification == false) {
-                        pet_name = AppSession.getValue(ct, Constants.USER_PET_NAME);
-                        if (pet_name != null && !pet_name.equalsIgnoreCase("") && !pet_name.equalsIgnoreCase("null"))
-                            new GetPetInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        else {
-                            pet_layout.setVisibility(View.VISIBLE);
-                            pet_name = "";
-                            drawpetlist();
-                        }
-                    }
 
                     get_date = myPrefs.getString("Date", "Nothing");
 
-                    if (runAnime != null) {
-                        runAnime.postDelayed(new Runnable() {
-                            @Override
+                    String userna = AppSession.getValue(ct, Constants.USER_NAME);
+                    if (userna != null && !userna.equalsIgnoreCase(""))
+                    {
+
+                        Timer timerObj1 = new Timer();
+                        TimerTask timerTaskObj1 = new TimerTask() {
                             public void run() {
                                 try {
                                     if (ConnectionDetector.isNetworkAvailable(ct)) {
@@ -977,17 +1249,49 @@ public class MainActivity extends BaseActivity implements
                                 }
 
                             }
-                        }, 6000);
+                        };
+                        timerObj1.schedule(timerTaskObj1,500);
+
+
+
                     }
                     SetUserInactiveAlarm();
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 500);
+        };
+        timerObj.schedule(timerTaskObj, 2500);
 
-        //   startservice();
+        if (getIntent().hasExtra(GcmIntentService.mUsernameSecret))
+        {
+            USERNAME = getIntent().getBooleanExtra(GcmIntentService.mUsernameSecret, false);
+            if (USERNAME) {
+                is_from_notification = true;
+                String mUser = GcmIntentService.mUsernameSecret;
+                acceptNotification(mUser);
+            }
+        }
+
+
+        if (is_from_notification == false)
+        {
+            String userna = AppSession.getValue(ct, Constants.USER_NAME);
+            if (userna != null && !userna.equalsIgnoreCase(""))
+            {
+                pet_name = AppSession.getValue(ct, Constants.USER_PET_NAME);
+                if (pet_name == null || pet_name.equalsIgnoreCase("")  || pet_name.equalsIgnoreCase("null")) {
+                    //new GetPetInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    pet_layout.setVisibility(View.VISIBLE);
+                    pet_name = "";
+                    drawpetlist();
+                }
+
+            }
+        }
+
 
     }
 
@@ -998,8 +1302,6 @@ public class MainActivity extends BaseActivity implements
             Calendar c = Calendar.getInstance();
             String todaysdate = mmddff.format(c.getTime());
             AppSession.save(ct, Constants.USERLASTATTAND, todaysdate);
-
-
             Intent alarmIntent = new Intent(ct, InactiveNotification.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(ct, 0, alarmIntent, 0);
             try {
@@ -1022,117 +1324,7 @@ public class MainActivity extends BaseActivity implements
     }
 
 
-    public static void initWebView(final String url) {
 
-        try {
-
-            mWebView.getSettings().setJavaScriptEnabled(true);
-            mWebView.loadUrl(url);
-            mWebView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-
-                    //  if (url.contains("www.doowapp.me/"))
-                    if (url.contains("http://www.doowapp.me/play.php?id")) {
-                        mWebView.loadUrl(url);
-                        return false;
-                    } else
-                        return true;
-
-
-                   /* view.loadUrl(url);
-                    return true;*/
-
-                }
-
-                @Override
-                public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
-                }
-
-                @Override
-                public void onPageFinished(WebView view, final String url) {
-
-                }
-
-                @Override
-                public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-
-                    super.onReceivedError(view, errorCode, description, failingUrl);
-
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-
-    /*public static void initWebView(final String url) {
-
-       // mWebView.getSettings().setJavaScriptEnabled(true);
-
-
-*//*
-        mWebView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return (event.getAction() == MotionEvent.ACTION_MOVE);
-            }
-        });*//*
-
-        mWebView.loadUrl(url);
-
-mWebView.postDelayed(new Runnable() {
-    @Override
-    public void run() {
-        mWebView.loadUrl(url);
-    }
-},1000);
-
-
-        mWebView.setWebViewClient(new WebViewClient()
-        {
-           *//* @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-
-                if (url.contains("www.doowapp.me/")) {
-                    mWebView.loadUrl(url);
-                    return false;
-                } else
-                    return true;
-            }
-
-
-            public boolean shuldOverrideKeyEvent(WebView view, KeyEvent event) {
-
-                return true;
-            }
-*//*
-
-           *//* @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
-            }
-
-            @Override
-            public void onPageFinished(WebView view, final String url) {
-
-            }
-
-            @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                super.onReceivedError(view, errorCode, description, failingUrl);
-
-            }*//*
-        });
-    }
-
-*/
     public static void postEmotion() {
         try {
             if (cd != null)
@@ -1154,7 +1346,7 @@ mWebView.postDelayed(new Runnable() {
         mFriend = mUser;
 
         AlertDialog.Builder buildervalid = new AlertDialog.Builder(MainActivity.this);
-        buildervalid.setIcon(R.drawable.chat_friend);
+        buildervalid.setIcon(R.drawable.ic_launcher);
         buildervalid.setTitle("iFriend");
         buildervalid.setMessage("Would you like us to notify you when your internet friend shares a secret?");
 
@@ -1190,19 +1382,7 @@ mWebView.postDelayed(new Runnable() {
     }
 
 
-/*    public void setupTrendingCallback(UpdateCallback data) {
-        this.mTrendingUpdate = data;
-    }*/
 
- /*   public void setupHappyCallback(UpdateCallback data) {
-        this.mHappyUpdate = data;
-    }*/
-
-/*
-
-    public void setupSearchCallback(SearchUpdateCallback data) {
-        this.mSearchCallback = data;
-    }*/
 
     public void setupFilterCallback(FilterUpdateCallback data) {
         this.mLatestUpdate = data;
@@ -1213,7 +1393,7 @@ mWebView.postDelayed(new Runnable() {
         try {
 
             findViewById(R.id.main_progress_bg_iv).setOnClickListener(this);
-            mMainTutorial = new MainViewTutorial(this, findViewById(R.id.tutorial_root));
+
             mActivityHandler = new Handler();
             mActivityRunnable = new Runnable() {
                 @Override
@@ -1230,48 +1410,7 @@ mWebView.postDelayed(new Runnable() {
                 }
             };
 
-            menu = new SlidingMenu(this);
-            menu.setMode(SlidingMenu.LEFT);
-            menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-            menu.setShadowWidthRes(R.dimen.shadow_width);
-            menu.setShadowDrawable(R.drawable.shadow);
-            menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-            menu.setFadeDegree(0.8f);
-            menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-            menu.setMenu(R.layout.leftmenu);
-            menu.setSlidingEnabled(true);
 
-            mSearchEdit = (EditText) findViewById(R.id.search_input);
-
-
-            mSearchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-                @Override
-                public boolean onEditorAction(TextView v, int actionId,
-                                              KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        String searcstring = mSearchEdit.getText().toString();
-                        if (!searcstring.isEmpty()) {
-                            search_layout.setVisibility(View.GONE);
-                            KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-                            makeSearch(mSearchEdit.getText().toString());
-                            mSearchEdit.setText("");
-                            startTracking(getString(R.string.analytics_SearchSecrets));
-                        } else {
-                            Toast.makeText(ct, "Please type text to search.", Toast.LENGTH_SHORT).show();
-                        }
-
-
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            mSearchEdit.clearFocus();
-            mSearchToggle = (ImageView) findViewById(R.id.search_toggle);
-            // mSearchToggle.setTag(0);
-
-            menuButton = (ImageView) findViewById(R.id.menu_toggle);
             if (mMainPager != null)
                 mMainPager = null;
             mMainPager = (OwnPager) this.findViewById(R.id.pager);
@@ -1292,14 +1431,14 @@ mWebView.postDelayed(new Runnable() {
                 LATEST_FILTERING = getIntent().getBooleanExtra("LATEST_FILTERING", false);
                 if (LATEST_FILTERING) {
                     is_from_notification = true;
-                    mMainPager.setCurrentItem(3);
+                    mMainPager.setCurrentItem(2);
                 }
             } else {
                 if (is_chat) {
                     is_from_notification = true;
-                    mMainPager.setCurrentItem(1);
+                    mMainPager.setCurrentItem(3);
                 } else {
-                    mMainPager.setCurrentItem(2);
+                    mMainPager.setCurrentItem(1);
                 }
             }
             is_chat = false;
@@ -1307,112 +1446,28 @@ mWebView.postDelayed(new Runnable() {
             tabStrip = (PagerTabStrip) findViewById(R.id.pager_title_strip);
             tabStrip.setTabIndicatorColor(getResources().getColor(R.color.upper_line));
 
-            View leftView = menu.getMenu();
-            initLeftMenu(leftView);
-            loadDefault(true);
+            //initLeftMenu(leftView);
+           // loadDefault(true);
 
-          /*  final View activityRootView = findViewById(R.id.app_root);
-            activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                    if (heightDiff > 200) {
-                        mSearchToggle.setImageResource(R.drawable.ic_down);
-                        mSearchToggle.setTag(1);
-                        mSearchEdit.setCursorVisible(true);
-                        isKeyBoard = true;
-                    } else {
-                        mSearchToggle.setImageResource(R.drawable.ic_plus);
-                        mSearchToggle.setTag(0);
-                        mSearchEdit.setCursorVisible(false);
-                        isKeyBoard = false;
-                    }
-                }
-            });*/
 
-            findViewById(R.id.menu_toggle).setOnClickListener(this);
+
+
             findViewById(R.id.search_toggle).setOnClickListener(this);
-            findViewById(R.id.hug_anim_root).setOnClickListener(this);
+            //  findViewById(R.id.hug_anim_root).setOnClickListener(this);
 
-            menu.setOnClosedListener(new SlidingMenu.OnClosedListener() {
-                @Override
-                public void onClosed() {
-                    switch (settingsState) {
-                        case Constants.SETTINGS_SECRETS:
-                            showPinDialog();
-                            break;
-                        case Constants.SETTINGS_POLICY:
-                            runPolicy();
-                            break;
-                        case Constants.SETTINGS_CLEAR:
-                            clearDataDialog();
-                            break;
-                        case Constants.SETTINGS_NOTIFICATIONS:
 
-                            if (ConnectionDetector.isNetworkAvailable(ct))
-                            {
-                                showNotificationAccessDialog();
-                            } else {
-                                new ToastUtil(ct, "Please check your internet connection.");
-                            }
-
-                            break;
-                        case Constants.SETTINGS_UNVERIFY:
-                            showUnverifyDialog();
-                            break;
-                        case Constants.SETTINGS_RATE_SCHOOL:
-                            startRateSchool();
-                            break;
-                        case Constants.SETTINGS_REFER_FRIEND:
-                            startReferFriend();
-                            break;
-                        case Constants.SETTINGS_STATS:
-                            showStatsDialog();
-                            break;
-                        default:
-                            //none
-                            break;
-                    }
-
-                    settingsState = Constants.SETTINGS_NONE;
-                }
-            });
-
-            menu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
-                @Override
-                public void onOpened() {
-                    mMainTutorial.showMineTutorial(menu.getMenu());
-                    // mMainTutorial.showInviteTutorial(menu.getMenu());
-                    mMainTutorial.showAppTutorial(menu.getMenu());
-                    mMainTutorial.showIFriendsTutorial(menu.getMenu());
-                    mMainTutorial.showPetTutorial(menu.getMenu());
-                   /* if (mGetComments.getVisibility() == View.VISIBLE)
-                        mMainTutorial.showPurchaseTutorial(menu.getMenu());
-       */
-                }
-            });
-
-            mMainTutorial.checkForThePerformance();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    private void loadDefault(boolean b) {
-        // if (ConnectionDetector.isNetworkAvailable(MainActivity.ct)) {
-        // fillTrendingData();
-        //loadFeed(Constants.STATE_HAPPINESS, b);
-        setFilter(Preference.getFilter());
 
 
-        //}
-    }
-
-    private void startReferFriend() {
+    /*private void startReferFriend() {
         startActivity(new Intent(this, ReferFriendActivity.class));
     }
-
+*/
     private void startRateSchool() {
 
         try {
@@ -1430,14 +1485,7 @@ mWebView.postDelayed(new Runnable() {
             e.printStackTrace();
 
         }
-        /*new SchoolLoader(new SchoolCallback() {
-            @Override
-            public void onUpdate(List<School> data) {
 
-
-
-            }
-        }).execute();*/
     }
 
     private void startRateSchoolActivity() {
@@ -1453,70 +1501,6 @@ mWebView.postDelayed(new Runnable() {
         AppSession.save(ct, Constants.USER_VERIFIED, "false");
 
     }
-
-
-    private void makeSearch(String text) {
-        try {
-
-
-            if (text.isEmpty())
-                return;
-
-
-            YoYo.with(Techniques.FadeIn).duration(500).withListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    findViewById(R.id.search_frame).setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            }).playOn(findViewById(R.id.search_frame));
-
-            //Fragment frag = getSupportFragmentManager().findFragmentById(R.id.search_frame);
-            // if (!(frag instanceof SearchFragment)) {
-
-            String search_text = "";
-
-            try {
-                text = text.toLowerCase();
-                String[] secr_text = text.split(" ");
-
-                if (secr_text != null && secr_text.length > 0) {
-                    for (int i = 0; i < secr_text.length; i++) {
-                        String withplus = CryptLib.encrypt(secr_text[i]);
-                        withplus = withplus.replace("+", "");
-
-                        search_text = search_text + " " + withplus;
-                        search_text = search_text.trim();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            searchText = search_text;
-
-            replaceSearch();
-
-            // loadSearch(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private void makeSearchwithid(String id) {
         try {
@@ -1564,105 +1548,29 @@ mWebView.postDelayed(new Runnable() {
     }
 
 
-   /* public void loadSearch(final int skip) {
-        new SearchLoader(this, new SearchUpdateCallback() {
-            @Override
-            public void onUpdate(List<Secret> list, int skip) {
-                // if (list != null && list.size() > 0)
-                {
-                    mSearchCallback.onUpdate(list, skip);
-                }
-            }
-        }).execute(searchText, skip);
-    }*/
-
-
-/*
-    public void loadSearchsecretid(final int skip) {
-        new SearchLoader(this, new SearchUpdateCallback() {
-            @Override
-            public void onUpdate(List<Secret> list, int skip) {
-                // if (list != null && list.size() > 0)
-                {
-                    mSearchCallback.onUpdate(list, skip);
-                }
-            }
-        }).executesecretid(searchText, skip);
-    }
-*/
-
- /*   @Override
-    protected void onPause() {
-        super.onPause();
-        Intent intent = new Intent(this, BoundService.class);
-        stopService(intent);
-    }*/
 
     @Override
     protected void onResume() {
         super.onResume();
 
         is_running = true;
-        Intent intent = new Intent(this, BoundService.class);
-        startService(intent);
 
 
         pet_name = AppSession.getValue(ct, Constants.USER_PET_NAME);
         if (pet_name != null && !pet_name.equalsIgnoreCase("") && !pet_name.equalsIgnoreCase("null"))
-            new GetPetInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            ShowPetStatus();
 
-
-       /* try
-        {
-            if (!is_done_in_oncreate)
-            {
-                String secret_id = AppSession.getValue(ct, Constants.COMMENT_SECRET_ID);
-
-                if (secret_id != null && !secret_id.equalsIgnoreCase("")) {
-                    is_from_commNotif = true;
-                    SearchFragment.secret_id = secret_id;
-                    makeSearchwithid(SearchFragment.secret_id);
-                    AppSession.save(ct, Constants.COMMENT_SECRET_ID, "");
-                }
-            } else
-                is_done_in_oncreate = false;
-        } catch (Exception e) {
-
-        }*/
-
-        /*pet_layout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-
-
-
-
-
-                    try
-                    {
-                        if (!is_done_in_oncreate)
-                        {
-                            String secret_id = AppSession.getValue(ct, Constants.COMMENT_SECRET_ID);
-
-                            if (secret_id != null && !secret_id.equalsIgnoreCase("")) {
-                                is_from_commNotif = true;
-                                SearchFragment.secret_id = secret_id;
-                                makeSearchwithid(SearchFragment.secret_id);
-                                AppSession.save(ct, Constants.COMMENT_SECRET_ID, "");
-                            }
-                        } else
-                            is_done_in_oncreate = false;
-                    } catch (Exception e) {
-
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (is_from_secret_post) {
+                is_from_secret_post = false;
+                mMainPager.setCurrentItem(2);
+                is_Refresh_Latest = true;
+                if (getIntent() != null)
+                    updateTitleBanner(1);
             }
-        },200);*/
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1706,13 +1614,9 @@ mWebView.postDelayed(new Runnable() {
                     }
                 }).playOn(findViewById(R.id.search_frame));
 
-                if (menuButton != null) {
-                    menuButton.setOnClickListener(MainActivity.this);
-                    menuButton.setImageResource(R.drawable.ic_menu_icon_b);
-                    menuButton.setTag(0);
-                }
-                if (isKeyBoard && mSearchEdit != null)
-                    KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
+
+               /* if (isKeyBoard && mSearchEdit != null)
+                    KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);*/
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1721,23 +1625,9 @@ mWebView.postDelayed(new Runnable() {
     };
 
     @Override
-    public void onBackPressed()
-    {
-        try
-        {
-            FragmentManager manager = getSupportFragmentManager();
-            Fragment fragGlimpse = manager.findFragmentById(R.id.glimpse_container);
-            Fragment fragHappy = manager.findFragmentById(R.id.happy_glimpse_container);
+    public void onBackPressed() {
+        try {
 
-            if (fragGlimpse instanceof FeedViewFragment || fragGlimpse instanceof FeeListFragment
-                    || fragHappy instanceof FeedViewFragment || fragHappy instanceof FeeListFragment) {
-                return;
-            }
-
-            Fragment frag = manager.findFragmentById(R.id.search_frame);
-            if (frag instanceof SearchFragment && (Integer) menuButton.getTag() == 1) {
-                return;
-            }
             showSearchBar();
         } catch (Exception e) {
             e.printStackTrace();
@@ -1747,608 +1637,28 @@ mWebView.postDelayed(new Runnable() {
         super.onBackPressed();
     }
 
-    private void initLeftMenu(View leftView) {
-
-        mSecrets = leftView.findViewById(R.id.left_my_secrets);
-        mSecrets.setOnClickListener(mMySecretClick);
-        mCouponCode = leftView.findViewById(R.id.coupon_code);
-
-        mCouponCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isKeyBoard)
-                    KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-
-                Intent i = new Intent(ct, CouponCodeActivity.class);
-                startActivity(i);
-
-            }
-        });
-
-        left_chats = leftView.findViewById(R.id.left_chats);
-        left_chats.setOnClickListener(left_chatsClick);
-        left_book_appointment = leftView.findViewById(R.id.left_book_apointment);
 
 
-        mLatestFiltering = leftView.findViewById(R.id.left_latest_filtering);
-        mLatestFiltering.setTag(NEG);
 
-        mLight = leftView.findViewById(R.id.left_light);
-        mTense = leftView.findViewById(R.id.left_tense);
-        mDeep = leftView.findViewById(R.id.left_deep);
-        mSeeAll = leftView.findViewById(R.id.left_see_all);
-
-        mLatestFiltering.setOnClickListener(mFilterClick);
-        left_book_appointment.setOnClickListener(left_book_apointmentclick);
-
-        mLight.setOnClickListener(mFilterClick);
-        mTense.setOnClickListener(mFilterClick);
-        mDeep.setOnClickListener(mFilterClick);
-        mSeeAll.setOnClickListener(mFilterClick);
-
-        mRateSchool = leftView.findViewById(R.id.left_rate_school);
-        mRateSchool.setOnClickListener(mRateSchoolClick);
-        mReferFriends = leftView.findViewById(R.id.left_refer_friend);
-        mReferFriends.setOnClickListener(mReferFriendClick);
-
-
-        mSettings = leftView.findViewById(R.id.left_settings);
-        mSettings.setTag(NEG);
-        mHowToStaySafe = leftView.findViewById(R.id.left_how_to_stay_safe);
-        mClearMySecret = leftView.findViewById(R.id.left_clear_my_secrets);
-        mUnverifyMe = leftView.findViewById(R.id.left_unverify_me);
-        mStats = leftView.findViewById(R.id.left_stats);
-
-        mResetTutorial = leftView.findViewById(R.id.left_reset_tutorial);
-        //mGetComments = leftView.findViewById(R.id.left_get_comments);
-        mNotifications = leftView.findViewById(R.id.left_notifications);
-
-        //mGetComments.setOnClickListener(this);
-        mNotifications.setOnClickListener(mNotificationsClick);
-        mSettings.setOnClickListener(mSettingsClick);
-        mHowToStaySafe.setOnClickListener(mSettingsClick);
-        mClearMySecret.setOnClickListener(mSettingsClick);
-        mUnverifyMe.setOnClickListener(mSettingsClick);
-        mResetTutorial.setOnClickListener(mSettingsClick);
-        mStats.setOnClickListener(mSettingsClick);
-
-        try {
-            fixPurchaseViewState();
-
-            fixRateYourSchool(leftView);
-        } catch (NullPointerException e) {
-        }
-    }
-
-    private void fixRateYourSchool(View view) {
-        if (Integer.parseInt(Preference.getUserAge()) > 15 && mRateSchool != null) {
-            ((TextView) view.findViewById(R.id.left_rate_school_text)).setText(getString(R.string.rate_your_college));
-        }
-    }
 
     private boolean getAge() {
         return Integer.parseInt(Preference.getUserAge()) > 15;
     }
 
-    /*private void resolveVerify() throws NullPointerException {
-        if (ParseUser.getCurrentUser() == null)
-            return;
 
-        new VerifyReviewLoader(new VerifyCallback() {
-            @Override
-            public void onUpdate(boolean result) {
-                showUnverify = result;
-                if (mUnverifyMe != null && !showUnverify) {
-                    mUnverifyMe.setVisibility(View.GONE);
-                    isIAMVerified = false;
-                }
-            }
-        }).execute(ParseUser.getCurrentUser().getObjectId());
-    }*/
-
-    private void fixPurchaseViewState() {
-
-    }
-
-    View.OnClickListener mMySecretClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (isKeyBoard)
-                KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-            settingsState = Constants.SETTINGS_SECRETS;
-            menu.toggle();
-        }
-    };
-
-    View.OnClickListener left_book_apointmentclick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            try {
-                if (isKeyBoard)
-                    KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-
-
-                if (ConnectionDetector.isNetworkAvailable(ct)) {
-                    QRAccess();
-                } else {
-                    new ToastUtil(ct, "Please check your internet connection.");
-                }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            menu.toggle();
-        }
-    };
-
-    View.OnClickListener left_chatsClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (isKeyBoard)
-                KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-
-            if (ConnectionDetector.isNetworkAvailable(ct))
-            {
-
-                String verify = AppSession.getValue(ct, Constants.USER_VERIFIED);
-                if (verify != null && verify.equalsIgnoreCase("false")) {
-                    new ToastUtil(ct, ct.getString(R.string.sorry_not_verified));
-                    isIAMVerified = false;
-
-                } else {
-                    replaceDialog(Constants.ACCESS_IFRIEND);
-                    isIAMVerified = true;
-
-                }
-            } else {
-                new ToastUtil(ct, "Please check your internet connection.");
-            }
-
-            // new CheckVerifiedforIfriend().execute();
-
-            menu.toggle();
-        }
-    };
-
-    View.OnClickListener mReferFriendClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (isKeyBoard)
-                KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-            settingsState = Constants.SETTINGS_REFER_FRIEND;
-            menu.toggle();
-        }
-    };
-
-    View.OnClickListener mRateSchoolClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (isKeyBoard)
-                KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-
-            if (ConnectionDetector.isNetworkAvailable(ct))
-            {
-
-                settingsState = Constants.SETTINGS_RATE_SCHOOL;
-            } else {
-                new ToastUtil(ct, "Please check your internet connection.");
-            }
-
-
-            menu.toggle();
-        }
-    };
-
-    View.OnClickListener mNotificationsClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (isKeyBoard)
-                KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-
-            if (ConnectionDetector.isNetworkAvailable(ct))
-            {
-
-                settingsState = Constants.SETTINGS_NOTIFICATIONS;
-            } else {
-                new ToastUtil(ct, "Please check your internet connection.");
-            }
-
-            menu.toggle();
-        }
-    };
-
-    View.OnClickListener mFilterClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-
-            switch (v.getId()) {
-                case R.id.left_latest_filtering:
-                    makeHeader(v.getId());
-                    switchSelectorFilter();
-                    break;
-                case R.id.left_light:
-                    menu.toggle();
-                    setFilter(Constants.STATE_LIGHT);
-                    mLatestUpdate.onUpdate();
-                    mMainPager.setCurrentItem(3);
-                    break;
-                case R.id.left_tense:
-                    menu.toggle();
-                    setFilter(Constants.STATE_TENSE);
-                    mLatestUpdate.onUpdate();
-                    mMainPager.setCurrentItem(3);
-                    break;
-                case R.id.left_deep:
-                    menu.toggle();
-                    setFilter(Constants.STATE_DEEP);
-                    mLatestUpdate.onUpdate();
-                    mMainPager.setCurrentItem(3);
-                    break;
-                case R.id.left_see_all:
-                    menu.toggle();
-                    setFilter(Constants.STATE_SEE_ALL);
-                    mLatestUpdate.onUpdate();
-                    mMainPager.setCurrentItem(3);
-                    break;
-            }
-        }
-    };
-
-    private void setFilter(int data) {
-
-
-        switch (data) {
-            case Constants.STATE_LIGHT:
-                try {
-                    adapter.setTabTitle(getString(R.string.light));
-                    Preference.saveFilter(Constants.STATE_LIGHT);
-                    filterState = Constants.STATE_LIGHT;
-
-                    //loadFeed(filterState, false);
-                    makeFilter(Constants.STATE_LIGHT);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                break;
-            case Constants.STATE_TENSE:
-                try {
-                    adapter.setTabTitle(getString(R.string.tense));
-
-                    filterState = Constants.STATE_TENSE;
-                    Preference.saveFilter(Constants.STATE_TENSE);
-                    //loadFeed(filterState, false);
-                    makeFilter(Constants.STATE_TENSE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                break;
-            case Constants.STATE_DEEP:
-
-                try {
-                    adapter.setTabTitle(getString(R.string.deep));
-
-                    filterState = Constants.STATE_DEEP;
-                    Preference.saveFilter(Constants.STATE_DEEP);
-                    //loadFeed(filterState, false);
-                    makeFilter(Constants.STATE_DEEP);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                break;
-            case Constants.STATE_SEE_ALL:
-                try {
-                    adapter.setTabTitle(getString(R.string.see_all));
-
-                    filterState = Constants.STATE_SEE_ALL;
-                    Preference.saveFilter(Constants.STATE_SEE_ALL);
-                    //loadFeed(filterState, false);
-                    makeFilter(Constants.STATE_SEE_ALL);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                break;
-        }
-
-    }
-
-    View.OnClickListener mSettingsClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            startTracking(getString(R.string.analytics_Settings));
-
-            switch (v.getId()) {
-                case R.id.left_settings:
-                    switchSelectorSettings();
-                    break;
-                case R.id.left_how_to_stay_safe:
-                    settingsState = Constants.SETTINGS_POLICY;
-                    startTracking(getString(R.string.analytics_How_toSafe));
-                    menu.toggle();
-                    break;
-                case R.id.left_reset_tutorial:
-                    Preference.clearMenuTutorial();
-                    mMainTutorial.checkForThePerformance();
-                    startTracking(getString(R.string.analytics_Resettutorial));
-                    menu.toggle();
-                    break;
-                case R.id.left_clear_my_secrets:
-                    settingsState = Constants.SETTINGS_CLEAR;
-                    startTracking(getString(R.string.analytics_ClearMySecrets));
-                    menu.toggle();
-                    break;
-                case R.id.left_unverify_me:
-                    settingsState = Constants.SETTINGS_UNVERIFY;
-                    menu.toggle();
-                    startTracking(getString(R.string.analytics_UnverifyMe));
-                    break;
-                case R.id.left_stats:
-                    settingsState = Constants.SETTINGS_STATS;
-                    menu.toggle();
-                    break;
-            }
-        }
-    };
-
-    private void switchSelectorFilter() {
-        if ((Integer) mLatestFiltering.getTag() == NEG) {
-            try {
-                mLight.setVisibility(View.VISIBLE);
-                mTense.setVisibility(View.VISIBLE);
-                mDeep.setVisibility(View.VISIBLE);
-                mSeeAll.setVisibility(View.VISIBLE);
-
-                YoYo.with(Techniques.BounceInDown).duration(500).playOn(mLight);
-                YoYo.with(Techniques.BounceInDown).duration(500).playOn(mTense);
-                YoYo.with(Techniques.BounceInDown).duration(500).playOn(mDeep);
-                YoYo.with(Techniques.BounceInDown).duration(500).playOn(mSeeAll);
-
-                mLatestFiltering.setTag(POS);
-                mLatestFiltering.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-        } else {
-            YoYo.with(Techniques.FadeOutUp).withListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-
-                    try {
-                        mLight.setVisibility(View.GONE);
-                        mTense.setVisibility(View.GONE);
-                        mDeep.setVisibility(View.GONE);
-                        mSeeAll.setVisibility(View.GONE);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            }).duration(300).playOn(mLight);
-
-            YoYo.with(Techniques.FadeOutUp).duration(300).playOn(mTense);
-            YoYo.with(Techniques.FadeOutUp).duration(300).playOn(mDeep);
-            YoYo.with(Techniques.FadeOutUp).duration(300).playOn(mSeeAll);
-
-            mLatestFiltering.setTag(NEG);
-            mLatestFiltering.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-        }
-    }
-
-    private void switchSelectorSettings() {
-        if ((Integer) mSettings.getTag() == NEG) {
-            mHowToStaySafe.setVisibility(View.VISIBLE);
-            mResetTutorial.setVisibility(View.VISIBLE);
-            mClearMySecret.setVisibility(View.VISIBLE);
-
-            if (showUnverify) {
-                mUnverifyMe.setVisibility(View.VISIBLE);
-                YoYo.with(Techniques.BounceInDown).duration(300).playOn(mUnverifyMe);
-            }
-
-            YoYo.with(Techniques.BounceInDown).duration(300).playOn(mHowToStaySafe);
-            YoYo.with(Techniques.BounceInDown).duration(300).playOn(mResetTutorial);
-            YoYo.with(Techniques.BounceInDown).duration(300).playOn(mClearMySecret);
-
-            mSettings.setTag(POS);
-            mSettings.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-        } else {
-            YoYo.with(Techniques.FadeOutUp).withListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    try {
-                        mHowToStaySafe.setVisibility(View.GONE);
-                        mResetTutorial.setVisibility(View.GONE);
-                        mClearMySecret.setVisibility(View.GONE);
-                        mUnverifyMe.setVisibility(View.GONE);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            }).duration(300).playOn(mHowToStaySafe);
-
-            YoYo.with(Techniques.FadeOutUp).duration(300).playOn(mResetTutorial);
-            YoYo.with(Techniques.FadeOutUp).duration(300).playOn(mClearMySecret);
-            if (showUnverify)
-                YoYo.with(Techniques.FadeOutUp).duration(300).playOn(mUnverifyMe);
-            mSettings.setTag(NEG);
-            mSettings.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-        }
-    }
-
-    private void makeHeader(int id) {
-        try {
-            switch (id) {
-                case R.id.left_latest_filtering:
-                    mLatestFiltering.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    break;
-                case R.id.left_my_secrets:
-                    break;
-                case R.id.left_settings:
-                    mSettings.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    break;
-                default:
-                    mLatestFiltering.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mSecrets.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mSettings.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void makeFilter(int id) {
-
-        try {
-            switch (id) {
-                case Constants.STATE_LIGHT:
-
-                    mLight.setBackgroundColor(getResources().getColor(R.color.grey_transparent));
-                    mTense.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mDeep.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mSeeAll.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-
-                    currentTracking = Constants.TRACK_LIGHT;
-                    break;
-                case Constants.STATE_TENSE:
-                    mLight.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mTense.setBackgroundColor(getResources().getColor(R.color.grey_transparent));
-                    mDeep.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mSeeAll.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-
-                    currentTracking = Constants.TRACK_TENSE;
-                    break;
-                case Constants.STATE_DEEP:
-                    mLight.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mTense.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mDeep.setBackgroundColor(getResources().getColor(R.color.grey_transparent));
-                    mSeeAll.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-
-                    currentTracking = Constants.TRACK_DEEP;
-                    break;
-                case Constants.STATE_SEE_ALL:
-                    mLight.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mTense.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mDeep.setBackgroundColor(getResources().getColor(R.color.glimpse_gray));
-                    mSeeAll.setBackgroundColor(getResources().getColor(R.color.grey_transparent));
-
-                    currentTracking = Constants.TRACK_ALL;
-                    break;
-            }
-
-            // if (mMainPager.getCurrentItem() == HAPPY_STATE)
-            startTracking(currentTracking);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    /*IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
-            = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-
-            if (purchase == null || result == null) {
-                return;
-            }
-
-            if (result.isFailure()) {
-                return;
-            }
-
-            if (purchase.getSku().equals(PURCHASE_ITEM) && result.isSuccess()) {
-                mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
-                    @Override
-                    public void onConsumeFinished(Purchase purchase, IabResult result) {
-                        makeUserSuper();
-                    }
-                });
-            }
-        }
-    };*/
-
-  /*  private void makeUserSuper() {
-        ParseUser.getCurrentUser().put(Constants.USER_IS_SUPER_VERIFIED, true);
-        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                fixPurchaseViewState();
-            }
-        });
-    }*/
 
 
     @Override
     public void onDestroy() {
-        //isRunning.set(false);
+
         super.onDestroy();
-        try {
-            /*if (mHelper != null) mHelper.dispose();
-            mHelper = null;*/
 
-            chat_count.removeCallbacks(refreshchatcount);
-
-        } catch (Exception e) {
-        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        try {
-            //if (mHelper == null) return;
-            //if (!mHelper.handleActivityResult(requestCode, resultCode, data))
-            //  {
-            if (is_From_glimpse) {
-                is_From_glimpse = false;
-                super.onActivityResult(requestCode, resultCode, data);
-            }
-            // }
-        } catch (Exception e) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
 
-        }
 
         switch (resultCode) {
             case Constants.SETTINGS_RATE_SCHOOL:
@@ -2356,7 +1666,7 @@ mWebView.postDelayed(new Runnable() {
                 break;
             case Constants.SECRET_POST:
                 try {
-                    mMainPager.setCurrentItem(3);
+                    mMainPager.setCurrentItem(2);
                     is_Refresh_Latest = true;
                     if (getIntent() != null)
                         updateTitleBanner(1);
@@ -2380,7 +1690,7 @@ mWebView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             is_From_feeling_post = false;
-                            mMainPager.setCurrentItem(3);
+                            mMainPager.setCurrentItem(2);
                             mLatestUpdate.onUpdate();
                         }
                     }, 1000);
@@ -2483,35 +1793,17 @@ mWebView.postDelayed(new Runnable() {
 
     @Override
     public void onClick(View v) {
-        if (isKeyBoard)
+       /* if (isKeyBoard)
             KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
-
+*/
         switch (v.getId()) {
-            case R.id.menu_toggle:
-                menu.toggle();
-                break;
-            case R.id.left_notifications:
-                if (ConnectionDetector.isNetworkAvailable(ct))
 
-                    menu.toggle();
-                else {
-                    new ToastUtil(ct, "Please check your internet connection.");
-                }
-
-                break;
             case R.id.search_toggle:
                 if (ConnectionDetector.isNetworkAvailable(ct))
-                checkpost();
+                    checkpost();
                 else {
                     new ToastUtil(ct, "Please check your internet connection.");
                 }
-                /*if ((Integer) mSearchToggle.getTag() == 0) {
-                    checkpost();
-                    // startActivityForResult(new Intent(MainActivity.this, CreateSecretActivity.class), 0);
-                } else {
-                    KeyboardUtil.hideKeyBoard(mSearchEdit, this);
-                    mSearchToggle.setTag(0);
-                }*/
                 break;
         }
     }
@@ -2529,29 +1821,37 @@ mWebView.postDelayed(new Runnable() {
         startActivity(new Intent(MainActivity.this, StatsActivity.class));
     }
 
-    private void showUnverifyDialog() {
+   /* private void showUnverifyDialog() {
 
         replaceDialog(Constants.ACCESS_VERIFY);
-    }
+    }*/
 
     private void showNotificationAccessDialog() {
         replaceDialog(Constants.ACCESS_NOTIFICATIONS);
     }
 
     public void hideSearchBar() {
-        try {
+       /* try {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
             if (mSearchEdit != null)
                 mSearchEdit.setEnabled(false);
         } catch (NullPointerException e) {
 
-        }
+        }*/
     }
 
     public void showSearchBar() {
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        if (mSearchEdit != null)
-            mSearchEdit.setEnabled(true);
+      /* try
+       {
+           getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+           if (mSearchEdit != null)
+               mSearchEdit.setEnabled(true);
+       }
+       catch ( Exception e)
+       {
+           e.printStackTrace();
+
+       }*/
     }
 
     @Override
@@ -2572,85 +1872,7 @@ mWebView.postDelayed(new Runnable() {
     }
 
 
-   /* public void loadFeed(final int state, boolean progress)
-    {
-        switch (state)
-        {
-            case Constants.STATE_HAPPINESS:
-                if (mHappyUpdate != null)
-                    mHappyUpdate.onUpdate(null);
-                break;
-            case Constants.STATE_TRENDING:
-                if (mTrendingUpdate != null)
-                    mTrendingUpdate.onUpdate(null);
-                break;
-            case Constants.STATE_SEE_ALL:
-                if (mLatestUpdate != null) {
-                    mLatestUpdate.onUpdate(null, filterState);
-                }
-                break;
-            case Constants.STATE_TENSE:
-                if (mLatestUpdate != null) {
-                    mLatestUpdate.onUpdate(null, filterState);
-                }
-                break;
-            case Constants.STATE_DEEP:
-                if (mLatestUpdate != null) {
-                    mLatestUpdate.onUpdate(null, filterState);
-                }
-                break;
-            case Constants.STATE_LIGHT:
-                if (mLatestUpdate != null) {
-                    mLatestUpdate.onUpdate(null, filterState);
-                }
-                break;
-        }
-    }
-*/
-/*    public void loadFeed(final int state, boolean progress)
-    {
-        new FeedLoader(this, new UpdateCallback()
-        {
-            @Override
-            public void onUpdate(List<Secret> list)
-            {
-                {
-                    switch (state)
-                    {
-                        case Constants.STATE_HAPPINESS:
-                            if (mHappyUpdate != null)
-                                mHappyUpdate.onUpdate(list);
-                            break;
-                        case Constants.STATE_TRENDING:
-                            if (mTrendingUpdate != null)
-                                mTrendingUpdate.onUpdate(list);
-                            break;
-                        case Constants.STATE_SEE_ALL:
-                            if (mLatestUpdate != null) {
-                                mLatestUpdate.onUpdate(list, filterState);
-                            }
-                            break;
-                        case Constants.STATE_TENSE:
-                            if (mLatestUpdate != null) {
-                                mLatestUpdate.onUpdate(list, filterState);
-                            }
-                            break;
-                        case Constants.STATE_DEEP:
-                            if (mLatestUpdate != null) {
-                                mLatestUpdate.onUpdate(list, filterState);
-                            }
-                            break;
-                        case Constants.STATE_LIGHT:
-                            if (mLatestUpdate != null) {
-                                mLatestUpdate.onUpdate(list, filterState);
-                            }
-                            break;
-                    }
-                }
 
-            }
-        }).execute(state, progress);
-    }*/
 
     public void showProgress() {
         ProgressDialog.showDialog(findViewById(R.id.main_progress_bg_iv), findViewById(R.id.main_progress_pb));
@@ -2728,7 +1950,7 @@ mWebView.postDelayed(new Runnable() {
             //  if (hugs.length() >= 0 && hearts.length() >= 0 && me2s.length() >= 0)
 
 
-            mActivityHandler.postDelayed(mActivityRunnable, 5000);
+            mActivityHandler.postDelayed(mActivityRunnable, 2000);
 
             updateTitleBanner(0);
         } catch (Exception e) {
@@ -2821,31 +2043,61 @@ mWebView.postDelayed(new Runnable() {
         startActivity(new Intent(this, StatsActivity.class));
     }
 
- /*   private void fillTrendingData() {
-        new TrendingLoader(new TrendingCallback() {
-            @Override
-            public void onDone() {
-                //loadFeed(Constants.STATE_TRENDING, false);
-            }
-        }).execute();
-    }*/
+
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        try {
 
+            if (is_from_tutorials)
+            {
+                for (int i = 0; i < dotsCount; i++)
+                {
+                    dots[i].setImageDrawable(getResources().getDrawable(R.drawable.nonselecteditem_dot));
+                }
+
+                dots[position].setImageDrawable(getResources().getDrawable(R.drawable.selecteditem_dot));
+
+
+            } else
+            {
+                filter_layout.setVisibility(View.GONE);
+                if (position == 0)
+                {
+                    trending_tab_selected.setVisibility(View.VISIBLE);
+                    happy_tab_selected.setVisibility(View.INVISIBLE);
+                    glimplse_tab_selected.setVisibility(View.INVISIBLE);
+                    seeall_tab_selected.setVisibility(View.INVISIBLE);
+
+                } else if (position == 1) {
+
+                    trending_tab_selected.setVisibility(View.INVISIBLE);
+                    glimplse_tab_selected.setVisibility(View.INVISIBLE);
+                    happy_tab_selected.setVisibility(View.VISIBLE);
+                    seeall_tab_selected.setVisibility(View.INVISIBLE);
+                } else if (position == 2) {
+                    trending_tab_selected.setVisibility(View.INVISIBLE);
+                    glimplse_tab_selected.setVisibility(View.INVISIBLE);
+                    happy_tab_selected.setVisibility(View.INVISIBLE);
+                    seeall_tab_selected.setVisibility(View.VISIBLE);
+                } else if (position == 3) {
+                    trending_tab_selected.setVisibility(View.INVISIBLE);
+                    happy_tab_selected.setVisibility(View.INVISIBLE);
+                    glimplse_tab_selected.setVisibility(View.VISIBLE);
+                    seeall_tab_selected.setVisibility(View.INVISIBLE);
+                }
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onPageSelected(int position) {
-        if (position == 0) {
-            menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        } else {
-            menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-        }
 
-        if (mMainTutorial != null) {
-            mMainTutorial.updateTopTutorials(position);
-        }
+
 
        /* if (position == 1)
         {
@@ -2860,7 +2112,7 @@ mWebView.postDelayed(new Runnable() {
 
     }
 
-    public void replaceFragmentInside(Fragment frag, boolean flag) {
+  /*  public void replaceFragmentInside(Fragment frag, boolean flag) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (flag) {
             transaction.add(R.id.glimpse_container, frag);
@@ -2868,27 +2120,34 @@ mWebView.postDelayed(new Runnable() {
             transaction.add(R.id.happy_glimpse_container, frag);
         }
         transaction.commitAllowingStateLoss();
-    }
+    }*/
 
     public void runMood() {
-       /* ObjectMaker.formTrack(ParseUser.getCurrentUser(),
-                getString(R.string.mood_track), null).saveInBackground();*/
         if (mMoodRunner != null)
             mMoodRunner.runMood();
     }
 
+    public void runRoom() {
+        if (mMoodRunner != null)
+            mMoodRunner.runRoom();
+    }
 
     public void moodAccess() {
         replaceDialog(Constants.ACCESS_MOOD);
     }
 
+
+    public void RoomAccess() {
+        replaceDialog(Constants.ACCESS_ROOM);
+    }
+
+    public void AccessMysecret() {
+        replaceDialog(Constants.ACCESS_MY_SECRETS);
+    }
+
     public void QRAccess() {
 
-       /* if (is_booking || session_left > 0) {
-            replaceDialog(Constants.ACCESS_BOOK_APPONTMENT);
 
-        } else */
-        //{
         String sessions = "";
 
         sessions = AppSession.getValue(ct, Constants.USER_SESSION_LEFT);
@@ -2904,62 +2163,6 @@ mWebView.postDelayed(new Runnable() {
             new ChecUserSession().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
-        /*try {
-            ParseQuery<ParseObject> qrcode = ParseQuery.getQuery("UserSession");
-            qrcode.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-            int qr_count = Preference.getQrcode();
-            if (qr_count > 0)
-                qrcode.whereEqualTo("qid", qr_count);
-
-            qrcode.whereEqualTo("status", "Active");
-
-            qrcode.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-                    try {
-                        if (objects != null && objects.size() > 0) {
-                            ParseObject session_obj = objects.get(objects.size() - 1);
-                            String sessleft = session_obj.getString("sessionleft");
-                            if (sessleft != null && !sessleft.equalsIgnoreCase("")) {
-                                session_left = Integer.parseInt(sessleft);
-                            }
-
-                            if (session_left > 0 || is_booking) {
-                                AgencyId = session_obj.getString("agencyId");
-                                replaceDialog(Constants.ACCESS_BOOK_APPONTMENT);
-                            } else {
-                                session_obj.put("status", "Expire");
-                                ParseACL user_session = new ParseACL();
-                                user_session.setPublicWriteAccess(true);
-                                user_session.setPublicReadAccess(true);
-                                session_obj.setACL(user_session);
-                                session_obj.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        ShowRating();
-
-                                    }
-                                });
-
-                            }
-                        } else {
-                            if (is_booking) {
-                                replaceDialog(Constants.ACCESS_BOOK_APPONTMENT);
-                            } else
-                                ShowRating();
-
-                        }
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-
     }
 
 
@@ -2974,94 +2177,7 @@ mWebView.postDelayed(new Runnable() {
             mLatestUpdate.onCommentsAccess();
     }
 
-    /*private void getfriendname()
-    {
-        try {
-            if (ConnectionDetector.isNetworkAvailable(this))
-            {
-                ParseQuery myQuery1 = new ParseQuery("IFriendRequest");
-                myQuery1.whereEqualTo("sender", ParseUser.getCurrentUser().getUsername());
 
-                ParseQuery myQuery2 = new ParseQuery("IFriendRequest");
-                myQuery2.whereEqualTo("target", ParseUser.getCurrentUser().getUsername());
-
-                List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
-                queries.add(myQuery1);
-                queries.add(myQuery2);
-
-                ParseQuery<ParseObject> mainQuery = ParseQuery.or(queries);
-                mainQuery.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-
-                        if (e == null)
-                        {
-                            if (objects != null && objects.size() > 0)
-                            {
-                                for (int i = 0; i < objects.size(); i++)
-                                {
-                                    ParseObject waiting = objects.get(i);
-                                    senderW = waiting.getString("sender");
-                                    userListNamesOnlyWaiting.add(senderW);
-                                    targetW = waiting.getString("target");
-                                    userListNamesOnlyWaiting.add(targetW);
-
-                                }
-                            }
-                        } else {
-
-                            if (e.getCode() == error_code) {
-                                LoginActivity.CurrentUsername = ParseUser.getCurrentUser().getUsername();
-
-                                if (LoginActivity.CurrentUsername != null && !LoginActivity.CurrentUsername.equalsIgnoreCase("")) {
-
-                                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
-
-
-                                }
-
-                            }
-
-                            System.out.println("Warning fetching ----> " + e.getMessage());
-                        }
-
-
-                    }
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }*/
-
-    public static int chatcount = 0;
-
-
-    Runnable refreshchatcount = new Runnable() {
-        @Override
-        public void run() {
-            try {
-
-
-                chat_count.removeCallbacks(refreshchatcount);
-                chat_count.postDelayed(refreshchatcount, 3000);
-                //getAllUnreadCount();
-                if (chatcount > 0) {
-                    chat_count.setText("" + chatcount);
-                    chat_count.setVisibility(View.VISIBLE);
-                } else
-                    chat_count.setVisibility(View.GONE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    };
 
     @Override
     protected void onStart() {
@@ -3070,14 +2186,6 @@ mWebView.postDelayed(new Runnable() {
 
     }
 
-
-/*    private void getVersionName()
-    {
-
-        new FetchAppVersionFromGooglePlayStore().execute();
-
-
-    }*/
 
     private void updateApp() {
 
@@ -3130,393 +2238,30 @@ mWebView.postDelayed(new Runnable() {
             e.printStackTrace();
         }
     }
-/*
 
-    private void heartAnimation() {
 
-        try {
-            img1 = (ImageView) findViewById(R.id.heart_animation1);
-            TranslateAnimation mAnimation1 = new TranslateAnimation(0, 0, height, -100);
-            mAnimation1.setDuration(5000);
-            mAnimation1.setFillAfter(true);
-            mAnimation1.setRepeatCount(0);
-            img1.setAnimation(mAnimation1);
-            img1.setVisibility(View.VISIBLE);
 
-            img2 = (ImageView) findViewById(R.id.heart_animation2);
-            TranslateAnimation mAnimation2 = new TranslateAnimation(0, 0, height, -100);
-            mAnimation2.setDuration(15000);
-            mAnimation2.setFillAfter(true);
-            mAnimation2.setRepeatCount(0);
-            img2.setAnimation(mAnimation2);
-            img2.setVisibility(View.VISIBLE);
-
-            img3 = (ImageView) findViewById(R.id.heart_animation3);
-            TranslateAnimation mAnimation3 = new TranslateAnimation(0, 0, height, -100);
-            mAnimation3.setDuration(12000);
-            mAnimation3.setFillAfter(true);
-            mAnimation3.setRepeatCount(0);
-            img3.setAnimation(mAnimation3);
-            img3.setVisibility(View.VISIBLE);
-
-            img4 = (ImageView) findViewById(R.id.heart_animation4);
-            TranslateAnimation mAnimation4 = new TranslateAnimation(0, 0, height, -100);
-            mAnimation4.setDuration(20000);
-            mAnimation4.setFillAfter(true);
-            mAnimation4.setRepeatCount(0);
-            img4.setAnimation(mAnimation4);
-            img4.setVisibility(View.VISIBLE);
-
-            img5 = (ImageView) findViewById(R.id.heart_animation5);
-            TranslateAnimation mAnimation5 = new TranslateAnimation(0, 0, height, -100);
-            mAnimation5.setDuration(25000);
-            mAnimation5.setFillAfter(true);
-            mAnimation5.setRepeatCount(0);
-            img5.setAnimation(mAnimation5);
-            img5.setVisibility(View.VISIBLE);
-
-            img6 = (ImageView) findViewById(R.id.heart_animation6);
-            TranslateAnimation mAnimation6 = new TranslateAnimation(0, 0, height, -100);
-            mAnimation6.setDuration(25000);
-            mAnimation6.setFillAfter(true);
-            mAnimation6.setRepeatCount(0);
-            img6.setAnimation(mAnimation6);
-            img6.setVisibility(View.VISIBLE);
-
-            img7 = (ImageView) findViewById(R.id.heart_animation7);
-            TranslateAnimation mAnimation7 = new TranslateAnimation(0, 0, height, -100);
-            mAnimation7.setDuration(13000);
-            mAnimation7.setFillAfter(true);
-            mAnimation7.setRepeatCount(0);
-            img7.setAnimation(mAnimation7);
-            img7.setVisibility(View.VISIBLE);
-
-            img8 = (ImageView) findViewById(R.id.heart_animation8);
-            TranslateAnimation mAnimation8 = new TranslateAnimation(0, 0, height, -100);
-            mAnimation8.setDuration(30000);
-            mAnimation8.setFillAfter(true);
-            mAnimation8.setRepeatCount(0);
-            img8.setAnimation(mAnimation8);
-            img8.setVisibility(View.VISIBLE);
-
-            if (runAnime != null) {
-                runAnime.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            heartAnimation();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, 300000);
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-*/
-
-
-    private int show(String time) {
-        int day = 0;
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
-
-
-            Date Date1 = format.parse(CommonFunction.getdate() + " " + CommonFunction.gettime());
-            Date Date2 = format.parse(time);
-            long mills = Date1.getTime() - Date2.getTime();
-            long Day1 = mills / (1000 * 60 * 60);
-
-            day = (int) Day1 / 24;
-            //  long Mins = mills / (1000 * 60  );
-
-
-            if (day < 0)
-                day = 0;
-
-
-            //  diff =""+day;
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return day;
-    }
-
-/*
-    private void getAppintment() {
-        try {
-
-
-
-            ParseQuery qrcode1 = ParseQuery.getQuery("Appointment");
-            qrcode1.whereEqualTo("Userid", ParseUser.getCurrentUser().getObjectId());
-            qrcode1.whereEqualTo("Status", "Pending");
-
-            ParseQuery qrcode = ParseQuery.getQuery("Appointment");
-            qrcode.whereEqualTo("Userid", ParseUser.getCurrentUser().getObjectId());
-            qrcode.whereEqualTo("Status", "Accepted");
-            List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
-
-            queries.add(qrcode);
-            queries.add(qrcode1);
-
-            ParseQuery<ParseObject> mainQuery = ParseQuery.or(queries);
-
-
-            mainQuery.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-                    try {
-
-                        if (e == null) {
-                            if (objects != null && objects.size() > 0) {
-                                is_booking = true;
-
-                            }
-
-                        } else {
-                            if (e.getCode() == error_code) {
-                                LoginActivity.CurrentUsername = ParseUser.getCurrentUser().getUsername();
-
-                                if (LoginActivity.CurrentUsername != null && !LoginActivity.CurrentUsername.equalsIgnoreCase("")) {
-
-                                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
-
-
-                                }
-
-                            }
-                        }
-
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-*/
-
-    /*private void getMyVerification() {
-
-        new FlaggedReviewLoader(new VerifyCallback() {
-            @Override
-            public void onUpdate(boolean result) {
-                if (!result) {
-                    new VerifyReviewLoader(new VerifyCallback() {
-                        @Override
-                        public void onUpdate(boolean result) {
-
-                            if (result) {
-                                isIAMVerified = true;
-                            } else {
-                                isIAMVerified = false;
-                            }
-                        }
-                    }).execute(ParseUser.getCurrentUser().getObjectId());
-                }
-            }
-        }).execute();
-    }*/
-
-
-/*
-    private void onLineUser() {
-
-
-        ParseQuery onlinequery = new ParseQuery("OnlineUser");
-        onlinequery.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-        onlinequery.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null) {
-                    try {
-                        if (objects != null && objects.size() > 0) {
-
-
-                            ParseObject online = objects.get(objects.size() - 1);
-                            online.put("keep_alive", "true");
-                            online.put("username", ParseUser.getCurrentUser().getUsername());
-
-                            ParseACL acl = new ParseACL();
-                            acl.setPublicReadAccess(true);
-                            acl.setPublicWriteAccess(true);
-                            online.setACL(acl);
-
-                            online.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-
-                                }
-                            });
-
-
-                        } else {
-                            ParseObject online = new ParseObject("OnlineUser");
-                            online.put("keep_alive", "true");
-                            online.put("username", ParseUser.getCurrentUser().getUsername());
-
-                            ParseACL acl = new ParseACL();
-                            acl.setPublicReadAccess(true);
-                            acl.setPublicWriteAccess(true);
-                            online.setACL(acl);
-
-                            online.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-
-                                }
-                            });
-                        }
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-
-
-                } else {
-                    e.printStackTrace();
-                }
-
-            }
-
-        });
-
-*/
-/*
-        if (runAnime != null) {
-            try {
-                runAnime.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            onLineUser();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, 240000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }*//*
-
-
-    }
-*/
-
-/*
-    private void deviceToken() {
-        if (deviceTOken != null && !deviceTOken.equalsIgnoreCase("")) {
-            ParseQuery<ParseObject> devicetoken1 = ParseQuery.getQuery("UserToken");
-            devicetoken1.whereEqualTo("imei", imei_numer);
-
-            ParseQuery<ParseObject> devicetoken2 = ParseQuery.getQuery("UserToken");
-            devicetoken2.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-
-            List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
-            queries.add(devicetoken1);
-            queries.add(devicetoken2);
-
-            ParseQuery<ParseObject> mainQuery = ParseQuery.or(queries);
-
-            mainQuery.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-
-                    if (e == null) {
-                        try {
-                            if (objects != null && objects.size() > 0) {
-                                final ParseObject devicetokenalready = objects.get(objects.size() - 1);
-                                devicetokenalready.put("devicetoken", deviceTOken);
-                                devicetokenalready.put("deviceType", "android");
-                                devicetokenalready.put("imei", imei_numer);
-                                devicetokenalready.put("username", ParseUser.getCurrentUser().getUsername());
-                                ParseACL acl = new ParseACL();
-                                acl.setPublicReadAccess(true);
-                                acl.setPublicWriteAccess(true);
-                                devicetokenalready.setACL(acl);
-
-                                devicetokenalready.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-
-                                    }
-                                });
-                            } else {
-                                final ParseObject devicetokennew = new ParseObject("UserToken");
-                                devicetokennew.put("devicetoken", deviceTOken);
-                                devicetokennew.put("deviceType", "android");
-                                devicetokennew.put("imei", imei_numer);
-                                devicetokennew.put("username", ParseUser.getCurrentUser().getUsername());
-
-                                ParseACL acl = new ParseACL();
-                                acl.setPublicReadAccess(true);
-                                acl.setPublicWriteAccess(true);
-                                devicetokennew.setACL(acl);
-
-                                devicetokennew.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-
-
-                                    }
-                                });
-                            }
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-
-                    } else {
-                        e.printStackTrace();
-                    }
-                }
-
-            });
-        }
-    }
-
-*/
-
-    String deduction_date_string = "";
 
 
     int select_index = -1;
 
     private void drawpetlist() {
 
+        pet_layout.setVisibility(View.VISIBLE);
         pet_main_layout.removeAllViews();
         int[] petimagearray = {R.drawable.monkey_face, R.drawable.panda_face,
                 R.drawable.horse_face, R.drawable.rabbit_face,
                 R.drawable.donkey_face, R.drawable.sheep_face,
                 R.drawable.deer_face, R.drawable.tiger_face,
-                R.drawable.parrot_face, R.drawable.meerkat_face ,
-                R.drawable.mermain_face, R.drawable.cat_face ,
-                R.drawable.dog_face,R.drawable.unicorn_face,
-        R.drawable.dragon_face,R.drawable.dynasore_face,
+                R.drawable.parrot_face, R.drawable.meerkat_face,
+                R.drawable.mermain_face, R.drawable.cat_face,
+                R.drawable.dog_face, R.drawable.unicorn_face,
+                R.drawable.dragon_face, R.drawable.dynasore_face,
                 R.drawable.starfish_face};
 
 
-
-
         final List<LinearLayout> petrowlayoutlist = new ArrayList<>();
-        for (int i = 0; i < petimagearray.length; i++)
-        {
+        for (int i = 0; i < petimagearray.length; i++) {
             LinearLayout petrowlayout = new LinearLayout(ct);
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, width / 6);
@@ -3569,443 +2314,6 @@ mWebView.postDelayed(new Runnable() {
         }
     }
 
-/*
-
-    private void Getsessionleft() {
-        ParseQuery<ParseObject> qrcode = ParseQuery.getQuery("UserSession");
-        qrcode.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-        qrcode.whereEqualTo("status", "Active");
-        final int qr_count = Preference.getQrcode();
-
-        if (qr_count > 0)
-            qrcode.whereEqualTo("qid", qr_count);
-
-
-        qrcode.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                try {
-                    if (objects != null && objects.size() > 0) {
-                        ParseObject session_obj = objects.get(objects.size() - 1);
-                        String sessleft = session_obj.getString("sessionleft");
-                        if (sessleft != null && !sessleft.equalsIgnoreCase("")) {
-                            session_left = Integer.parseInt(sessleft);
-
-                            AgencyId = session_obj.getString("agencyId");
-
-                            if (qr_count >= 0) {
-                                int qrcode = session_obj.getInt("qid");
-                                if (qrcode > 0) {
-                                    Preference.setQrcode(qrcode);
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-
-            }
-        });
-    }
-*/
-
-/*
-    private static void getme2count() {
-
-        try {
-            if (ParseUser.getCurrentUser().get(Constants.USER_HELP_DATE) == null) {
-                Calendar nextday = Calendar.getInstance();
-                nextday.add(Calendar.DAY_OF_MONTH, -1);
-                Date date = nextday.getTime();
-                ParseQuery<ParseObject> me2quesry = ParseQuery.getQuery(Constants.ME2_CLASS);
-                me2quesry.include("receivingUser");
-                me2quesry.whereEqualTo("user", ParseUser.getCurrentUser());
-                me2quesry.whereGreaterThanOrEqualTo("createdAt", date);
-
-
-                me2quesry.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null) {
-
-                            try {
-                                if (objects != null && objects.size() > 0) {
-                                    for (int i = 0; i < objects.size(); i++) {
-                                        ParseObject objCount = objects.get(i);
-
-                                        ParseUser objUser = objCount.getParseUser("receivingUser");
-                                        String strUserName = objUser.getUsername();
-
-                                        if (users != null && !users.contains(strUserName)) {
-                                            users.add(strUserName);
-                                        }
-                                    }
-
-                                    getheartcount();
-                                } else {
-                                    getheartcount();
-                                }
-                            } catch (Exception e2) {
-                                e2.printStackTrace();
-                            }
-
-                        } else {
-                            getheartcount();
-                        }
-                    }
-
-                    ;
-                });
-            } else {
-
-                Calendar nextday = Calendar.getInstance();
-                nextday.setTime(ParseUser.getCurrentUser().getDate(Constants.USER_HELP_DATE));
-                nextday.add(Calendar.DAY_OF_MONTH, 1);
-                Date date = nextday.getTime();
-
-                ParseQuery<ParseObject> me2quesry = ParseQuery.getQuery(Constants.ME2_CLASS);
-                me2quesry.include("receivingUser");
-                me2quesry.whereEqualTo("user", ParseUser.getCurrentUser());
-                me2quesry.whereGreaterThanOrEqualTo("createdAt", date);
-
-
-                me2quesry.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null) {
-
-                            try {
-                                if (objects != null && objects.size() > 0) {
-                                    for (int i = 0; i < objects.size(); i++) {
-                                        ParseObject objCount = objects.get(i);
-                                        ParseUser objUser = objCount.getParseUser("receivingUser");
-                                        String strUserName = objUser.getUsername();
-
-                                        if (users != null && !users.contains(strUserName)) {
-                                            users.add(strUserName);
-                                        }
-                                    }
-                                    getheartcount();
-                                } else {
-                                    getheartcount();
-                                }
-                            } catch (Exception e2) {
-                                e2.printStackTrace();
-                            }
-
-                        } else {
-                            getheartcount();
-                        }
-                    }
-
-                    ;
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-
-    private static void getheartcount() {
-
-        try {
-            if (ParseUser.getCurrentUser().get(Constants.USER_HELP_DATE) == null) {
-                Calendar nextday = Calendar.getInstance();
-                nextday.add(Calendar.DAY_OF_MONTH, -1);
-                Date date = nextday.getTime();
-                ParseQuery<ParseObject> me2quesry = ParseQuery.getQuery(Constants.HEART_CLASS);
-                me2quesry.include("receivingUser");
-                me2quesry.whereEqualTo("user", ParseUser.getCurrentUser());
-                me2quesry.whereGreaterThanOrEqualTo("createdAt", date);
-
-
-                me2quesry.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null) {
-
-                            try {
-                                if (objects != null && objects.size() > 0) {
-                                    for (int i = 0; i < objects.size(); i++) {
-                                        ParseObject objCount = objects.get(i);
-
-                                        // Date createddate = objCount.getCreatedAt();
-                                        ParseUser objUser = objCount.getParseUser("receivingUser");
-                                        String strUserName = objUser.getUsername();
-
-                                        if (users != null && !users.contains(strUserName)) {
-                                            users.add(strUserName);
-                                        }
-                                    }
-                                    gethugcount();
-                                } else {
-                                    gethugcount();
-                                }
-                            } catch (Exception e2) {
-                                e2.printStackTrace();
-                            }
-
-                        } else {
-                            gethugcount();
-                        }
-                    }
-
-                    ;
-                });
-            } else {
-
-                Calendar nextday = Calendar.getInstance();
-                nextday.setTime(ParseUser.getCurrentUser().getDate(Constants.USER_HELP_DATE));
-                nextday.add(Calendar.DAY_OF_MONTH, 1);
-                Date date = nextday.getTime();
-
-                ParseQuery<ParseObject> me2quesry = ParseQuery.getQuery(Constants.HEART_CLASS);
-                me2quesry.include("receivingUser");
-                me2quesry.whereEqualTo("user", ParseUser.getCurrentUser());
-                me2quesry.whereGreaterThanOrEqualTo("updatedAt", date);
-
-
-                me2quesry.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null) {
-
-                            try {
-                                if (objects != null && objects.size() > 0) {
-                                    for (int i = 0; i < objects.size(); i++) {
-                                        ParseObject objCount = objects.get(i);
-                                        ParseUser objUser = objCount.getParseUser("receivingUser");
-                                        String strUserName = objUser.getUsername();
-
-                                        if (users != null && !users.contains(strUserName)) {
-                                            users.add(strUserName);
-                                        }
-                                    }
-                                    gethugcount();
-                                } else {
-                                    gethugcount();
-                                }
-                            } catch (Exception e2) {
-                                e2.printStackTrace();
-                            }
-
-                        } else {
-                            gethugcount();
-                        }
-                    }
-
-                    ;
-                });
-
-            }
-        } catch (Exception e) {
-
-
-        }
-
-
-    }
-
-
-    private static void gethugcount() {
-        try {
-            if (ParseUser.getCurrentUser().get(Constants.USER_HELP_DATE) == null) {
-                Calendar nextday = Calendar.getInstance();
-                nextday.add(Calendar.DAY_OF_MONTH, -1);
-                Date date = nextday.getTime();
-                ParseQuery<ParseObject> me2quesry = ParseQuery.getQuery(Constants.HUG_CLASS);
-                me2quesry.include("receivingUser");
-                me2quesry.whereEqualTo("user", ParseUser.getCurrentUser());
-                me2quesry.whereGreaterThanOrEqualTo("createdAt", date);
-
-                me2quesry.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null) {
-
-                            try {
-                                if (objects != null && objects.size() > 0) {
-                                    for (int i = 0; i < objects.size(); i++) {
-                                        ParseObject objCount = objects.get(i);
-
-
-                                        ParseUser objUser = objCount.getParseUser("receivingUser");
-                                        String strUserName = objUser.getUsername();
-
-                                        if (users != null && !users.contains(strUserName)) {
-                                            users.add(strUserName);
-                                        }
-                                    }
-                                    getCommentcountcount();
-                                } else {
-                                    getCommentcountcount();
-                                }
-                            } catch (Exception e2) {
-                                e2.printStackTrace();
-                            }
-
-
-                        } else {
-                            getCommentcountcount();
-                        }
-                    }
-
-                    ;
-                });
-            } else {
-
-                Calendar nextday = Calendar.getInstance();
-                nextday.setTime(ParseUser.getCurrentUser().getDate(Constants.USER_HELP_DATE));
-                nextday.add(Calendar.DAY_OF_MONTH, 1);
-                Date date = nextday.getTime();
-
-                ParseQuery<ParseObject> me2quesry = ParseQuery.getQuery(Constants.HUG_CLASS);
-                me2quesry.include("receivingUser");
-                me2quesry.whereEqualTo("user", ParseUser.getCurrentUser());
-                me2quesry.whereGreaterThanOrEqualTo("createdAt", date);
-
-                me2quesry.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null) {
-
-                            try {
-                                if (objects != null && objects.size() > 0) {
-                                    for (int i = 0; i < objects.size(); i++) {
-                                        ParseObject objCount = objects.get(i);
-                                        ParseUser objUser = objCount.getParseUser("receivingUser");
-                                        String strUserName = objUser.getUsername();
-                                        if (users != null && !users.contains(strUserName)) {
-                                            users.add(strUserName);
-                                        }
-                                    }
-                                    getCommentcountcount();
-                                } else {
-                                    getCommentcountcount();
-                                }
-                            } catch (Exception e2) {
-                                e2.printStackTrace();
-                            }
-
-                        } else {
-                            getCommentcountcount();
-                        }
-                    }
-
-                    ;
-                });
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    private static void getCommentcountcount() {
-
-        try {
-            if (ParseUser.getCurrentUser().get(Constants.USER_HELP_DATE) == null) {
-                Calendar nextday = Calendar.getInstance();
-                nextday.add(Calendar.DAY_OF_MONTH, -1);
-                Date date = nextday.getTime();
-                ParseQuery<ParseObject> me2quesry = ParseQuery.getQuery(Constants.COMMENTS_CLASS);
-                me2quesry.include("secret");
-                me2quesry.whereEqualTo("user", ParseUser.getCurrentUser());
-                me2quesry.whereGreaterThanOrEqualTo("createdAt", date);
-
-                me2quesry.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null) {
-
-                            try {
-                                if (objects != null && objects.size() > 0) {
-                                    for (int i = 0; i < objects.size(); i++) {
-                                        ParseObject objCount = objects.get(i);
-
-
-                                        // NSString *strUserName = objSecret[@"createdByUser"];
-
-                                        ParseObject objUser = objCount.getParseObject("secret");
-                                        String strUserName = objUser.getString("createdByUser");
-
-
-                                        if (users != null && !users.contains(strUserName)) {
-                                            users.add(strUserName);
-                                        }
-                                    }
-
-                                }
-                            } catch (Exception e2) {
-                                e2.printStackTrace();
-                            }
-
-
-                        }
-                    }
-
-                    ;
-                });
-            } else {
-
-                Calendar nextday = Calendar.getInstance();
-                nextday.setTime(ParseUser.getCurrentUser().getDate(Constants.USER_HELP_DATE));
-                nextday.add(Calendar.DAY_OF_MONTH, 1);
-                Date date = nextday.getTime();
-
-                ParseQuery<ParseObject> me2quesry = ParseQuery.getQuery(Constants.COMMENTS_CLASS);
-                me2quesry.include("receivingUser");
-                me2quesry.whereEqualTo("user", ParseUser.getCurrentUser());
-                me2quesry.whereGreaterThanOrEqualTo("createdAt", date);
-
-                me2quesry.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null) {
-
-                            try {
-                                if (objects != null && objects.size() > 0) {
-                                    for (int i = 0; i < objects.size(); i++) {
-                                        ParseObject objCount = objects.get(i);
-                                        ParseUser objUser = objCount.getParseUser("receivingUser");
-                                        String strUserName = objUser.getUsername();
-                                        if (users != null && !users.contains(strUserName)) {
-                                            users.add(strUserName);
-                                        }
-                                    }
-
-                                }
-                            } catch (Exception e2) {
-                                e2.printStackTrace();
-                            }
-
-                        }
-                    }
-
-                    ;
-                });
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-*/
 
 
     private class Getallfriend extends android.os.AsyncTask<String, String, Bitmap> {
@@ -4044,7 +2352,6 @@ mWebView.postDelayed(new Runnable() {
                 response = http.Getallfriedname(allIfriendobjectDTO);
 
 
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -4054,12 +2361,10 @@ mWebView.postDelayed(new Runnable() {
         protected void onPostExecute(Bitmap image) {
 
             try {
-                if(stataicObjectDTO!= null && stataicObjectDTO.getiFriendSettingDTO()!= null)
-                {
+                if (stataicObjectDTO != null && stataicObjectDTO.getiFriendSettingDTO() != null) {
                     if (!Preference.getUserDisclaimer())
                         disclaimer_layout.setVisibility(View.VISIBLE);
-                    else
-                    {
+                    else {
 
                         String safeguard_date = AppSession.getValue(ct, Constants.USER_SAFE_GUARD);
                         if (safeguard_date != null && !safeguard_date.equalsIgnoreCase("")) {
@@ -4077,8 +2382,7 @@ mWebView.postDelayed(new Runnable() {
 
 
                 }
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -4156,34 +2460,16 @@ mWebView.postDelayed(new Runnable() {
     private void ShowPetStatus() {
 
         try {
-            petlayout.setVisibility(View.VISIBLE);
-
-            String hhug_food = MainActivity.petAvtarInfoDTO.getHug_oxygen();
-            if (hhug_food != null && !hhug_food.equalsIgnoreCase("") && !hhug_food.equalsIgnoreCase("null")) {
-                oxygen = Integer.parseInt(hhug_food);
-            }
-            String hheart_food = MainActivity.petAvtarInfoDTO.getHeart_food();
-            if (hheart_food != null && !hheart_food.equalsIgnoreCase("") && !hheart_food.equalsIgnoreCase("null")) {
-                food = Integer.parseInt(hheart_food);
-            }
-            String hme_water = MainActivity.petAvtarInfoDTO.getM2_water();
-            if (hme_water != null && !hme_water.equalsIgnoreCase("") && !hme_water.equalsIgnoreCase("null")) {
-                water = Integer.parseInt(hme_water);
-            }
-
-
-            water_progress.setProgress(water);
-            food_progress.setProgress(food);
 
 
             int[] petimagearray = {R.drawable.monkey_face, R.drawable.panda_face,
                     R.drawable.horse_face, R.drawable.rabbit_face,
                     R.drawable.donkey_face, R.drawable.sheep_face,
                     R.drawable.deer_face, R.drawable.tiger_face,
-                    R.drawable.parrot_face, R.drawable.meerkat_face ,
-                    R.drawable.mermain_face, R.drawable.cat_face ,
-                    R.drawable.dog_face,R.drawable.unicorn_face,
-                    R.drawable.dragon_face,R.drawable.dynasore_face,
+                    R.drawable.parrot_face, R.drawable.meerkat_face,
+                    R.drawable.mermain_face, R.drawable.cat_face,
+                    R.drawable.dog_face, R.drawable.unicorn_face,
+                    R.drawable.dragon_face, R.drawable.dynasore_face,
                     R.drawable.starfish_face};
 
 
@@ -4195,10 +2481,8 @@ mWebView.postDelayed(new Runnable() {
             }
 
 
-            // }
+            oxygenlevel.setBackgroundResource(R.drawable.circle_shape9);
 
-            int oxyzen = (int) oxygen / 10;
-            oxygenlevel.setBackgroundColor(Color.parseColor(colorsking[oxyzen - 1]));
 
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -4208,390 +2492,8 @@ mWebView.postDelayed(new Runnable() {
 
     static SetVerifyFlagConditionDTO setVerifyFlagConditionDTO = null;
 
-    static ScratchCoupondataDTO scratchCoupondataDTO = null;
 
-    public static void showscratchview(final String objectid) {
-        try {
 
-            int comments_scratch = 0;
-
-            if (comments_count > 0)
-                comments_scratch = comments_count ;
-
-
-            try {
-                scratch_count = Integer.parseInt(MainActivity.petAvtarInfoDTO.getScratch_count());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-            if (scratch_count < 5 + comments_scratch) {
-
-                //  coupon_image = coupon_imag;
-                String[] mehuglike = {"oxygen", "food", "water"};
-
-                scratch_layout.setVisibility(View.VISIBLE);
-                scratchtextview.removeAllViews();
-                final ScratchTextView scratchText = new ScratchTextView(ct);
-
-                final int state = PendingIFriendsAdapter.randInt(0, 3) % 3;
-
-                scratchText.setText("You get 10% " + mehuglike[state] + " in bonus");
-                scratchText.setGravity(Gravity.CENTER);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, width1 / 8);
-                scratchText.setLayoutParams(lp);
-                scratchtextview.addView(scratchText);
-                scratchText.setTextSize(16);
-                cancelscratch.setBackgroundColor(Color.parseColor("#fe8940"));
-                cancelscratch.setText("Cancel");
-
-                scratchText.setRevealListener(new ScratchTextView.IRevealListener() {
-                    @Override
-                    public void onRevealed(ScratchTextView tv) {
-                        scratch_count++;
-                        if (scratchscretid != null)
-                            scratchscretid.add(objectid);
-                        //secret.setShowCoupon(2);
-                        switch (state) {
-                            case Constants.INCREASEOXYGEN:
-                                try {
-                                    scratch_layout.setVisibility(View.GONE);
-
-                                    int hug_oxygen = 10;
-                                    if (MainActivity.petAvtarInfoDTO != null) {
-                                        try {
-                                            String hhug_food = MainActivity.petAvtarInfoDTO.getHug_oxygen();
-                                            if (hhug_food != null && !hhug_food.equalsIgnoreCase("") && !hhug_food.equalsIgnoreCase("null")) {
-                                                hug_oxygen = Integer.parseInt(hhug_food);
-                                                if (hug_oxygen <= 90)
-                                                    hug_oxygen = hug_oxygen + 10;
-
-
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        MainActivity.petAvtarInfoDTO.setHug_oxygen("" + hug_oxygen);
-                                        CommonFunction.oxygen_maintain();
-
-                                        String total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
-                                        int total_scrcount = 0;
-                                        try {
-                                            if (total_count != null && !total_count.equalsIgnoreCase("")) {
-                                                total_scrcount = Integer.parseInt(total_count);
-                                                total_scrcount = total_scrcount + 1;
-                                            }
-
-                                            MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
-                                        } catch (Exception e) {
-                                            MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
-                                            total_scrcount = 1;
-                                            e.printStackTrace();
-                                        }
-
-
-                                        String scrat_count = MainActivity.petAvtarInfoDTO.getScratch_count();
-                                        int scr_scrcount = 0;
-                                        try {
-                                            if (scrat_count != null && !scrat_count.equalsIgnoreCase("")) {
-                                                scr_scrcount = Integer.parseInt(scrat_count);
-                                                scr_scrcount = scr_scrcount + 1;
-                                            }
-
-                                            MainActivity.petAvtarInfoDTO.setScratch_count("" + scr_scrcount);
-                                        } catch (Exception e) {
-                                            scr_scrcount = 1;
-                                            MainActivity.petAvtarInfoDTO.setScratch_count("1");
-                                            e.printStackTrace();
-                                        }
-
-                                        scratchCoupondataDTO = new ScratchCoupondataDTO(enc_username, "hug_oxygen", "" + hug_oxygen, "" + total_scrcount, "" + scr_scrcount);
-                                        new UpdateAvtarPercentage().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                                    }
-
-                                    new ParticleSystem(((Activity) ct), 1000, R.drawable.star_pink, 1500)
-                                            .setSpeedRange(0.1f, 0.25f)
-                                            .setRotationSpeedRange(90, 180)
-                                            .setInitialRotationRange(0, 360)
-                                            .oneShot(scratchText, 300);
-
-                                    scratchText.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            new ParticleSystem(((Activity) ct), 100, R.drawable.star_white, 1500)
-                                                    .setSpeedRange(0.1f, 0.25f)
-                                                    .setRotationSpeedRange(90, 180)
-                                                    .setInitialRotationRange(0, 360)
-                                                    .oneShot(scratchText, 100);
-
-                                        }
-                                    }, 150);
-
-                                    scratchText.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            new ParticleSystem(((Activity) ct), 100, R.drawable.staricon, 1500)
-                                                    .setSpeedRange(0.1f, 0.25f)
-                                                    .setRotationSpeedRange(90, 180)
-                                                    .setInitialRotationRange(0, 360)
-                                                    .oneShot(scratchText, 100);
-                                        }
-                                    }, 300);
-
-
-                                    // cancelscratch.setBackgroundColor(Color.parseColor("#45b39c"));
-                                    //cancelscratch.setText("Done");
-
-                                    //FeedAdapter.mDataList.get(position).setShowCoupon(2);
-
-                                    Tracker t = ((SilentSecretApplication) ct).getTracker(
-                                            SilentSecretApplication.TrackerName.APP_TRACKER);
-                                    t.setScreenName(MainActivity.ct.getString(R.string.analytics_Scratch));
-                                    t.send(new HitBuilders.AppViewBuilder().build());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                                break;
-                            case Constants.INCREASEFOOD:
-                                try {
-                                    scratch_layout.setVisibility(View.GONE);
-                                    new ParticleSystem(((Activity) ct), 100, R.drawable.star_pink, 1500)
-                                            .setSpeedRange(0.1f, 0.25f)
-                                            .setRotationSpeedRange(90, 180)
-                                            .setInitialRotationRange(0, 360)
-                                            .oneShot(scratchText, 100);
-
-
-                                    scratchText.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            new ParticleSystem(((Activity) ct), 100, R.drawable.star_white, 1500)
-                                                    .setSpeedRange(0.1f, 0.25f)
-                                                    .setRotationSpeedRange(90, 180)
-                                                    .setInitialRotationRange(0, 360)
-                                                    .oneShot(scratchText, 100);
-
-                                        }
-                                    }, 150);
-
-                                    scratchText.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            new ParticleSystem(((Activity) ct), 100, R.drawable.staricon, 1500)
-                                                    .setSpeedRange(0.1f, 0.25f)
-                                                    .setRotationSpeedRange(90, 180)
-                                                    .setInitialRotationRange(0, 360)
-                                                    .oneShot(scratchText, 100);
-                                        }
-                                    }, 300);
-
-
-                                    int heart_food = 10;
-                                    if (MainActivity.petAvtarInfoDTO != null) {
-                                        try {
-                                            String hheart_food = MainActivity.petAvtarInfoDTO.getHeart_food();
-                                            if (hheart_food != null && !hheart_food.equalsIgnoreCase("") && !hheart_food.equalsIgnoreCase("null")) {
-                                                heart_food = Integer.parseInt(hheart_food);
-                                                if (heart_food <= 90)
-                                                    heart_food = heart_food + 10;
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        MainActivity.petAvtarInfoDTO.setHeart_food("" + heart_food);
-                                        CommonFunction.food_maintain();
-
-                                        String total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
-                                        int total_scrcount = 0;
-                                        try {
-                                            if (total_count != null && !total_count.equalsIgnoreCase("")) {
-                                                total_scrcount = Integer.parseInt(total_count);
-                                                total_scrcount = total_scrcount + 1;
-                                            }
-
-                                            MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
-                                        } catch (Exception e) {
-                                            total_scrcount = 1;
-                                            MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
-                                            e.printStackTrace();
-                                        }
-
-
-                                        String scrat_count = MainActivity.petAvtarInfoDTO.getScratch_count();
-                                        int scr_scrcount = 0;
-                                        try {
-                                            if (scrat_count != null && !scrat_count.equalsIgnoreCase("")) {
-                                                scr_scrcount = Integer.parseInt(scrat_count);
-                                                scr_scrcount = scr_scrcount + 1;
-                                            }
-
-                                            MainActivity.petAvtarInfoDTO.setScratch_count("" + scr_scrcount);
-                                        } catch (Exception e) {
-                                            MainActivity.petAvtarInfoDTO.setScratch_count("1");
-                                            scr_scrcount = 1;
-                                            e.printStackTrace();
-                                        }
-
-
-                                        scratchCoupondataDTO = new ScratchCoupondataDTO(enc_username, "heart_food", "" + heart_food, "" + total_scrcount, "" + scr_scrcount);
-                                        new UpdateAvtarPercentage().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                                    }
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                                break;
-                            case Constants.INCREASEWATER:
-                                try {
-                                    scratch_layout.setVisibility(View.GONE);
-                                    new ParticleSystem(((Activity) ct), 100, R.drawable.star_pink, 1500)
-                                            .setSpeedRange(0.1f, 0.25f)
-                                            .setRotationSpeedRange(90, 180)
-                                            .setInitialRotationRange(0, 360)
-                                            .oneShot(scratchText, 100);
-                                    scratchText.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            new ParticleSystem(((Activity) ct), 100, R.drawable.star_white, 1500)
-                                                    .setSpeedRange(0.1f, 0.25f)
-                                                    .setRotationSpeedRange(90, 180)
-                                                    .setInitialRotationRange(0, 360)
-                                                    .oneShot(scratchText, 100);
-                                        }
-                                    }, 150);
-
-                                    scratchText.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            new ParticleSystem(((Activity) ct), 100, R.drawable.staricon, 1500)
-                                                    .setSpeedRange(0.1f, 0.25f)
-                                                    .setRotationSpeedRange(90, 180)
-                                                    .setInitialRotationRange(0, 360)
-                                                    .oneShot(scratchText, 100);
-                                        }
-                                    }, 300);
-
-
-                                    int water = 10;
-                                    if (MainActivity.petAvtarInfoDTO != null) {
-                                        try {
-                                            String me2_water = MainActivity.petAvtarInfoDTO.getM2_water();
-                                            if (me2_water != null && !me2_water.equalsIgnoreCase("") && !me2_water.equalsIgnoreCase("null")) {
-                                                water = Integer.parseInt(me2_water);
-                                                if (water <= 90)
-                                                    water = water + 10;
-
-
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        MainActivity.petAvtarInfoDTO.setM2_water("" + water);
-                                        CommonFunction.water_maintain();
-
-
-                                        String total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
-                                        int total_scrcount = 0;
-                                        try {
-                                            if (total_count != null && !total_count.equalsIgnoreCase("")) {
-                                                total_scrcount = Integer.parseInt(total_count);
-                                                total_scrcount = total_scrcount + 1;
-                                            }
-
-                                            MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
-                                        } catch (Exception e) {
-                                            MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
-                                            e.printStackTrace();
-                                            total_scrcount = 1;
-                                        }
-
-                                        String scrat_count = MainActivity.petAvtarInfoDTO.getScratch_count();
-                                        int scr_scrcount = 0;
-                                        try {
-                                            if (scrat_count != null && !scrat_count.equalsIgnoreCase("")) {
-                                                scr_scrcount = Integer.parseInt(scrat_count);
-                                                scr_scrcount = scr_scrcount + 1;
-                                            }
-
-                                            MainActivity.petAvtarInfoDTO.setScratch_count("" + scr_scrcount);
-                                        } catch (Exception e) {
-                                            MainActivity.petAvtarInfoDTO.setScratch_count("1");
-                                            scr_scrcount = 1;
-                                            e.printStackTrace();
-                                        }
-
-                                        scratchCoupondataDTO = new ScratchCoupondataDTO(enc_username, "m2_water", "" + water, "" + total_scrcount, "" + scr_scrcount);
-                                        new UpdateAvtarPercentage().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                                    }
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                                break;
-                        }
-
-
-                        try {
-                            if (scratch_count == 1) {
-                                AlertDialog.Builder updateAlert = new AlertDialog.Builder(ct);
-                                updateAlert.setIcon(R.drawable.ic_launcher);
-                                updateAlert.setTitle("Cypher");
-                                updateAlert.setMessage("Leave comments on posts to increase pet water");
-                                updateAlert.setPositiveButton(
-                                        "Ok",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.cancel();
-                                            }
-                                        });
-                                AlertDialog alertUp = updateAlert.create();
-                                alertUp.setCanceledOnTouchOutside(false);
-                                alertUp.show();
-                            }
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        // Toast.makeText(ct, "Revealed!", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onRevealPercentChangedListener(ScratchTextView stv, float percent) {
-                        if (is_scratch_anim_done) {
-                            is_scratch_anim_done = false;
-                            scratchText.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    is_scratch_anim_done = true;
-                                    new ParticleSystem(((Activity) ct), 50, R.drawable.staricon2, 500)
-                                            .setSpeedRange(0.1f, 0.25f)
-                                            .setRotationSpeedRange(90, 180)
-                                            .setInitialRotationRange(0, 360)
-                                            .oneShot(scratchText, 20);
-                                }
-                            }, 10);
-                        }
-                    }
-                });
-
-            } else {
-                Toast.makeText(ct, "Sorry!, Your today's maximum scratch limit exceeded", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    static boolean is_scratch_anim_done = true;
 
     private void Ratingoopup() {
         try {
@@ -4659,87 +2561,25 @@ mWebView.postDelayed(new Runnable() {
 
 
 
-/*    private void Getflagunflag()
+
+
+    private void checkpost()
     {
-        ParseQuery<ParseObject> verifiedtable = ParseQuery.getQuery("Flag");
-        verifiedtable.whereEqualTo("userId", ParseUser.getCurrentUser().getObjectId());
-        verifiedtable.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (objects != null && objects.size() > 0) {
-
-                    ParseObject currentFriendObject = objects.get(0);
-                    boolean isverifiedornot = currentFriendObject.getBoolean("canPost");
-
-
-                    if (isverifiedornot) {
-                        is_flag = false;
-                        ParseUser.getCurrentUser().put(Constants.USER_FLAGGED, "no");
-
-
-                    } else {
-                        is_flag = true;
-                        ParseUser.getCurrentUser().put(Constants.USER_FLAGGED, "yes");
-
-                    }
-
-                    ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-
-                        }
-                    });
-                }
-
+        if (!is_flag) {
+            String userna = AppSession.getValue(ct, Constants.USER_NAME);
+            if (userna == null || userna.equalsIgnoreCase(""))
+            {
+                Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
+                startActivity(intent);
             }
-        });
+            else {
+                startActivityForResult(new Intent(MainActivity.this, CreateSecretActivity.class), 0);
+            }
 
-
-    }*/
-
-
-    private void checkpost() {
-        if (!is_flag)
-            startActivityForResult(new Intent(MainActivity.this, CreateSecretActivity.class), 0);
+        }
         else
             Toast.makeText(ct, "You are not permitted to share a secret.", Toast.LENGTH_SHORT).show();
-/*
-        ParseQuery<ParseObject> verifiedtable = ParseQuery.getQuery("Flag");
-        verifiedtable.whereEqualTo("userId", ParseUser.getCurrentUser().getObjectId());
-        verifiedtable.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
 
-                if (objects != null && objects.size() > 0) {
-
-                    ParseObject currentFriendObject = objects.get(0);
-                    boolean isverifiedornot = currentFriendObject.getBoolean("canPost");
-
-                    if (isverifiedornot) {
-                        is_flag = false;
-                        ParseUser.getCurrentUser().put(Constants.USER_FLAGGED, "no");
-                        startActivityForResult(new Intent(MainActivity.this, CreateSecretActivity.class), 0);
-
-                    } else {
-                        is_flag = true;
-                        ParseUser.getCurrentUser().put(Constants.USER_FLAGGED, "yes");
-                        Toast.makeText(ct, "You are not permitted to share a secret.", Toast.LENGTH_SHORT).show();
-                    }
-
-
-                    ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-
-                        }
-                    });
-                } else {
-                    startActivityForResult(new Intent(MainActivity.this, CreateSecretActivity.class), 0);
-                }
-
-            }
-        });*/
 
 
     }
@@ -4794,49 +2634,6 @@ mWebView.postDelayed(new Runnable() {
     }
 
 
-    private class GetPetInfo extends AsyncTask<String, String, Bitmap> {
-
-        android.app.ProgressDialog pDialog;
-        String status = "";
-        Bitmap bitmap;
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        protected Bitmap doInBackground(String... args) {
-            try {
-
-                if (petAvtarInfoDTO != null)
-                    petAvtarInfoDTO = null;
-
-                IfriendRequest http = new IfriendRequest(ct);
-
-                GetPetConditionDTO getPetConditionDTO = new GetPetConditionDTO(enc_username);
-                GetPetInfoDTO getPetInfoDTO = new GetPetInfoDTO(Constants.ENCRYPT_MYVIRTUALSTATUS_TABLE, Constants.ENCRYPT_FIND_METHOD, getPetConditionDTO);
-
-                GetPetInfoObjectDTO getPetInfoObjectDTO = new GetPetInfoObjectDTO(getPetInfoDTO);
-
-                petAvtarInfoDTO = http.GetPetInfo(getPetInfoObjectDTO);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-            try {
-                if (petAvtarInfoDTO != null) {
-                    ShowPetStatus();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 
     private class SetPetInfo extends AsyncTask<String, String, Bitmap> {
@@ -4883,36 +2680,6 @@ mWebView.postDelayed(new Runnable() {
     }
 
 
-    private static class UpdateAvtarPercentage extends AsyncTask<String, String, Bitmap> {
-
-        android.app.ProgressDialog pDialog;
-        String status = "";
-        Bitmap bitmap;
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        protected Bitmap doInBackground(String... args) {
-            try {
-
-                IfriendRequest http = new IfriendRequest(ct);
-                ScratchCouponDTO scratchCouponDTO = new ScratchCouponDTO(scratchCoupondataDTO);
-                ScratchCouponObjectDTO setPetInfoObjectDTO = new ScratchCouponObjectDTO(scratchCouponDTO);
-                http.UpdateScratch(setPetInfoObjectDTO);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-
-        }
-    }
 
 
     private static class UpdateVeryfiFlag extends AsyncTask<String, String, Bitmap> {
@@ -4944,104 +2711,12 @@ mWebView.postDelayed(new Runnable() {
         }
 
         protected void onPostExecute(Bitmap image) {
-            try {
-                mUnverifyMe.setVisibility(View.GONE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
 
         }
     }
 
-/*
 
-    private static class GetStaticData extends AsyncTask<String, String, Bitmap> {
-
-        android.app.ProgressDialog pDialog;
-        String status = "";
-        Bitmap bitmap;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        protected Bitmap doInBackground(String... args) {
-            try {
-
-
-                IfriendRequest http = new IfriendRequest(ct);
-
-                StaticDataDTO staticDataDTO = new StaticDataDTO();
-                StaticObjectDTO staticObjectDTO = new StaticObjectDTO(staticDataDTO);
-                stataicObjectDTO = http.GetstaticData(staticObjectDTO);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-
-        }
-    }
-
-*/
-
-/*
-    private class CheckVerifiedforIfriend extends android.os.AsyncTask<String, String, Bitmap> {
-
-        android.app.ProgressDialog pDialog;
-        String data = "0";
-        Bitmap bitmap;
-
-        String response = "";
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
-
-        protected Bitmap doInBackground(String... args) {
-            try {
-
-                IfriendRequest http = new IfriendRequest(ct);
-                FindbyNameDTO findbyNameDTO = new FindbyNameDTO(enc_username);
-                FindNameDTO findNameDTO = new FindNameDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, findbyNameDTO);
-                FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
-                http.Getflagverified(findbynameObjectDTO);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-            try {
-
-                String isverifiedornot = AppSession.getValue(ct, Constants.USER_VERIFIED);
-
-                if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true")) {
-                    isIAMVerified = true;
-                    replaceDialog(Constants.ACCESS_IFRIEND);
-                } else {
-
-                    isIAMVerified = false;
-                    new ToastUtil(ct, ct.getString(R.string.sorry_not_verified));
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-*/
 
     private class CheckFlagverified extends android.os.AsyncTask<String, String, Bitmap> {
 
@@ -5078,11 +2753,7 @@ mWebView.postDelayed(new Runnable() {
         protected void onPostExecute(Bitmap image) {
             try {
 
-                String verify = AppSession.getValue(ct, Constants.USER_VERIFIED);
-                if (verify != null && verify.equalsIgnoreCase("false"))
-                    mUnverifyMe.setVisibility(View.GONE);
-                else
-                    mUnverifyMe.setVisibility(View.VISIBLE);
+               // String verify = AppSession.getValue(ct, Constants.USER_VERIFIED);
 
 
                 String result = AppSession.getValue(ct, Constants.USER_FLAG);
@@ -5141,8 +2812,18 @@ mWebView.postDelayed(new Runnable() {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.dismiss();
-                                    Intent intent = new Intent(ct, CreateSecretActivity.class);
-                                    startActivity(intent);
+
+                                    String userna = AppSession.getValue(ct, Constants.USER_NAME);
+                                    if (userna == null || userna.equalsIgnoreCase(""))
+                                    {
+                                        Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
+                                        startActivity(intent);
+                                    }
+                                    else {
+                                        startActivityForResult(new Intent(MainActivity.this, CreateSecretActivity.class), 0);
+                                    }
+
+
                                 }
                             });
                     motivateDialog.setNegativeButton(
@@ -5339,6 +3020,7 @@ mWebView.postDelayed(new Runnable() {
                 CheckUserSessionObjectDTO findbynameObjectDTO = new CheckUserSessionObjectDTO(checkUserSessionDTO);
                 response = http.CheckUserSession(findbynameObjectDTO);
 
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -5463,57 +3145,6 @@ mWebView.postDelayed(new Runnable() {
 
     }
 
-    /*private void deviceToken() {
-
-
-        if (deviceTOken != null && !deviceTOken.equalsIgnoreCase("")) {
-            try {
-                String version = BuildConfig.VERSION_NAME;
-                String versionRelease = Build.VERSION.RELEASE;
-                String device_details = versionRelease;
-                String username = CryptLib.encrypt(AppSession.getValue(ct, Constants.USER_NAME));
-                devicetokendataDTO = new DevicetokendataDTO(username, deviceTOken, version, imei_numer, device_details);
-                new UpdateDeviceToken().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
-
-   /* private class UpdateDeviceToken extends AsyncTask<String, String, Bitmap> {
-
-        android.app.ProgressDialog pDialog;
-        String status = "";
-        Bitmap bitmap;
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        protected Bitmap doInBackground(String... args) {
-            try {
-
-                IfriendRequest http = new IfriendRequest(ct);
-                DeviceTokenDTO deviceTokenDTO = new DeviceTokenDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, devicetokendataDTO);
-                DeviceTokenObjectDTO loginbjectDTO = new DeviceTokenObjectDTO(deviceTokenDTO);
-
-                status = http.UpdateToken(loginbjectDTO);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-
-
-        }
-    }
-*/
 
     public static void generateActionPush(Context context, String message, String secretId, String action, String commentId) {
 
@@ -5606,7 +3237,7 @@ mWebView.postDelayed(new Runnable() {
 
                 IfriendRequest http = new IfriendRequest(ct);
                 FindbyNameDTO findbyNameDTO = new FindbyNameDTO(MainActivity.enc_username);
-                CommonRequestTypeDTO findNameDTO = new CommonRequestTypeDTO(findbyNameDTO,"updateDisclaimer");
+                CommonRequestTypeDTO findNameDTO = new CommonRequestTypeDTO(findbyNameDTO, "updateDisclaimer");
                 FinalObjectDTO findbynameObjectDTO = new FinalObjectDTO(findNameDTO);
                 http.Getappointment(findbynameObjectDTO);
 
@@ -5623,9 +3254,7 @@ mWebView.postDelayed(new Runnable() {
     }
 
 
-
-    private class UpdateReturnuing extends android.os.AsyncTask<String, String, Bitmap>
-    {
+    private class UpdateReturnuing extends android.os.AsyncTask<String, String, Bitmap> {
 
         android.app.ProgressDialog pDialog;
         String data = "0";
@@ -5646,7 +3275,7 @@ mWebView.postDelayed(new Runnable() {
 
                 IfriendRequest http = new IfriendRequest(ct);
                 FindbyNameDTO findbyNameDTO = new FindbyNameDTO(MainActivity.enc_username);
-                CommonRequestTypeDTO findNameDTO = new CommonRequestTypeDTO(findbyNameDTO,"updateReturning");
+                CommonRequestTypeDTO findNameDTO = new CommonRequestTypeDTO(findbyNameDTO, "updateReturning");
                 FinalObjectDTO findbynameObjectDTO = new FinalObjectDTO(findNameDTO);
                 http.Getappointment(findbynameObjectDTO);
 
@@ -5663,6 +3292,182 @@ mWebView.postDelayed(new Runnable() {
     }
 
 
+    private void showTutorials()
+    {
+        List<String> tutoriasl = new ArrayList<>();
+         String[] petnamearray = {"Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Meerkat", "Mermaid","Mermaid","Mermaid"};
+
+        for(int i=0; i<13; i++)
+        {
+            tutoriasl.add(petnamearray[i]);
+        }
+        mAdapter = new Tutorial_adapter( ct, tutoriasl);
+
+        tutorial_viewpager.setAdapter(mAdapter);
+       // tutorial_viewpager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        tutorial_viewpager.setCurrentItem(0);
+        tutorial_viewpager.setOnPageChangeListener(this);
+        setPageViewIndicator();
+    }
+
+    private ImageView[] dots;
+    private int dotsCount;
+    int Tutorials_count = 13;
+
+    private void setPageViewIndicator() {
+
+        Log.d("###setPageViewIndicator", " : called");
+        dotsCount = Tutorials_count;
+        dots = new ImageView[dotsCount];
+
+        for (int i = 0; i < dotsCount; i++) {
+            dots[i] = new ImageView(ct);
+            dots[i].setImageDrawable(getResources().getDrawable(R.drawable.nonselecteditem_dot));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                   20,
+                    20
+            );
+
+            params.setMargins(4, 0, 4, 0);
+
+            final int presentPosition = i;
+            dots[presentPosition].setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    tutorial_viewpager.setCurrentItem(presentPosition);
+                    return true;
+                }
+
+            });
+
+
+            viewPagerCountDots.addView(dots[i], params);
+        }
+
+        dots[0].setImageDrawable(getResources().getDrawable(R.drawable.selecteditem_dot));
+    }
+
+
+
+    private class CHeckRubyCode extends AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String response = "";
+        Bitmap bitmap;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+           showProgress();
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(ct);
+
+
+                String userna = AppSession.getValue(ct, Constants.USER_NAME);
+                if (userna == null || userna.equalsIgnoreCase("")) {
+                    JSONObject requestdata = new JSONObject();
+                    JSONObject condition = new JSONObject();
+                    JSONObject main_object = new JSONObject();
+                    requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
+                    condition.put("code", code);
+                    requestdata.put("requestType", "checkUsercode");
+                    requestdata.put("data", condition);
+                    main_object.put("requestData", requestdata);
+                    response = http.flagRoomComment(main_object.toString());
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            try {
+               stopProgress();
+                String status = "", guest_clun01 = "";
+                Object object = new JSONTokener(response).nextValue();
+                if (object instanceof JSONObject) {
+                    JSONObject jsonObject = new JSONObject(response);
+
+
+                    if (jsonObject.has("status"))
+                        status = jsonObject.getString("status");
+
+                    if (status != null && status.equalsIgnoreCase("true")) {
+                        String codetype = "";
+                        if (jsonObject.has("codetype"))
+                            codetype = jsonObject.getString("codetype");
+
+
+                        AppSession.save(ct, Constants.USER_CODE, code);
+                        AppSession.save(ct, Constants.USER_CODE_TYPE, codetype);
+
+                        edt_search.setText("");
+                        ruby_code_layout.setVisibility(View.GONE);
+                        Toast.makeText(ct, "Thanks for submiting the code.", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(ct, "Please enter a valid code.", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
+
+
+    private class GetStaticData extends AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String status = "";
+        Bitmap bitmap;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+                if (stataicObjectDTO != null)
+                    stataicObjectDTO = null;
+
+                IfriendRequest http = new IfriendRequest(ct);
+                StaticDataDTO staticDataDTO = new StaticDataDTO();
+                StaticObjectDTO staticObjectDTO = new StaticObjectDTO(staticDataDTO);
+               stataicObjectDTO = http.GetstaticData(staticObjectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+
+
+
+
+
+        }
+    }
 
 }
 

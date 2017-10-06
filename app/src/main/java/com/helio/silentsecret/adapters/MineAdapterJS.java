@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
@@ -15,9 +18,13 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.helio.silentsecret.R;
@@ -37,6 +44,7 @@ import com.helio.silentsecret.appCounsellingDTO.CommonRequestTypeDTO;
 import com.helio.silentsecret.appCounsellingDTO.FinalObjectDTO;
 import com.helio.silentsecret.connection.ConnectionDetector;
 import com.helio.silentsecret.connection.IfriendRequest;
+import com.helio.silentsecret.models.FlickerImagload;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.social.SocialOperations;
 import com.helio.silentsecret.utils.AppSession;
@@ -49,6 +57,8 @@ import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 import com.nineoldandroids.animation.Animator;
 
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +78,8 @@ public class MineAdapterJS extends BaseAdapter {
     String newText = "";
     private Secret item;
     private Secret secret;
+    List<FlickerImagload> flickerImagloads = new ArrayList<>();
+
     private String wordArray[] = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"};
     SetSecretNotificationReadDataDTO setSecretNotificationReadDataDTO = null;
     SetFlagUnFlagSecretDataDTO setFlagUnFlagSecretDataDTO = null;
@@ -115,7 +127,7 @@ public class MineAdapterJS extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.feed_item, parent, false);
+            convertView = inflater.inflate(R.layout.newfeed_item, parent, false);
 
             holder.root = (ImageView) convertView.findViewById(R.id.feed_root);
             holder.text = (TextView) convertView.findViewById(R.id.feed_text);
@@ -144,6 +156,9 @@ public class MineAdapterJS extends BaseAdapter {
 
     item = mDataList.get(position);
 
+
+
+
         /*if (getItem(position).getFont() != 2) {
             if (Utils.checkBackgroundImage(getItem(position).getBgImageName())) {
                 holder.text.setTextAppearance(mContext, R.style.ShadowText);
@@ -157,7 +172,7 @@ public class MineAdapterJS extends BaseAdapter {
         }*/
 
 
-        if (getItem(position).getFont() != 2)
+        /*if (getItem(position).getFont() != 2)
         {
             String bgImageName = getItem(position).getBgImageName();
             bgImageName = bgImageName.replaceAll("[^\\d]", "");
@@ -184,7 +199,10 @@ public class MineAdapterJS extends BaseAdapter {
                 holder.text.setTypeface(mSecond);
             }
         }
+*/
 
+
+        holder.text.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/ubuntu.ttf"));
 
         if (item.getDoowapplink() != null && !item.getDoowapplink().equalsIgnoreCase(""))
         {
@@ -307,22 +325,57 @@ public class MineAdapterJS extends BaseAdapter {
         holder.mainPanel.setVisibility(View.INVISIBLE);
         holder.mainPanel.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
 
-        if (item.getBgImageName() != null)
+        final String img_url = item.getFlicker_image();
+        if (img_url != null && !img_url.isEmpty())
+        {
+            boolean is_download = false;
+            if (flickerImagloads.size() > 0)
+            {
+                for (int i = 0; i < flickerImagloads.size(); i++) {
+                    if (img_url.equalsIgnoreCase(flickerImagloads.get(i).getFliker_image_url()))
+                    {
+                        is_download = true;
+                        holder.root.setImageBitmap(flickerImagloads.get(i).getFliker_image_bitmap());
+                        break;
+                    }
+
+                }
+            }
+
+            if (!is_download) {
+                Glide.with(mContext).load(item.getFlicker_image()).asBitmap().into(new SimpleTarget<Bitmap>(200, 200)
+                {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
+                    {
+                        Drawable drawable = new BitmapDrawable(resource);
+                        flickerImagloads.add(new FlickerImagload(img_url, resource));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        {
+                            holder.root.setBackground(drawable);
+                        }
+                    }
+                });
+            }
+
+
+
+        } else if (item.getBgImageName() != null)
             mLoader.loadSimpleDraw(item.getBgImageName(), holder.root);
 
-        if (item.getHugUsers().contains(Preference.getUserName())) {
+        if (item.getHugUsers().contains(MainActivity.enc_username)) {
             holder.hug.setImageResource(R.drawable.ic_hug);
         } else {
             holder.hug.setImageResource(R.drawable.ic_not_hug);
         }
 
-        if (item.getHeartUsers().contains(Preference.getUserName())) {
+        if (item.getHeartUsers().contains(MainActivity.enc_username)) {
             holder.heart.setImageResource(R.drawable.ic_hearted);
         } else {
             holder.heart.setImageResource(R.drawable.ic_heart);
         }
 
-        if (item.getMe2Users().contains(Preference.getUserName())) {
+        if (item.getMe2Users().contains(MainActivity.enc_username)) {
             holder.me2.setImageResource(R.drawable.ic_me);
         } else {
             holder.me2.setImageResource(R.drawable.ic_me_off);
@@ -738,6 +791,7 @@ public class MineAdapterJS extends BaseAdapter {
         CheckBox delete;
         public View share;
 
+        RelativeLayout text_skin;
         public View mainPanel;
         public ImageView flag;
         public View translate;
@@ -912,9 +966,21 @@ public class MineAdapterJS extends BaseAdapter {
 
                 IfriendRequest http = new IfriendRequest(mContext);
 
-                FindNameDTO findNameDTO = new FindNameDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, findsecretuserDTO);
-                FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
-                response = http.Getsecretflagverified(findbynameObjectDTO);
+                JSONObject mJsonObjectSub = new JSONObject();
+                JSONObject requestdata = new JSONObject();
+                JSONObject main_object = new JSONObject();
+                mJsonObjectSub.put("clun01", secret.getCreatedByUser());
+                requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
+                requestdata.put("data", mJsonObjectSub);
+                requestdata.put("requestType", "checkUserVerifyAndroid");
+
+                main_object.put("requestData", requestdata);
+                try {
+                    response = http.Getsecretflagverified(main_object.toString());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();

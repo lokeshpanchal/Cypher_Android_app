@@ -6,24 +6,39 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.analytics.HitBuilders;
@@ -41,20 +56,22 @@ import com.helio.silentsecret.WebserviceDTO.SetflagUnflagObjectDTO;
 import com.helio.silentsecret.activities.CommentSecretActivity;
 import com.helio.silentsecret.activities.MainActivity;
 import com.helio.silentsecret.activities.MoodActivity;
+import com.helio.silentsecret.activities.SignUpDialogActivity;
 import com.helio.silentsecret.activities.SupportActivity;
 import com.helio.silentsecret.appCounsellingDTO.CommonRequestTypeDTO;
 import com.helio.silentsecret.appCounsellingDTO.FinalObjectDTO;
 import com.helio.silentsecret.application.SilentSecretApplication;
 import com.helio.silentsecret.connection.ConnectionDetector;
 import com.helio.silentsecret.connection.IfriendRequest;
+import com.helio.silentsecret.models.FlickerImagload;
 import com.helio.silentsecret.models.IfriendSendRequestObjectDTO;
 import com.helio.silentsecret.models.IfriendSendRequesttDTO;
 import com.helio.silentsecret.models.IfriendSendRequesttDataDTO;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.social.SocialOperations;
-import com.helio.silentsecret.tutorial.FeedTutorial;
 import com.helio.silentsecret.utils.AnimationUtils;
 import com.helio.silentsecret.utils.AppSession;
+import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.ImageLoaderUtil;
 import com.helio.silentsecret.utils.Preference;
@@ -64,11 +81,12 @@ import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 import com.nineoldandroids.animation.Animator;
 
-
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.helio.silentsecret.R.id.filter_layout;
 
 //import com.google.android.gms.location.LocationListener;
 
@@ -86,15 +104,25 @@ public class FeedAdapter extends BaseAdapter {
     static ViewHolder ifholder = null;
     IfriendSendRequesttDataDTO ifriendSendRequesttDataDTO = null;
 
-    HideSecretDataDTO hideSecretDataDTO =null;
+    HideSecretDataDTO hideSecretDataDTO = null;
     private boolean canShare = false;
     private boolean runShare = false;
     String newText = "";
+
+/*    int skin_array[] = {R.drawable.text_skin1,R.drawable.text_skin2,R.drawable.text_skin3,R.drawable.text_skin4,
+            R.drawable.text_skin5,R.drawable.text_skin6};
+    String skin_bg_name[] = {"skin1.jpg","skin2.jpg","skin3.jpg","skin4.png","skin5.jpg","skin6.jpg"};*/
+
+
     private String wordArray[] = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"};
     private Typeface mSecond = null;
 
+    List<FlickerImagload> flickerImagloads = new ArrayList<>();
     TextView friendicon;
+    TextView for_delay = null;
 
+
+    boolean is_from_long_tab = false;
     private SocialOperations mOperations;
 
     private ViewPagerMutualAdapter mutualAdapter;
@@ -117,8 +145,32 @@ public class FeedAdapter extends BaseAdapter {
 
     private boolean is_click = false;
 
+    String[] heart_short_sentence = {"this was hilarious",
+            "don't give up",
+            "wow",
+            "you inspired me",
+            "powerful",
+            "LMAO"
+    };
 
-    public FeedAdapter(LayoutInflater inflater, List<Secret> list, Context context) {
+    String[] hug_short_sentence = {"keep going",
+            "you got a friend in me",
+            "we love you",
+            "keep your head up",
+            "keep smiling"
+
+    };
+
+    String[] me2_short_sentence = {"been there",
+            "FML",
+            "you're not alone"
+
+    };
+
+
+    public FeedAdapter(LayoutInflater inflater, List<Secret> list, Context context)
+    {
+
         loadData(inflater, list, context);
     }
 
@@ -138,6 +190,8 @@ public class FeedAdapter extends BaseAdapter {
     private void loadData(LayoutInflater inflater, List<Secret> list, Context context) {
         try {
             this.inflater = inflater;
+
+
 
             if (list != null && list.size() > 0) {
                 for (int k = 0; k < list.size(); k++) {
@@ -168,6 +222,19 @@ public class FeedAdapter extends BaseAdapter {
             this.mSecond = Typeface.createFromAsset(mContext.getAssets(), Constants.FONT);
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            if(for_delay != null)
+                for_delay = null;
+
+
+            for_delay = new TextView(context);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
@@ -239,7 +306,7 @@ public class FeedAdapter extends BaseAdapter {
 
             holder = new ViewHolder();
 
-            convertView = inflater.inflate(R.layout.feed_item, parent, false);
+            convertView = inflater.inflate(R.layout.newfeed_item, parent, false);
 
             holder.root = (ImageView) convertView.findViewById(R.id.feed_root);
             holder.text = (TextView) convertView.findViewById(R.id.feed_text);
@@ -252,9 +319,11 @@ public class FeedAdapter extends BaseAdapter {
             holder.me2 = (ImageView) convertView.findViewById(R.id.feed_me2);
             holder.flag = (ImageView) convertView.findViewById(R.id.feed_flag);
             holder.verify = convertView.findViewById(R.id.feed_verify);
-
+            holder.flliper = (ViewFlipper) convertView.findViewById(R.id.flliper);
+            holder.short_sentence_layout = (RelativeLayout) convertView.findViewById(R.id.short_sentence_layout);
             holder.mIFriend = (TextView) convertView.findViewById(R.id.iFriend_icon);
-            holder.foodcoupon = (ImageView) convertView.findViewById(R.id.foodcoupon);
+            holder.filter_layout = (LinearLayout) convertView.findViewById(filter_layout);
+
 
             holder.supportView = convertView.findViewById(R.id.support_tutorial_view);
             holder.flagView = convertView.findViewById(R.id.flag_tutorial_view);
@@ -275,9 +344,11 @@ public class FeedAdapter extends BaseAdapter {
             holder.hugsSocial = (TextView) convertView.findViewById(R.id.feed_total_hugs);
             holder.me2Social = (TextView) convertView.findViewById(R.id.feed_total_me2);
 
+
             holder.blurView = convertView.findViewById(R.id.feed_main);
 
             holder.blurImage = (ImageView) convertView.findViewById(R.id.feed_blur);
+            holder.top_bar = (RelativeLayout) convertView.findViewById(R.id.top_bar);
 
             holder.share = convertView.findViewById(R.id.feed_share);
 
@@ -289,12 +360,25 @@ public class FeedAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+
+        holder.short_sentence_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         holder.feedMutualPager.setVisibility(View.GONE);
         holder.feedMutualPerformance.setVisibility(View.GONE);
         holder.feedMutualPerformance.setAdapter(null);
         holder.feedMutualPager.setAdapter(null);
 
         secret = getItem(position);
+
+        if(position ==0)
+            holder.top_bar.setVisibility(View.VISIBLE);
+        else
+            holder.top_bar.setVisibility(View.GONE);
+
 
         if (position == MUTUAL_POSITION && mMe2sList.size() > 1 && secret.isMutual()) {
             setupMe2Logic(holder.feedMutualPager, holder.feedMutualPerformance);
@@ -304,6 +388,31 @@ public class FeedAdapter extends BaseAdapter {
             holder.feedMutualPerformance.setVisibility(View.GONE);
         }
 
+
+        /*if(secret.getSkin_pattern()!= null && !secret.getSkin_pattern().equalsIgnoreCase(""))
+        {
+            for(int i=0; i <skin_bg_name.length; i++)
+            {
+                if(skin_bg_name[i].equalsIgnoreCase(secret.getSkin_pattern()))
+                {
+                    holder.text_skin.setBackgroundResource(skin_array[i]);
+
+                    break;
+                }
+            }
+
+        }
+        else
+        {
+            holder.text_skin.setBackgroundResource(R.drawable.white_border_feed_text);
+        }*/
+       /* holder.
+       .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.short_sentence_layout.setVisibility(View.GONE);
+            }
+        });*/
 
         if (secret.getDoowapplink() != null && !secret.getDoowapplink().equalsIgnoreCase("")) {
             newText = secret.getText();
@@ -363,9 +472,9 @@ public class FeedAdapter extends BaseAdapter {
         } else {
             newText = secret.getText();
 
+          //  newText = newText.replace("\n", "");
             try {
                 if (secret.getText() != null && secret.getText().contains("iFriend"))
-
                 {
 
 
@@ -377,12 +486,11 @@ public class FeedAdapter extends BaseAdapter {
                         }
                     }
 
-
                     holder.text.setText(newText);
 
 
                 } else {
-                    holder.text.setText(secret.getText() != null ? secret.getText() : "");
+                    holder.text.setText(newText != null ? newText : "");
 
                 }
             } catch (Exception e) {
@@ -391,66 +499,6 @@ public class FeedAdapter extends BaseAdapter {
 
 
         }
-
-
-        //holder.text.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/domuun.ttf"));
-
-
-
-        /*else
-        {
-            holder.text.setText(secret.getText() != null ? secret.getText() : "");
-            holder.mDooWappFeed.setVisibility(View.GONE);
-        }*/
-
-/*
-
-        holder.hugs.setText(String.valueOf(secret.getHugs()));
-        holder.hearts.setText(String.valueOf(secret.getHearts()));
-*/
-
-
-        /*try {
-            if (secret.getUserFilled() != null) {
-
-                String hugs = String.valueOf(secret.getUserFilled().getInt(Constants.USER_HUGS));
-                String hearts = String.valueOf(secret.getUserFilled().getInt(Constants.USER_HEARTS));
-                String me2s = String.valueOf(secret.getUserFilled().getInt(Constants.USER_ME2S));
-
-                if (hugs.length() > 3) {
-                    hugs = hugs.charAt(0) + Constants.POINT + hugs.charAt(1) + Constants.THOUTHAND;
-                }
-
-                if (hearts.length() > 3) {
-                    hearts = hearts.charAt(0) + Constants.POINT + hearts.charAt(1) + Constants.THOUTHAND;
-                }
-
-                if (me2s.length() > 3) {
-                    me2s = me2s.charAt(0) + Constants.POINT + me2s.charAt(1) + Constants.THOUTHAND;
-                }
-
-                holder.hugsSocial.setText(hugs);
-                holder.hearsSocial.setText(hearts);
-
-
-                try {
-                    int m2count = Integer.parseInt(me2s);
-                    if (m2count <= 0)
-                        holder.me2Social.setText("0");
-                    else
-                        holder.me2Social.setText(me2s);
-
-
-                } catch (Exception e) {
-                    holder.me2Social.setText("0");
-                    e.printStackTrace();
-                }
-
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
 
         try {
@@ -497,27 +545,27 @@ public class FeedAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
-        int comments_scratch = 0;
+       /* int comments_scratch = 0;
         try {
-            MainActivity.comments_count  = Integer.parseInt(MainActivity.petAvtarInfoDTO.getComments_count());
+            MainActivity.comments_count = Integer.parseInt(MainActivity.petAvtarInfoDTO.getComments_count());
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
-        if (MainActivity.comments_count > 0)
-            comments_scratch = MainActivity.comments_count ;
+        /*if (MainActivity.comments_count > 0)
+            comments_scratch = MainActivity.comments_count;*/
 
 
-        int scratch_count = 0;
+        /*int scratch_count = 0;
 
         try {
             scratch_count = Integer.parseInt(MainActivity.petAvtarInfoDTO.getScratch_count());
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
-        String pet_name = AppSession.getValue(mContext, Constants.USER_PET_NAME);
+       /* String pet_name = AppSession.getValue(mContext, Constants.USER_PET_NAME);
         if (pet_name != null && !pet_name.equalsIgnoreCase("") && !pet_name.equalsIgnoreCase("null")) {
 
             if (secret.getShowCoupon() == 0 && scratch_count < 5 + comments_scratch) {
@@ -557,7 +605,7 @@ public class FeedAdapter extends BaseAdapter {
 
             }
         });
-
+*/
 
         holder.flag.setTag(0);
         holder.flag.setVisibility(View.INVISIBLE);
@@ -571,17 +619,130 @@ public class FeedAdapter extends BaseAdapter {
         holder.actionsView.setVisibility(View.INVISIBLE);
 
 
-        if (secret.getBgImageName() != null) {
-            mLoader.loadSimpleDraw(secret.getBgImageName(), holder.root);
+       // holder.root.setBackgroundResource(R.drawable.bg0);
+       // holder.root.setImageResource(R.drawable.bg0);
+
+        final String img_url = secret.getFlicker_image();
+        if (img_url != null && !img_url.isEmpty())
+        {
+            boolean is_download = false;
+            if (flickerImagloads.size() > 0)
+            {
+                for (int i = 0; i < flickerImagloads.size(); i++)
+                {
+                    if (img_url.equalsIgnoreCase(flickerImagloads.get(i).getFliker_image_url()))
+                    {
+                        is_download = true;
+                        //holder.root.setImageBitmap(flickerImagloads.get(i).getFliker_image_bitmap());
+
+                        Drawable drawable = new BitmapDrawable(flickerImagloads.get(i).getFliker_image_bitmap());
+                        holder.root.setBackgroundDrawable(drawable);
+                        /*Drawable drawable = new BitmapDrawable(flickerImagloads.get(i).getFliker_image_bitmap());
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            holder.root.setBackground(drawable);
+                        }*/
+                        break;
+                    }
+
+                }
+            }
+
+            if (!is_download)
+            {
+                Glide.with(mContext)
+                        .load(secret.getFlicker_image()).asBitmap()
+                        //.placeholder(R.drawable.bg0)
+                        .into(new SimpleTarget<Bitmap>(300, 300)
+                {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
+                    {
+                        Drawable drawable = new BitmapDrawable(resource);
+                        flickerImagloads.add(new FlickerImagload(img_url, resource));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        {
+                            holder.root.setBackgroundDrawable(drawable);
+                        }
+                    }
+                });
+            }
+
+    /*        Glide.with(mContext)
+                    .load(secret.getFlicker_image())
+                    .placeholder(R.drawable.ic_default_bg)
+                    .into(holder.root);*/
+
+
+        } else if (secret.getBgImageName() != null)
+        {
+            try
+            {
+           /* String url = mLoader.getBackground(secret.getBgImageName());
+                holder.root.setScaleType(ImageView.ScaleType.FIT_XY);
+                  Glide.with(mContext)
+                        .load(url)
+                        .into(holder.root);
+*/
+                String url = mLoader.getBackground(secret.getBgImageName());
+
+                Glide.with(mContext).load(url).asBitmap().into(new SimpleTarget<Bitmap>(300, 300)
+                {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
+                    {
+                        Drawable drawable = new BitmapDrawable(resource);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        {
+                            holder.root.setBackgroundDrawable(drawable);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                    }
+                });
+
+
+               // holder.root.setScaleType(ImageView.ScaleType.FIT_XY);
+                /*Glide.with(mContext).load(url).asBitmap().into(new SimpleTarget<Bitmap>(200, 200)
+                {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
+                    {
+                        Drawable drawable = new BitmapDrawable(resource);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                        {
+                            holder.root.setBackground(drawable);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                    }
+                });*/
+
+                //mLoader.loadSimpleDraw(secret.getBgImageName(), holder.root);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
         try {
+            holder.text.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/ubuntu.ttf"));
 
-
-            if (secret.getFont() != 2)
+           // holder.text.setTextAppearance(mContext, R.style.BlackShadowText);
+            /*if (secret.getFont() != 2)
             {
                 String bgImageName = secret.getBgImageName();
                 bgImageName = bgImageName.replaceAll("[^\\d]", "");
-                if (bgImageName != null && bgImageName.equalsIgnoreCase("26")) {
+                if (bgImageName != null && bgImageName.equalsIgnoreCase("26"))
+                {
                     holder.text.setTextAppearance(mContext, R.style.BlackShadowText);
                 } else {
                     if (Utils.checkBackgroundImage(secret.getBgImageName())) {
@@ -599,7 +760,7 @@ public class FeedAdapter extends BaseAdapter {
                     holder.text.setTextAppearance(mContext, R.style.ShadowText);
                     holder.text.setTypeface(mSecond);
                 }
-            }
+            }*/
 
             if (secret.getFlagUsers() != null)
                 if (secret.getFlagUsers().contains(MainActivity.enc_username)) {
@@ -633,31 +794,26 @@ public class FeedAdapter extends BaseAdapter {
                 holder.mutualTitle.setText(scrollTitle);
             }
 
-            if (!Preference.getVerifyTutorial())
-                FeedTutorial.makeVerifyTutorial(holder);
 
 
-            if (!secret.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username))
-            {
+
+
+            if (!secret.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username)) {
 
                 holder.mIFriend.setVisibility(View.VISIBLE);
 
-                if (MainActivity.userListNamesOnlyWaiting != null && MainActivity.userListNamesOnlyWaiting.size() > 0)
-                {
+                if (MainActivity.userListNamesOnlyWaiting != null && MainActivity.userListNamesOnlyWaiting.size() > 0) {
 
                     if (MainActivity.userListNamesOnlyWaiting.contains(MainActivity.enc_username) &&
                             MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser()) || MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser())) {
 
-                        holder.mIFriend.setVisibility(View.GONE);
+                        holder.mIFriend.setVisibility(View.INVISIBLE);
                     }
                 }
             } else {
-                holder.mIFriend.setVisibility(View.GONE);
+                holder.mIFriend.setVisibility(View.INVISIBLE);
             }
 
-
-            /*if (SearchFragment.secret_id != null && !SearchFragment.secret_id.equalsIgnoreCase(""))
-                holder.mIFriend.setVisibility(View.GONE);*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -666,6 +822,20 @@ public class FeedAdapter extends BaseAdapter {
         holder.mIFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
+
+                String userna = AppSession.getValue(mContext, Constants.USER_NAME);
+                if (userna == null || userna.equalsIgnoreCase(""))
+                {
+                    Intent intent = new Intent(mContext, SignUpDialogActivity.class);
+                    mContext.startActivity(intent);
+                }
+                else {
+
+
+
 
                 friendicon = (TextView) v;
                 friendicon.setVisibility(View.GONE);
@@ -677,103 +847,82 @@ public class FeedAdapter extends BaseAdapter {
                 }
 
 
-
                 try {
                     boolean age_verify = false;
                     secret = getItem(position);
 
-                   String age =  AppSession.getValue(mContext, Constants.USER_AGE);
+                    String age = AppSession.getValue(mContext, Constants.USER_AGE);
                     int myAge = Integer.parseInt(age);
 
                     String secretAgesec = secret.getAge();
                     int secretAge = Integer.parseInt(secretAgesec);
 
 
-                    if (myAge != 0 &&myAge < 18)
-                    {
+                    if (myAge != 0 && myAge < 18) {
 
-                        if (myAge <= (secretAge + 2) && myAge >= (secretAge - 2))
-                        {
+                        if (myAge <= (secretAge + 2) && myAge >= (secretAge - 2)) {
                             age_verify = true;
                         }
-                    }
-                    else if(myAge == 18)
-                    {
-                        if((secretAge >= 18) && (secretAge <= 21))
-                        {
+                    } else if (myAge == 18) {
+                        if ((secretAge >= 18) && (secretAge <= 21)) {
                             age_verify = true;
                         }
-                    }
-                    else if(myAge == 19)
-                    {
-                        if((secretAge >= 18) && (secretAge <= 21))
-                        {
+                    } else if (myAge == 19) {
+                        if ((secretAge >= 18) && (secretAge <= 21)) {
                             age_verify = true;
                         }
-                    }
-                    else if(myAge >= 20 && myAge <= 24)
-                    {
-                        if((secretAge >= 18) && (secretAge <= 25))
-                        {
+                    } else if (myAge >= 20 && myAge <= 24) {
+                        if ((secretAge >= 18) && (secretAge <= 25)) {
                             age_verify = true;
                         }
-                    }
-                    else if(myAge >= 25)
-                    {
-                        if(secretAge >= 25)
-                        {
+                    } else if (myAge >= 25) {
+                        if (secretAge >= 25) {
                             age_verify = true;
                         }
                     }
 
 
-                    if (!ConnectionDetector.isNetworkAvailable(mContext))
-                    {
+                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
                         friendicon.setVisibility(View.VISIBLE);
                         try {
                             ((MainActivity) mContext).stopProgress();
-                        } catch (Exception e2)
-                        {
+                        } catch (Exception e2) {
                             e2.printStackTrace();
                         }
 
                         new ToastUtil(mContext, "Please check your internet connection.");
-                    }
-                    else if(!age_verify)
-                    {
+                    } else if (!age_verify) {
                         is_click = false;
                         new ToastUtil(mContext, "This user is not available for ifriend");
-                        ((MainActivity) mContext).stopProgress();
-                    }
-                    else
-                    {
-                        if (!is_click)
-                        {
+                        try {
+                            ((MainActivity) mContext).stopProgress();
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
+                        }
+                    } else {
+                        if (!is_click) {
 
                             is_click = true;
 
                             ifholder = holder;
 
-                            if (MainActivity.userListNamesOnlyWaiting != null && MainActivity.userListNamesOnlyWaiting.size() > 0)
-                            {
+                            if (MainActivity.userListNamesOnlyWaiting != null && MainActivity.userListNamesOnlyWaiting.size() > 0) {
 
                                 if (MainActivity.userListNamesOnlyWaiting.contains(MainActivity.enc_username) &&
-                                        MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser()) || MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser()))
-                                {
+                                        MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser()) || MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser())) {
                                     is_click = false;
-                                    ifholder.mIFriend.setVisibility(View.GONE);
+                                    ifholder.mIFriend.setVisibility(View.INVISIBLE);
                                     Alreadyfriend();
-                                }
-                                else
+                                } else
                                     new CheckVerifiedforIfriend().execute();
-                            }
-                            else {
+                            } else {
                                 new CheckVerifiedforIfriend().execute();
                             }
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
                 }
 
             }
@@ -784,35 +933,85 @@ public class FeedAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                    new ToastUtil(mContext,"Please check your internet connection.");
+                    new ToastUtil(mContext, "Please check your internet connection.");
                     return;
                 }
-                secret = getItem(position);
-                new CheckFlagverified().execute();
-               /* try {
-                    ((MainActivity) mContext).showProgress();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }*/
 
 
-                /*    String result =   AppSession.getValue(mContext, Constants.USER_FLAG);
-                if (result!= null && !result.equalsIgnoreCase("true"))
+                String userna = AppSession.getValue(mContext, Constants.USER_NAME);
+                if (userna == null || userna.equalsIgnoreCase(""))
                 {
-                    setverified();
+                    Intent intent = new Intent(mContext, SignUpDialogActivity.class);
+                    mContext.startActivity(intent);
+                }
+                else {
+                    secret = getItem(position);
 
-                } else
-                {
+
+
                     try
                     {
-                        ((MainActivity) mContext).stopProgress();
-                        Toast.makeText(mContext,"You are not prmited to comment.",Toast.LENGTH_SHORT).show();
-                    } catch (Exception e2) {
-                        e2.printStackTrace();
+                        if(for_delay != null) {
+                            for_delay.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        ((MainActivity) mContext).showProgress();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, 2000);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
                     }
 
-                }*/
+                    new CheckFlagverified().execute();
+                }
 
+
+            }
+        });
+
+
+        holder.hug.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    holder.short_sentence_layout.setVisibility(View.GONE);
+                    holder.flliper.stopFlipping();
+                    is_from_long_tab = false;
+                    if (is_from_long_tab) {
+                        holder.flliper.getDisplayedChild();
+                    } else {
+                        try {
+                            if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                new ToastUtil(mContext, "Please check your internet connection.");
+                                return false;
+                            }
+                            secret = getItem(position);
+                            if (secret.getHugUsers() != null)
+                                if (secret.getHugUsers().contains(MainActivity.enc_username)) {
+                                    mDataList.get(position).setHugUsers(mOperations.unHug(secret, holder));
+                                    startTracking(mContext.getString(R.string.analytics_Unhug));
+                                } else {
+                                    mDataList.get(position).setHugUsers(mOperations.hug(secret, holder));
+                                    startTracking(mContext.getString(R.string.analytics_hug));
+
+
+                                    AnimationUtils.playHugAnim(Constants.ANIM_STATE_HUG, ((MainActivity) mContext));
+                                }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }
+                return false;
             }
         });
 
@@ -820,87 +1019,156 @@ public class FeedAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                try {
-                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                        new ToastUtil(mContext,"Please check your internet connection.");
-                        return;
-                    }
-                    secret = getItem(position);
-                    if (secret.getHugUsers() != null)
-                        if (secret.getHugUsers().contains(MainActivity.enc_username)) {
-                            mDataList.get(position).setHugUsers(mOperations.unHug(secret, holder));
-                            startTracking(mContext.getString(R.string.analytics_Unhug));
-                        } else {
-                            mDataList.get(position).setHugUsers(mOperations.hug(secret, holder));
-                            startTracking(mContext.getString(R.string.analytics_hug));
-                            if (!Preference.getHugTutorial())
-                                FeedTutorial.makeActionHugView(holder, mContext);
-                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_HUG, ((MainActivity) mContext));
-                        }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                is_from_long_tab = false;
+
 
             }
         });
+
+
+        /*holder.hug.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                is_from_long_tab = true;
+
+                drawshortsent(holder, "hug");
+                return false;
+            }
+        });*/
+
+
+        holder.me2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    holder.short_sentence_layout.setVisibility(View.GONE);
+                    holder.flliper.stopFlipping();
+
+                    if (is_from_long_tab)
+                    {
+                        holder.filter_layout.setVisibility(View.GONE);
+                    } else {
+
+
+                        try {
+                            if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                new ToastUtil(mContext, "Please check your internet connection.");
+                                return false;
+                            }
+
+                            secret = getItem(position);
+                            if (secret.getMe2Users() != null)
+                                if (secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                    mDataList.get(position).setMe2Users(mOperations.unMe2(secret, holder));
+                                    startTracking(mContext.getString(R.string.analytics_Unme2));
+                                } else {
+                                    startTracking(mContext.getString(R.string.analytics_me2));
+                                    mDataList.get(position).setMe2Users(mOperations.me2(secret, holder));
+
+
+                                    AnimationUtils.playHugAnim(Constants.ANIM_STATE_ME2, ((MainActivity) mContext));
+                                }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }
+                return false;
+            }
+        });
+
+
+
 
         holder.me2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                try {
-                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                        new ToastUtil(mContext,"Please check your internet connection.");
-                        return;
+                is_from_long_tab = false;
+
+
+            }
+        });
+
+
+        holder.me2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view)
+            {
+                is_from_long_tab = true;
+                holder.filter_layout.setVisibility(View.VISIBLE);
+             //   drawshortsent(holder, "me2");
+                return false;
+            }
+        });
+
+
+        holder.heart.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    holder.short_sentence_layout.setVisibility(View.GONE);
+                    holder.flliper.stopFlipping();
+                    is_from_long_tab = false;
+                    if (is_from_long_tab) {
+
+                    } else {
+
+
+                        try {
+                            if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                new ToastUtil(mContext, "Please check your internet connection.");
+                                return false;
+                            }
+                            secret = getItem(position);
+                            if (secret.getHeartUsers() != null)
+                                if (secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                    mDataList.get(position).setHeartUsers(mOperations.unHeart(secret, holder));
+                                    startTracking(mContext.getString(R.string.analytics_Unlike));
+                                } else {
+                                    mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder));
+                                    startTracking(mContext.getString(R.string.analytics_like));
+
+
+                                    AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
+                                }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                    secret = getItem(position);
-                    if (secret.getMe2Users() != null)
-                        if (secret.getMe2Users().contains(MainActivity.enc_username))
-                        {
-                            mDataList.get(position).setMe2Users(mOperations.unMe2(secret, holder));
-                            startTracking(mContext.getString(R.string.analytics_Unme2));
-                        } else {
-                            startTracking(mContext.getString(R.string.analytics_me2));
-                            mDataList.get(position).setMe2Users(mOperations.me2(secret, holder));
-                            if (!Preference.getMe2Tutorial())
-                                FeedTutorial.makeActionMe2View(holder, mContext);
-                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_ME2, ((MainActivity) mContext));
-                        }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
                 }
-
-
+                return false;
             }
         });
 
         holder.heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                        new ToastUtil(mContext,"Please check your internet connection.");
-                        return;
-                    }
-                    secret = getItem(position);
-                    if (secret.getHeartUsers() != null)
-                        if (secret.getHeartUsers().contains(MainActivity.enc_username)) {
-                            mDataList.get(position).setHeartUsers(mOperations.unHeart(secret, holder));
-                            startTracking(mContext.getString(R.string.analytics_Unlike));
-                        } else {
-                            mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder));
-                            startTracking(mContext.getString(R.string.analytics_like));
-                            if (!Preference.getHeartTutorial())
-                                FeedTutorial.makeActionHeartView(holder, mContext);
-                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
-                        }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                is_from_long_tab = false;
+
 
             }
         });
+
+
+        /*holder.heart.setOnLongCdlickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                is_from_long_tab = true;
+
+                drawshortsent(holder, "heart");
+                return false;
+            }
+        });
+*/
 
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -944,38 +1212,43 @@ public class FeedAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if (!ConnectionDetector.isNetworkAvailable(mContext))
                     return;
-                try
-                {
+                try {
+
+
+                    String userna = AppSession.getValue(mContext, Constants.USER_NAME);
+                    if (userna == null || userna.equalsIgnoreCase(""))
+                    {
+                        Intent intent = new Intent(mContext, SignUpDialogActivity.class);
+                        mContext.startActivity(intent);
+                    }
+                    else
+                    {
                     secret = getItem(position);
 
-                    if (!secret.getCreatedByUser().equals(MainActivity.enc_username) && secret.getFlagUsers() != null && secret.getCreatedByUser() != null)
-                    {
-                        if (secret.getFlagUsers().contains(MainActivity.enc_username))
-                        {
+                    if (!secret.getCreatedByUser().equals(MainActivity.enc_username) && secret.getFlagUsers() != null && secret.getCreatedByUser() != null) {
+                        if (secret.getFlagUsers().contains(MainActivity.enc_username)) {
                             final ArrayList<String> flagUsers = secret.getFlagUsers();
                             flagUsers.remove(MainActivity.enc_username);
                             mDataList.get(position).setFlagUsers(flagUsers);
                             holder.flag.setImageResource(R.drawable.ic_flag);
 
-                            if(setFlagUnFlagSecretDataDTO!= null)
+                            if (setFlagUnFlagSecretDataDTO != null)
                                 setFlagUnFlagSecretDataDTO = null;
 
-                            setFlagUnFlagSecretDataDTO = new SetFlagUnFlagSecretDataDTO(MainActivity.enc_username,"false",secret.getObjectId());
+                            setFlagUnFlagSecretDataDTO = new SetFlagUnFlagSecretDataDTO(MainActivity.enc_username, "false", secret.getObjectId());
 
-                        } else
-                        {
+                        } else {
                             final ArrayList<String> flagUsers = secret.getFlagUsers();
                             flagUsers.add(MainActivity.enc_username);
                             mDataList.get(position).setFlagUsers(flagUsers);
                             holder.flag.setImageResource(R.drawable.ic_flagged);
-                            setFlagUnFlagSecretDataDTO = new SetFlagUnFlagSecretDataDTO(MainActivity.enc_username,"true",secret.getObjectId());
+                            setFlagUnFlagSecretDataDTO = new SetFlagUnFlagSecretDataDTO(MainActivity.enc_username, "true", secret.getObjectId());
                         }
 
                         new SetFlagUnflagSecret().execute();
                     }
-                }
-                catch (Exception e)
-                {
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -986,6 +1259,14 @@ public class FeedAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 try {
+
+                   /* String userna = AppSession.getValue(mContext, Constants.USER_NAME);
+                    if (userna == null || userna.equalsIgnoreCase(""))
+                    {
+                        Intent intent = new Intent(mContext, SignUpDialogActivity.class);
+                        mContext.startActivity(intent);
+                    }
+                    else*/
                     mContext.startActivity(new Intent(mContext, SupportActivity.class));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -997,10 +1278,19 @@ public class FeedAdapter extends BaseAdapter {
         holder.translate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideSecretDataDTO = new HideSecretDataDTO(MainActivity.enc_username,mDataList.get(position).getObjectId());
-               new SetHideSecret().execute();
-                mDataList.remove(position);
-                notifyDataSetChanged();
+
+                String userna = AppSession.getValue(mContext, Constants.USER_NAME);
+                if (userna == null || userna.equalsIgnoreCase(""))
+                {
+                    Intent intent = new Intent(mContext, SignUpDialogActivity.class);
+                    mContext.startActivity(intent);
+                }
+                else {
+                    hideSecretDataDTO = new HideSecretDataDTO(MainActivity.enc_username, mDataList.get(position).getObjectId());
+                    new SetHideSecret().execute();
+                    mDataList.remove(position);
+                    notifyDataSetChanged();
+                }
                 /* boolean check = true;
                 secret = getItem(position);
                 try {
@@ -1016,16 +1306,26 @@ public class FeedAdapter extends BaseAdapter {
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                runShare = true;
-                secret = getItem(position);
-                boolean check = true;
 
-                try {
-                    check = checkForClose(position);
-                } catch (Exception e) {
 
+                String userna = AppSession.getValue(mContext, Constants.USER_NAME);
+                if (userna == null || userna.equalsIgnoreCase(""))
+                {
+                    Intent intent = new Intent(mContext, SignUpDialogActivity.class);
+                    mContext.startActivity(intent);
                 }
-                makeFlagAnimOff(holder, check);
+                else {
+                    runShare = true;
+                    secret = getItem(position);
+                    boolean check = true;
+
+                    try {
+                        check = checkForClose(position);
+                    } catch (Exception e) {
+
+                    }
+                    makeFlagAnimOff(holder, check);
+                }
             }
         });
 
@@ -1276,7 +1576,7 @@ public class FeedAdapter extends BaseAdapter {
             ((MainActivity) mContext).stopProgress();
         } catch (Exception e) {
             e.printStackTrace();
-            ((MainActivity) mContext).stopProgress();
+
         }
     }
 
@@ -1344,7 +1644,7 @@ public class FeedAdapter extends BaseAdapter {
                     holder.mainPanel.setVisibility(View.INVISIBLE);
                 }
 
-                FeedTutorial.clearFlagSupportFromView(holder);
+
                 if (canShare) {
                     holder.share.setVisibility(View.INVISIBLE);
                     if (runShare) {
@@ -1356,7 +1656,8 @@ public class FeedAdapter extends BaseAdapter {
                         }
 
                         holder.verify.setVisibility(View.INVISIBLE);
-                        Utils.shareDataOfSecret(holder.blurView, mContext, 3f, new MoodActivity.ShareCallback() {
+                        Utils.shareDataOfSecret(holder.blurView, mContext, 3f, new MoodActivity.ShareCallback()
+                        {
                             @Override
                             public void onShare() {
                                 holder.verify.setVisibility(View.VISIBLE);
@@ -1404,7 +1705,7 @@ public class FeedAdapter extends BaseAdapter {
 
         public View verifyClick;
         public View verifyView;
-        public ImageView foodcoupon = null;
+
         public View actionsView;
         public View actionsClick;
         public TextView actionsText;
@@ -1413,6 +1714,7 @@ public class FeedAdapter extends BaseAdapter {
         public TextView hugsSocial;
         public TextView hearsSocial;
         public TextView me2Social;
+
 
         public View translate;
         public View mainPanel;
@@ -1426,6 +1728,13 @@ public class FeedAdapter extends BaseAdapter {
         public TextView mutualTitle;
 
         public TextView mIFriend;
+
+        public ViewFlipper flliper;
+
+           public LinearLayout filter_layout;
+        public RelativeLayout short_sentence_layout ;
+        public RelativeLayout top_bar ;
+        // public TextView cancel_short_sentence;
 
     }
 
@@ -1441,7 +1750,11 @@ public class FeedAdapter extends BaseAdapter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ((MainActivity) mContext).showProgress();
+            try {
+                ((MainActivity) mContext).showProgress();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
 
         }
 
@@ -1468,7 +1781,11 @@ public class FeedAdapter extends BaseAdapter {
         protected void onPostExecute(Bitmap image) {
             try {
                 is_click = false;
-                ((MainActivity) mContext).stopProgress();
+                try {
+                    ((MainActivity) mContext).stopProgress();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
                 if (response != null && !response.equalsIgnoreCase("") && response.equalsIgnoreCase("success")) {
                     try {
 
@@ -1482,7 +1799,7 @@ public class FeedAdapter extends BaseAdapter {
                         dialog1.setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                ifholder.mIFriend.setVisibility(View.GONE);
+                                ifholder.mIFriend.setVisibility(View.INVISIBLE);
                             }
                         });
 
@@ -1513,8 +1830,7 @@ public class FeedAdapter extends BaseAdapter {
 
     private void sendifrendreq(final ViewHolder holder) {
 
-        if (secret.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username))
-        {
+        if (secret.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username)) {
             is_click = false;
             try {
                 ((MainActivity) mContext).stopProgress();
@@ -1530,7 +1846,7 @@ public class FeedAdapter extends BaseAdapter {
                         "Ok, Fine",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                holder.mIFriend.setVisibility(View.GONE);
+                                holder.mIFriend.setVisibility(View.INVISIBLE);
                                 dialog.cancel();
                             }
                         });
@@ -1576,23 +1892,17 @@ public class FeedAdapter extends BaseAdapter {
             });
 
 
-            if (location != null)
-            {
+            if (location != null) {
 
                 longitude = location.getLongitude();
                 latitude = location.getLatitude();
 
-            }
-            else
-            {
-                try
-                {
-                    latitude =  Double.parseDouble(Preference.getUserLat())  ;
-                    longitude =   Double.parseDouble( Preference.getUserLon()) ;
+            } else {
+                try {
+                    latitude = Double.parseDouble(Preference.getUserLat());
+                    longitude = Double.parseDouble(Preference.getUserLon());
 
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -1624,14 +1934,12 @@ public class FeedAdapter extends BaseAdapter {
                         } catch (Exception ex) {
                         }
 
-                        if ( longitude != 0.0 && latitude != 0.0)
-                        {
+                        if (longitude != 0.0 && latitude != 0.0) {
                             gps_enabled = true;
                             network_enabled = true;
                         }
 
-                        if (!gps_enabled && !network_enabled)
-                        {
+                        if (!gps_enabled && !network_enabled) {
                             is_click = false;
                             try {
                                 ((MainActivity) mContext).stopProgress();
@@ -1671,11 +1979,9 @@ public class FeedAdapter extends BaseAdapter {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } else
-                        {
+                        } else {
 
-                            if (longitude != 0.0 && latitude != 0.0)
-                            {
+                            if (longitude != 0.0 && latitude != 0.0) {
                                 String send_lat = "" + latitude;
                                 String send_lang = "" + longitude;
 
@@ -1696,7 +2002,7 @@ public class FeedAdapter extends BaseAdapter {
 
 
                                     AlertDialog.Builder locationnotfound = new AlertDialog.Builder(mContext);
-                                    locationnotfound.setIcon(R.drawable.chat_friend);
+                                    locationnotfound.setIcon(R.drawable.ic_launcher);
                                     locationnotfound.setMessage("Location not found. Please try again to send internet friend request.");
                                     locationnotfound.setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                                         @Override
@@ -1765,13 +2071,19 @@ public class FeedAdapter extends BaseAdapter {
         ProgressDialog pDialog;
         String data = "0";
         Bitmap bitmap;
-
+        String status = "";
         String response = "";
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ((MainActivity) mContext).showProgress();
+            try {
+                ((MainActivity) mContext).showProgress();
+
+
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
 
         }
 
@@ -1786,81 +2098,39 @@ public class FeedAdapter extends BaseAdapter {
                 FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
                 http.Getflagverified(findbynameObjectDTO);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-            try {
-
-
-
                 String result = AppSession.getValue(mContext, Constants.USER_FLAG);
-                if (result != null && !result.equalsIgnoreCase("true"))
-                {
+                if (result != null && !result.equalsIgnoreCase("true")) {
                     String isverifiedornot = AppSession.getValue(mContext, Constants.USER_VERIFIED);
 
-                    if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true")) {
+                    if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true"))
+                    {
 
                         MainActivity.isIAMVerified = true;
 
-                        if (findsecretuserDTO != null)
-                            findsecretuserDTO = null;
+                        JSONObject mJsonObjectSub = new JSONObject();
+                        JSONObject requestdata = new JSONObject();
+                        JSONObject main_object = new JSONObject();
+                        mJsonObjectSub.put("clun01", secret.getCreatedByUser());
+                        requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
+                        requestdata.put("data", mJsonObjectSub);
+                        requestdata.put("requestType", "checkUserVerifyAndroid");
 
-                        findsecretuserDTO = new FindbyNameDTO(secret.getCreatedByUser());
-                        new CheckSecretFlagverified().execute();
+                        main_object.put("requestData", requestdata);
+                        try {
+                            response = http.GetsecretflagverifiedForAndroid(main_object.toString());
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                     } else {
-                        ((MainActivity) mContext).stopProgress();
-                        MainActivity.isIAMVerified = false;
-                        new ToastUtil(mContext, mContext.getString(R.string.sorry_not_verified));
+                        status = "user";
                     }
 
 
-                } else {
-                    try {
-                        ((MainActivity) mContext).stopProgress();
-                        Toast.makeText(mContext, "You are not permitted to comment.", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e2) {
-                        e2.printStackTrace();
-                    }
+                } else
+                    status = "flag";
 
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-
-    private class CheckSecretFlagverified extends android.os.AsyncTask<String, String, Bitmap> {
-
-        ProgressDialog pDialog;
-        String data = "0";
-        Bitmap bitmap;
-
-        String response = "";
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            ((MainActivity) mContext).showProgress();
-
-        }
-
-        protected Bitmap doInBackground(String... args) {
-            try {
-
-
-                IfriendRequest http = new IfriendRequest(mContext);
-
-                FindNameDTO findNameDTO = new FindNameDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, findsecretuserDTO);
-                FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
-                response = http.Getsecretflagverified(findbynameObjectDTO);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1871,25 +2141,55 @@ public class FeedAdapter extends BaseAdapter {
         protected void onPostExecute(Bitmap image) {
             try {
 
-
-
-                if (response != null && response.equalsIgnoreCase("true"))
+                if (MainActivity.is_running)
                 {
+                    if (status != null && status.equalsIgnoreCase("flag")) {
+                        try {
+                            Toast.makeText(mContext, "You are not permitted to comment.", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
+                        }
+                    } else if (status != null && status.equalsIgnoreCase("user")) {
+                        MainActivity.isIAMVerified = false;
+                        new ToastUtil(mContext, mContext.getString(R.string.sorry_not_verified));
+                    } else if (response != null && response.equalsIgnoreCase("true")) {
 
-                    if (secret.getFlags() >= 3 && secret.getCreatedByUser().equals(Preference.getUserName()))
-                    {
-                        ((MainActivity) mContext).stopProgress();
-                        new ToastUtil(mContext, mContext.getString(R.string.comments_are_disabled));
-                        return;
+
+                        if (secret.getFlags() >= 3 && secret.getCreatedByUser().equals(Preference.getUserName())) {
+                            new ToastUtil(mContext, mContext.getString(R.string.comments_are_disabled));
+                            return;
+                        }
+                        runComments(secret);
+
+
+                    } else {
+
+                        new ToastUtil(mContext, mContext.getString(R.string.sorry_this_user));
                     }
-                    runComments(secret);
-
-
-                } else {
+                }
+                try
+                {
                     ((MainActivity) mContext).stopProgress();
-                    new ToastUtil(mContext, mContext.getString(R.string.sorry_this_user));
+
+
+
+                } catch (Exception e2) {
+                    e2.printStackTrace();
                 }
 
+                try
+                {
+                    for_delay.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((MainActivity) mContext).stopProgress();
+                        }
+                    },1000);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1900,10 +2200,8 @@ public class FeedAdapter extends BaseAdapter {
 
     private class CheckVerifiedforIfriend extends android.os.AsyncTask<String, String, Bitmap> {
 
-        ProgressDialog pDialog;
-        String data = "0";
-        Bitmap bitmap;
 
+        String status = "";
         String response = "";
 
         @Override
@@ -1915,76 +2213,40 @@ public class FeedAdapter extends BaseAdapter {
 
         protected Bitmap doInBackground(String... args) {
             try {
-
+                status = "";
                 IfriendRequest http = new IfriendRequest(mContext);
                 FindbyNameDTO findbyNameDTO = new FindbyNameDTO(MainActivity.enc_username);
                 FindNameDTO findNameDTO = new FindNameDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, findbyNameDTO);
                 FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
                 http.Getflagverified(findbynameObjectDTO);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-            try {
-
-                ((MainActivity) mContext).stopProgress();
-
                 String isverifiedornot = AppSession.getValue(mContext, Constants.USER_VERIFIED);
                 if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true"))
                 {
                     MainActivity.isIAMVerified = true;
 
-                    if (findsecretuserDTO != null)
-                        findsecretuserDTO = null;
+                    JSONObject mJsonObjectSub = new JSONObject();
+                    JSONObject requestdata = new JSONObject();
+                    JSONObject main_object = new JSONObject();
+                    mJsonObjectSub.put("clun01", secret.getCreatedByUser());
+                    requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
+                    requestdata.put("data", mJsonObjectSub);
+                    requestdata.put("requestType", "checkUserVerifyAndroid");
 
-                    findsecretuserDTO = new FindbyNameDTO(secret.getCreatedByUser());
-                    new CheckSecretIfriendverified().execute();
+                    main_object.put("requestData", requestdata);
+                    try {
+                        response = http.GetsecretflagverifiedForAndroid(main_object.toString());
 
-
-                } else {
-                    is_click = false;
-                    new ToastUtil(mContext,
-                            mContext.getString(R.string.sorry_not_verified));
-                    friendicon.setVisibility(View.VISIBLE);
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
 
-    private class CheckSecretIfriendverified extends android.os.AsyncTask<String, String, Bitmap> {
+                   /* findNameDTO = new FindNameDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, findsecretuserDTO);
+                    findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
+                    response = http.Getsecretflagverified(findbynameObjectDTO);*/
+                } else
+                    status = "user";
 
-        ProgressDialog pDialog;
-        String data = "0";
-        Bitmap bitmap;
-
-        String response = "";
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            ((MainActivity) mContext).showProgress();
-        }
-
-        protected Bitmap doInBackground(String... args) {
-            try {
-
-
-                IfriendRequest http = new IfriendRequest(mContext);
-
-                FindNameDTO findNameDTO = new FindNameDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, findsecretuserDTO);
-                FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
-                response = http.Getsecretflagverified(findbynameObjectDTO);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1994,24 +2256,33 @@ public class FeedAdapter extends BaseAdapter {
 
         protected void onPostExecute(Bitmap image) {
             try {
-
                 ((MainActivity) mContext).stopProgress();
 
-                if (response != null && response.equalsIgnoreCase("true"))
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try
+            {
+                if (status != null && status.equalsIgnoreCase("user")) {
+                    is_click = false;
+                    new ToastUtil(mContext,
+                            mContext.getString(R.string.sorry_not_verified));
+                    friendicon.setVisibility(View.VISIBLE);
+                } else if (response != null && response.equalsIgnoreCase("true"))
                     sendifrendreq(ifholder);
                 else {
                     is_click = false;
                     new ToastUtil(mContext, mContext.getString(R.string.sorry_this_user));
                 }
 
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            catch (Exception e)
+            {
 
+            }
         }
     }
-
 
     private class CheckSecretUserInfo extends android.os.AsyncTask<String, String, Bitmap> {
 
@@ -2020,8 +2291,11 @@ public class FeedAdapter extends BaseAdapter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ((MainActivity) mContext).showProgress();
-
+            try {
+                ((MainActivity) mContext).showProgress();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
         }
 
         protected Bitmap doInBackground(String... args) {
@@ -2043,8 +2317,11 @@ public class FeedAdapter extends BaseAdapter {
         protected void onPostExecute(Bitmap image) {
             try {
 
-                ((MainActivity) mContext).stopProgress();
-
+                try {
+                    ((MainActivity) mContext).stopProgress();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
                 if (userjsonObject != null) {
                     Secretholder.hearsSocial.setText(userjsonObject.getString("hearts"));
                     Secretholder.hugsSocial.setText(userjsonObject.getString("hugs"));
@@ -2058,8 +2335,6 @@ public class FeedAdapter extends BaseAdapter {
 
         }
     }
-
-
 
 
     private class SetFlagUnflagSecret extends android.os.AsyncTask<String, String, Bitmap> {
@@ -2096,7 +2371,6 @@ public class FeedAdapter extends BaseAdapter {
     }
 
 
-
     private class SetHideSecret extends android.os.AsyncTask<String, String, Bitmap> {
 
         String data = null;
@@ -2114,7 +2388,7 @@ public class FeedAdapter extends BaseAdapter {
 
                 IfriendRequest http = new IfriendRequest(mContext);
 
-                CommonRequestTypeDTO findNameDTO = new CommonRequestTypeDTO(hideSecretDataDTO,"updateSecrethide");
+                CommonRequestTypeDTO findNameDTO = new CommonRequestTypeDTO(hideSecretDataDTO, "updateSecrethide");
                 FinalObjectDTO findbynameObjectDTO = new FinalObjectDTO(findNameDTO);
                 data = http.Getappointment(findbynameObjectDTO);
 
@@ -2131,6 +2405,138 @@ public class FeedAdapter extends BaseAdapter {
     }
 
 
+    private void drawshortsent(final ViewHolder holder, String type) {
+        holder.short_sentence_layout.setVisibility(View.VISIBLE);
+        holder.flliper.removeAllViews();
+
+        String[] shortsent = null;
+
+        if (type.equalsIgnoreCase("me2"))
+            shortsent = me2_short_sentence;
+
+        if (type.equalsIgnoreCase("hug"))
+            shortsent = hug_short_sentence;
+
+        if (type.equalsIgnoreCase("heart"))
+            shortsent = heart_short_sentence;
+
+        for (int i = 0; i < shortsent.length; i++) {
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, CommonFunction.getScreenWidth() / 10);
+
+
+            TextView shor_text = new TextView(mContext);
+            shor_text.setLayoutParams(lp);
+            shor_text.setText(shortsent[i]);
+            shor_text.setTextColor(Color.parseColor("#000000"));
+            shor_text.setBackgroundColor(Color.parseColor("#ffffff"));
+            shor_text.setGravity(Gravity.CENTER);
+            holder.flliper.addView(shor_text);
+
+
+        }
+
+
+        holder.flliper.startFlipping();
+        holder.flliper.setFlipInterval(3000);
+        holder.flliper.setAutoStart(true);
+
+        holder.flliper.setInAnimation(inFromRightAnimation());
+        holder.flliper.setOutAnimation(outToLeftAnimation());
+
+
+    }
+
+
+    private Animation inFromRightAnimation() {
+
+        Animation inFromRight = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, +1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        inFromRight.setDuration(1000);
+        inFromRight.setInterpolator(new AccelerateInterpolator());
+        return inFromRight;
+    }
+
+    private Animation outToLeftAnimation() {
+        Animation outtoLeft = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, -1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        outtoLeft.setDuration(1000);
+        outtoLeft.setInterpolator(new AccelerateInterpolator());
+        return outtoLeft;
+    }
+
+    private Animation inFromLeftAnimation() {
+        Animation inFromLeft = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, -1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        inFromLeft.setDuration(1000);
+        inFromLeft.setInterpolator(new AccelerateInterpolator());
+        return inFromLeft;
+    }
+
+    private Animation outToRightAnimation() {
+        Animation outtoRight = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, +1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        outtoRight.setDuration(1000);
+        outtoRight.setInterpolator(new AccelerateInterpolator());
+        return outtoRight;
+    }
+
+
+/*private void drawshortsent(final ViewHolder holder , String type)
+{
+    holder.short_sentence_layout.setVisibility(View.VISIBLE);
+    holder.sentenct_ayout.removeAllViews();
+
+    String [] shortsent = null;
+
+    if(type.equalsIgnoreCase("me2"))
+        shortsent = me2_short_sentence;
+
+    if(type.equalsIgnoreCase("hug"))
+        shortsent = hug_short_sentence;
+
+    if(type.equalsIgnoreCase("heart"))
+        shortsent = heart_short_sentence;
+
+    for(int i=0; i < shortsent.length; i++)
+    {
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, CommonFunction.getScreenWidth()/10);
+
+
+        TextView shor_text = new TextView(mContext);
+        shor_text.setLayoutParams(lp);
+        shor_text.setText(shortsent[i]);
+        shor_text.setTextColor(Color.parseColor("#000000"));
+        shor_text.setBackgroundColor(Color.parseColor("#ffffff"));
+        shor_text.setGravity(Gravity.CENTER);
+        holder.sentenct_ayout.addView(shor_text);
+
+        shor_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.short_sentence_layout.setVisibility(View.GONE);
+            }
+        });
+
+        lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, CommonFunction.getScreenWidth()/300);
+        TextView line = new TextView(mContext);
+        line.setLayoutParams(lp);
+        line.setBackgroundColor(Color.parseColor("#999999"));
+        holder.sentenct_ayout.addView(line);
+
+    }
+}*/
 }
 
 

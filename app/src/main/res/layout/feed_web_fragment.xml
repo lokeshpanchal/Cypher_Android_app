@@ -85,7 +85,7 @@
                 android:layout_height="@dimen/feed_view_filter_height"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/feed_view_filter_m"
-                android:background="@drawable/youtube_selector"
+
                 android:button="@null" />
         </LinearLayout>
 
@@ -99,7 +99,7 @@
                 android:layout_height="@dimen/feed_view_filter_height"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/feed_view_filter_m"
-                android:background="@drawable/vine_selector"
+
                 android:button="@null" />
         </LinearLayout>
 

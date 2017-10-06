@@ -25,7 +25,6 @@ import com.helio.silentsecret.connection.ConnectionDetector;
 import com.helio.silentsecret.connection.IfriendRequest;
 import com.helio.silentsecret.dialogs.ForgotPinDialog;
 import com.helio.silentsecret.dialogs.ProgressDialog;
-import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.KeyboardUtil;
 import com.helio.silentsecret.utils.ToastUtil;
@@ -133,7 +132,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
     private void Getpetname()
     {
-        Intent intent = new Intent(LoginActivity.this, PetAvtarActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
 
@@ -313,7 +312,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
     private void runSignUp() {
         startActivity(new Intent(this, SignUpActivity.class));
-        finish();
+      //  finish();
     }
 
     private void showProgress() {

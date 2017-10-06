@@ -19,7 +19,7 @@
         android:id="@+id/search_not_found"
         android:visibility="gone"
         android:textSize="@dimen/search_not_found_ts"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:text="@string/no_secrets_found"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

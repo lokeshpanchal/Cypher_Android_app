@@ -169,7 +169,8 @@ public class TrendingFragment extends Fragment implements UpdateCallback {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // showProgress();
+            if (SKIP != 0)
+                ((MainActivity) getActivity()).showProgress();
         }
 
         protected Bitmap doInBackground(String... args) {
@@ -184,7 +185,15 @@ public class TrendingFragment extends Fragment implements UpdateCallback {
 
 
                 String age = AppSession.getValue(getActivity(),Constants.USER_AGE);
+
+                int intage = Integer.parseInt(age);
+                if(intage <11)
+                {
+                    age = "11";
+                }
+
                 BlankConditionDTO blankConditionDTO = new BlankConditionDTO(age,""+SKIP);
+
                 FindDTO loginDTO = new FindDTO(Constants.ENCRYPT_TRENDING,blankConditionDTO);
 
                 FindObjectDTO loginbjectDTO = new FindObjectDTO(loginDTO);
@@ -201,7 +210,7 @@ public class TrendingFragment extends Fragment implements UpdateCallback {
         {
             try {
 
-
+                ((MainActivity) getActivity()).stopProgress();
                 if ( SKIP == 0)
                     mDataList.clear();
 

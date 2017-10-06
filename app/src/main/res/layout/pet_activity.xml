@@ -6,25 +6,27 @@
 
 
     <TextView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/quotoes_icon"
+        android:layout_height="@dimen/quotoes_icon"
         android:background="@drawable/ic_silent_icon"
         android:layout_alignParentRight="true"
         android:id="@+id/cypher_icon"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"/>
 
+
+
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/cypher_icon"
-        android:layout_marginTop="50dp"
+
         >
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:layout_gravity="center"
             android:orientation="vertical">
 
 
@@ -33,8 +35,10 @@
                 android:id="@+id/Quotos_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
+
                 android:orientation="vertical"
                 android:background="@drawable/timerborder"
                 >
@@ -56,7 +60,7 @@
                     android:text=""
                     android:textStyle="bold|italic"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/qutoe_text_size" />
 
                 <TextView
 
@@ -71,14 +75,14 @@
                     android:paddingBottom="20dp"
                     android:textColor="@color/black"
                     android:id="@+id/autohor_name"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/qutoe_author_size"/>
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/stats_close"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/continue_button_quotes"
                 android:layout_below="@+id/Quotos_layout"
                 android:visibility="visible"
                 android:background="@drawable/theme_shape"
@@ -89,7 +93,9 @@
                 android:textSize="@dimen/stats_go_back" />
         </RelativeLayout>
 
-</ScrollView>
+    </ScrollView>
+
+
     <include layout="@layout/caution_layout" />
 
     <RelativeLayout

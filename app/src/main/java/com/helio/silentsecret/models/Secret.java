@@ -27,6 +27,15 @@ public class Secret {
     private ArrayList<String> hugUsers;
     private int hugs = 0;
 
+    public String getFlicker_image() {
+        return flicker_image;
+    }
+
+    public void setFlicker_image(String flicker_image) {
+        this.flicker_image = flicker_image;
+    }
+
+    private String flicker_image;
     private String latLon;
     private int likes = 0;
     private ArrayList<String> me2Users;
@@ -38,6 +47,15 @@ public class Secret {
     private ArrayList<String> supportOrganisations;
     private String text;
 
+    public String getSkin_pattern() {
+        return skin_pattern;
+    }
+
+    public void setSkin_pattern(String skin_pattern) {
+        this.skin_pattern = skin_pattern;
+    }
+
+    private  String skin_pattern = "";
     private int wms = 0;
     private boolean isFlagged;
 

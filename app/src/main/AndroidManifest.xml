@@ -2,14 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.helio.silentsecret">
 
-
     <uses-feature
         android:name="android.hardware.microphone"
-        android:required="false"/>
+        android:required="false" />
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -23,9 +22,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.location.gps" />
@@ -46,19 +44,17 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.helio.silentsecret.permission.C2D_MESSAGE" />
-
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
-        android:name="com.helio.silentsecret.application.SilentSecretApplication"
+        android:name=".application.SilentSecretApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.helio.silentsecret.activities.SplashActivity"
+            android:name=".activities.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -67,164 +63,177 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.helio.silentsecret.activities.CommentSecretActivity"
+            android:name=".activities.CommentSecretActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.helio.silentsecret.activities.ActionSecretActivity"
+            android:name=".activities.ActionSecretActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.helio.silentsecret.activities.SupportActivity"
+            android:name=".activities.SupportActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.helio.silentsecret.activities.CameraTestActivity"
+            android:name=".activities.CameraTestActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.helio.silentsecret.activities.CreateSecretActivity"
+            android:name=".activities.CreateSecretActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.helio.silentsecret.activities.PrivatePolicyActivity"
+            android:name=".activities.PrivatePolicyActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
-            android:name="com.helio.silentsecret.activities.CouponCodeActivity"
+            android:name=".activities.CouponCodeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-
-
         <activity
-            android:name="com.helio.silentsecret.activities.NotificationActivity"
+            android:name=".activities.NotificationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.helio.silentsecret.activities.MySecretsActivity"
+            android:name=".activities.MySecretsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.helio.silentsecret.activities.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.RateSchoolActivity"
+            android:name=".activities.RateSchoolActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.SignUpActivity"
+            android:name=".activities.SignUpActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.MoodActivity"
+            android:name=".activities.MoodActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.ReferFriendActivity"
+            android:name=".activities.ReferFriendActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.StatsActivity"
+            android:name=".activities.StatsActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.BannerResultActivity"
+            android:name=".activities.BannerResultActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.ChatFriends"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/ChatFriendsTheme" />
-
-        <activity
-            android:name="com.helio.silentsecret.activities.PetAvtarActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/ChatFriendsTheme" />
-
-
-        <activity
-            android:name="com.helio.silentsecret.activities.CallScreenActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/ChatFriendsTheme" />
-
-        <activity
-            android:name="com.helio.silentsecret.activities.AudioCallScreenActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/ChatFriendsTheme" />
-
-
-
-
-
-        <activity
-            android:name="com.helio.silentsecret.activities.IncomingCallScreenActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/ChatFriendsTheme" />
-
-
-        <activity
-            android:name="com.helio.silentsecret.activities.ChatDetailsScreen"
+            android:name=".activities.ChatFriends"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/ChatFriendsTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.CounsellerBooking"
+            android:name=".activities.PetAvtarActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme" />
+        <activity
+            android:name=".activities.ClearMySecretsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme" />
+        <activity
+            android:name=".activities.CallScreenActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme" />
+        <activity
+            android:name=".activities.AudioCallScreenActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme" />
+        <activity
+            android:name=".activities.IncomingCallScreenActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme" />
+        <activity
+            android:name=".activities.ChatDetailsScreen"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme" />
+        <activity
+            android:name=".activities.CounsellerBooking"
             android:label="@string/title_activity_counseller_booking"
             android:screenOrientation="portrait"
             android:theme="@style/ChatFriendsTheme" />
         <activity
-            android:name="com.helio.silentsecret.activities.LiveCounselling"
+            android:name=".activities.LiveCounselling"
             android:label="@string/title_activity_counseller_booking"
             android:screenOrientation="portrait"
             android:theme="@style/ChatFriendsTheme"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme" />
+        <activity
+            android:name=".activities.RoomsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.PrivateRoomsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.CommentRoomsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.RoomDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
-
-
-
-
-
-
-        <!--<receiver android:name="com.parse.ParseBroadcastReceiver">
+        <!--
+        <receiver android:name="com.parse.ParseBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
-        </receiver>-->
-        <!--<receiver
+        </receiver>
+        -->
+        <!--
+        <receiver
             android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
@@ -233,8 +242,10 @@
 
                 <category android:name="com.helio.silentsecret" />
             </intent-filter>
-        </receiver>-->
-        <!--<receiver
+        </receiver>
+        -->
+        <!--
+        <receiver
             android:name=".push.PushBroadcastReceiver"
             android:exported="false">
             <intent-filter>
@@ -242,11 +253,15 @@
                 <action android:name="com.parse.push.intent.OPEN" />
                 <action android:name="com.parse.push.intent.DELETE" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
+        -->
 
-        <!--<meta-data
+
+        <!--
+            <meta-data
             android:name="com.parse.push.notification_icon"
-            android:resource="@drawable/ic_launcher" />-->
+            android:resource="@drawable/ic_launcher" />
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -256,7 +271,7 @@
 
         <!-- For Notifications -->
         <receiver
-            android:name="com.helio.silentsecret.pushnotification.GcmBroadcastReceiver"
+            android:name=".pushnotification.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             -
             <intent-filter>
@@ -266,23 +281,23 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.helio.silentsecret.pushnotification.GcmIntentService" />
-        <service android:name="com.helio.silentsecret.Services.BoundService" />
-        <service android:name="com.helio.silentsecret.Services.RefreshFriendList" />
-        <service android:name="com.helio.silentsecret.Services.RefreshPendingFriendList" />
+        <service android:name=".pushnotification.GcmIntentService" />
+        <service android:name=".Services.BoundService" />
+        <service android:name=".Services.SinchService" />
+        <service
+            android:name=".Services.NotificationService"
+            android:stopWithTask="false" />
 
-        <service android:name="com.helio.silentsecret.Services.SinchService"></service>
-
-        <service android:name="com.helio.silentsecret.Services.NotificationService" android:stopWithTask="false" />
-
-
-        <receiver android:name="com.helio.silentsecret.Services.InactiveNotification" >
+        <receiver android:name=".Services.InactiveNotification">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-
+        <activity android:name=".activities.SignUpDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
     </application>
 
 </manifest>

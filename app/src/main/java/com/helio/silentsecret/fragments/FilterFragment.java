@@ -37,7 +37,8 @@ import java.util.Date;
 import java.util.List;
 
 
-public class FilterFragment extends Fragment implements FilterUpdateCallback {
+public class FilterFragment extends Fragment implements FilterUpdateCallback
+{
 
     private View mView;
     private ParallaxListView mListView;
@@ -66,12 +67,11 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
     private Date mCurrentMonth;
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mStartOver = TimeUtil.checkDateRange();
-        SKIP =0;
+        SKIP = 0;
     }
 
     @Override
@@ -88,13 +88,13 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
                     return;
                 }
 
-                SKIP =0;
+                SKIP = 0;
                 new FindSecret().execute();
                 //((MainActivity) getActivity()).loadFeed(state, false);
             }
         });
 
-        if(mDataList!= null)
+        if (mDataList != null)
             mDataList = null;
 
         mDataList = new ArrayList<>();
@@ -110,30 +110,25 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-               try
-               {
-                   final int lastItem = firstVisibleItem + visibleItemCount;
-                   if (mDataList != null && mDataList.size()>0 )
-                   {
-                       if (lastItem == totalItemCount) {
-                           if (preLast != lastItem) {
-                               preLast = lastItem;
+                try {
+                    final int lastItem = firstVisibleItem + visibleItemCount;
+                    if (mDataList != null && mDataList.size() > 0) {
+                        if (lastItem == totalItemCount) {
+                            if (preLast != lastItem) {
+                                preLast = lastItem;
 
-                               if (ConnectionDetector.isNetworkAvailable(getActivity()))
-                               {
-                                   SKIP = SKIP + 1;
-                                   new FindSecret().execute();
-                               }
+                                if (ConnectionDetector.isNetworkAvailable(getActivity())) {
+                                    SKIP = SKIP + 1;
+                                    new FindSecret().execute();
+                                }
 
 
-                           }
-                       }
-                   }
-               }
-               catch (Exception e)
-               {
-                   e.printStackTrace();
-               }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -274,10 +269,9 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
 
 
     @Override
-    public void onUpdate()
-    {
+    public void onUpdate() {
 
-            SKIP = 0;
+        SKIP = 0;
 
         if (ConnectionDetector.isNetworkAvailable(getActivity()))
             new FindSecret().execute();
@@ -306,13 +300,14 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //((MainActivity) getActivity()).showProgress();
+            if (SKIP != 0 ||  MainActivity.is_Refresh_Latest )
+                ((MainActivity) getActivity()).showProgress();
         }
 
         protected Bitmap doInBackground(String... args) {
             try {
 
-                if(list!= null) {
+                if (list != null) {
                     list.clear();
                     list = null;
                 }
@@ -322,28 +317,27 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
 
                 int state = Preference.getFilter();
 
-                if(state == Constants.STATE_SEE_ALL)
-                {
+                if (state == Constants.STATE_SEE_ALL) {
                     _method = Constants.ENCRYPT_LF_See_All;
-                }
-                else  if(state == Constants.STATE_LIGHT)
-                {
+                } else if (state == Constants.STATE_LIGHT) {
                     _method = Constants.ENCRYPT_LF_Light;
-                }
-                else  if(state == Constants.STATE_DEEP)
-                {
+                } else if (state == Constants.STATE_DEEP) {
                     _method = Constants.ENCRYPT_LF_Deep;
-                }
-                else  if(state == Constants.STATE_TENSE)
-                {
+                } else if (state == Constants.STATE_TENSE) {
                     _method = Constants.ENCRYPT_LF_Tense;
                 }
-                String age = AppSession.getValue(getActivity(),Constants.USER_AGE);
-                BlankConditionDTO blankConditionDTO = new BlankConditionDTO(age,""+SKIP);
-                FindDTO loginDTO = new FindDTO(_method,blankConditionDTO);
+                String age = AppSession.getValue(getActivity(), Constants.USER_AGE);
+                int intage = Integer.parseInt(age);
+                if(intage <11)
+                {
+                    age = "11";
+                }
+                BlankConditionDTO blankConditionDTO = new BlankConditionDTO(age, "" + SKIP);
+                blankConditionDTO.setClun01(MainActivity.enc_username);
+                FindDTO loginDTO = new FindDTO(_method, blankConditionDTO);
                 FindObjectDTO loginbjectDTO = new FindObjectDTO(loginDTO);
 
-                list =  http.FindHappySecret(loginbjectDTO);
+                list = http.FindHappySecret(loginbjectDTO);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -351,44 +345,54 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
             return null;
         }
 
-        protected void onPostExecute(Bitmap image)
-        {
+        protected void onPostExecute(Bitmap image) {
             try {
-                //((MainActivity) getActivity()).stopProgress();
+                ((MainActivity) getActivity()).stopProgress();
+                MainActivity.is_Refresh_Latest = false;
 
-                if (list != null && list.size() > 0)
-                {
+                if (list != null && list.size() > 0) {
 
-                    if(SKIP ==0)
-                    mDataList.clear();
+                    if (SKIP == 0) {
+                        mDataList.clear();
+                    }
 
                     mDataList.addAll(list);
 
 
+                    if (mDataList != null && mDataList.size() > 0) {
 
-                    if (mDataList != null && mDataList.size() > 0)
-                    {
-
-                        try
-                        {
+                        try {
                             OfflineSecretObjectDTO offlineSecretObjectDTO = new OfflineSecretObjectDTO(mDataList);
                             String jsonData = new Gson().toJson(offlineSecretObjectDTO);
 
                             AppSession.save(getActivity(), Constants.OFFLINE_LATEST_SECRET, jsonData);
-                        }
-                        catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                         adapter.notifyDataSetChanged();
 
+                        mListView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        }, 1000);
                         mSwipeRefreshLayout.setRefreshing(false);
 
 
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try
+            {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
         }
@@ -399,14 +403,12 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
     public void onResume() {
         super.onResume();
 
-        if(MainActivity.is_Refresh_Latest)
-        {
+        if (MainActivity.is_Refresh_Latest) {
             SKIP = 0;
-            MainActivity.is_Refresh_Latest = false;
+
             new FindSecret().execute();
         }
     }
-
 
 
     private class FindOfflineSecret extends AsyncTask<String, String, Bitmap> {
@@ -440,8 +442,6 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
                 }
 
 
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -454,15 +454,13 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback {
                 ((MainActivity) getActivity()).stopProgress();
 
 
-                if (list != null && list.size() > 0)
-                {
+                if (list != null && list.size() > 0) {
                     if (SKIP == 0)
                         mDataList.clear();
 
                     mDataList.addAll(list);
 
-                    if (mDataList != null && mDataList.size() > 0)
-                    {
+                    if (mDataList != null && mDataList.size() > 0) {
                         adapter.notifyDataSetChanged();
                         mSwipeRefreshLayout.setRefreshing(false);
                     }

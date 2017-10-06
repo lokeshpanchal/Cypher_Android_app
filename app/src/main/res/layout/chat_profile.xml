@@ -2,111 +2,93 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
-   >
+    android:background="@color/light_white">
 
 
-
-        <LinearLayout
-            android:id="@+id/header_ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@color/homemenu"
-            android:orientation="horizontal"
-            android:weightSum="3">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.3">
-
-                <ImageView
-                    android:id="@+id/back_iv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_back" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight=".4">
-
-                <TextView
-                    android:id="@+id/friendName_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:gravity="center"
-                    android:text="iFriend1"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1.3"></LinearLayout>
+    <RelativeLayout
+        android:id="@+id/header_ll"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/top_bar"
+        android:weightSum="3">
 
 
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/back_iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back" />
 
-
-        <ListView
-            android:id="@+id/chat_list"
+        <TextView
+            android:id="@+id/friendName_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/bottom_ll"
-            android:layout_below="@+id/header_ll"
-            android:divider="@null" />
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="iFriend1"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
 
+    </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/bottom_ll"
+
+    <ListView
+        android:id="@+id/chat_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_ll"
+
+        android:layout_below="@+id/header_ll"
+        android:divider="@null" />
+
+
+    <RelativeLayout
+        android:id="@+id/bottom_ll"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chat_send_msg_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/ifriend_edt_bg">
+
+
+        <EditText
+            android:id="@+id/msg_et"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/chat_field_bg"
+            android:ems="5"
+            android:hint="Type a message"
+            android:paddingLeft="10dp"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/light_gray" />
 
 
-           <!-- <ImageView
-                android:id="@+id/glimpse_iv"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:src="@drawable/glimpse" />-->
+        <ImageView
+            android:id="@+id/send_btn"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ifriend_chat_send" />
 
 
-
-
-
-            <EditText
-                android:id="@+id/msg_et"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="50dp"
-                android:background="@color/white"
-                android:ems="5"
-                android:hint="Type a message" />
-
-
-            <ImageView
-                android:id="@+id/send_btn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:padding="8dp"
-                android:src="@drawable/ic_send" />
-
-
-        </RelativeLayout>
-
-
-
+    </RelativeLayout>
 
 
     <RelativeLayout
@@ -172,10 +154,9 @@
     </RelativeLayout>
 
 
-<ProgressBar
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:id="@+id/progress"
-    android:layout_centerInParent="true"
-    />
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true" />
 </RelativeLayout>

@@ -145,11 +145,19 @@ public abstract class BaseActivity extends FragmentActivity {
         }
     }
 
-    protected void startTracking(String path) {
-        Tracker t = ((SilentSecretApplication) getApplication()).getTracker(
-                SilentSecretApplication.TrackerName.APP_TRACKER);
-        t.setScreenName(path);
-        t.send(new HitBuilders.AppViewBuilder().build());
+    protected void startTracking(String path)
+    {
+       try
+       {
+           Tracker t = ((SilentSecretApplication) getApplication()).getTracker(
+                   SilentSecretApplication.TrackerName.APP_TRACKER);
+           t.setScreenName(path);
+           t.send(new HitBuilders.AppViewBuilder().build());
+       }
+       catch (Exception e)
+       {
+           e.printStackTrace();
+       }
     }
 
     protected boolean localResolve(String text) {

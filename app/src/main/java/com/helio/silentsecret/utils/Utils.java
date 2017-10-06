@@ -221,12 +221,16 @@ public class Utils {
                     Rect rectText = new Rect();
                     paintText.getTextBounds(captionString, 0, captionString.length(), rectText);
 
-                    canvas.drawText(captionString,
+                   /* canvas.drawText(captionString,
                             (newBitmap.getWidth() / 3) - (rectText.width() / 3), rectText.height() * topMargin, paintText);
+                */
                     bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
                     bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() /3, bitmap.getHeight() / 3, false);
 
                     canvas.drawBitmap(bitmap, 10, 10, null);
+
+                    canvas.drawText(captionString, 20 +  bitmap.getWidth(), bitmap.getHeight()/2 + bitmap.getHeight()/3  , paintText);
+
 
                     bitmap.recycle();
 

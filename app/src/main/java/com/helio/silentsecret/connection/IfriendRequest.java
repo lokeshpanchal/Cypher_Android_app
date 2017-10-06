@@ -1,6 +1,7 @@
 package com.helio.silentsecret.connection;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -64,11 +65,15 @@ import com.helio.silentsecret.models.IfriendRequestRejectObjectDTO;
 import com.helio.silentsecret.models.IfriendSendRequestObjectDTO;
 import com.helio.silentsecret.models.IfriendsecrtpushobjectDTO;
 import com.helio.silentsecret.models.Notification;
+import com.helio.silentsecret.models.RoomComment;
+import com.helio.silentsecret.models.RoomsInfoDTO;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.models.SendImpactRatingDTO;
 import com.helio.silentsecret.models.SentImpactratinganswerObjectDTO;
 import com.helio.silentsecret.models.SupportOrganisation;
+import com.helio.silentsecret.models.TopicInfoDTO;
 import com.helio.silentsecret.utils.AppSession;
+import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.Preference;
 import com.helio.silentsecret.utils.Utils;
@@ -108,24 +113,28 @@ public class IfriendRequest {
     String serviceUrl = "";
 
 
-   // String Baseurl = "http://192.169.142.91/~silentsecret/pushnotification/api.php";
+    // String Baseurl = "http://192.169.142.91/~silentsecret/pushnotification/api.php";
 
 
     String MainServer = "https://dev1.eu-gb.mybluemix.net/api/service";
     String RecoveryServer = "https://dev1.eu-gb.mybluemix.net/api/service";
- //    String RecoveryServer = "https://dev2.eu-gb.mybluemix.net/api/service";
+    //    String RecoveryServer = "https://dev2.eu-gb.mybluemix.net/api/service";
 
 
+     //String MainServer = "https://90d04ade.ngrok.io/api/service";     // local
+    // String RecoveryServer = "https://90d04ade.ngrok.io/api/service"; // local
 
-   // String MainServer = "http://71254479.ngrok.io/api/service";     // local
-   // String RecoveryServer = "http://71254479.ngrok.io/api/service"; // local
-   // String RecoveryServer = "https://dev1.eu-gb.mybluemix.net/api/service";
 
-    //String MainServer = "https://cypherproduction.eu-gb.mybluemix.net/api/service";
-    //String RecoveryServer = "https://cypherproduction.eu-gb.mybluemix.net/api/service";
-   // String RecoveryServer = "https://cypherrecovery.eu-gb.mybluemix.net/api/service";
+    //String MainServer = "https://cypherproduction-v3.eu-gb.mybluemix.net/api/service";
+    //String RecoveryServer = "https://cypherrecovery-v3.eu-gb.mybluemix.net/api/service";
 
-    // http://api.doowapp.me/1.0/doowapp?tagId=1&fullTrackInfo=true&apikey=573f314f4f979
+
+   /*   String MainServer = "https://cypherproduction.eu-gb.mybluemix.net/api/service";
+    String RecoveryServer = "https://cypherproduction.eu-gb.mybluemix.net/api/service";
+
+
+   */
+
 
     String APIkey = "573f314f4f979";
     String TAG = getClass().getSimpleName();
@@ -137,7 +146,6 @@ public class IfriendRequest {
         super();
         mContext = context;
     }
-
 
 
     public String makeConnection(String serviceUrl, String entity) {
@@ -226,8 +234,7 @@ public class IfriendRequest {
 
     }
 
-    public List<RattingQuestionDTO> InsertRatingQuestion(Object contact)
-    {
+    public List<RattingQuestionDTO> InsertRatingQuestion(Object contact) {
 
         try {
             String jsonData = new Gson().toJson(contact);
@@ -241,7 +248,7 @@ public class IfriendRequest {
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -255,15 +262,14 @@ public class IfriendRequest {
     }
 
 
-    private List<RattingQuestionDTO> ParseQuestion(String jsonResponse)
-    {
+    private List<RattingQuestionDTO> ParseQuestion(String jsonResponse) {
 
         String response = "";
 
         String status = "";
-        String currentdatetime ="";
+        String currentdatetime = "";
         String suggested_by = "";
-        String sameCounsellor = "",sessionleft = "",session_duration = "",user_id = "";
+        String sameCounsellor = "", sessionleft = "", session_duration = "", user_id = "";
 
         List<RattingQuestionDTO> acceptedAppointmentDTOs = new ArrayList<>();
 
@@ -273,56 +279,59 @@ public class IfriendRequest {
             if (object instanceof JSONObject) {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
 
-                String counsellorid =""; String appointmentid =""; String questionid =""; String userid ="";String rated_by
-                        ="";String questiontext ="";
-                int rattingcount =0;String comment ="";
+                String counsellorid = "";
+                String appointmentid = "";
+                String questionid = "";
+                String userid = "";
+                String rated_by
+                        = "";
+                String questiontext = "";
+                int rattingcount = 0;
+                String comment = "";
 
 
                 if (jsonObject.has("status"))
-                    status  = jsonObject.getString("status");
+                    status = jsonObject.getString("status");
 
-               // if(status!= null && status.equalsIgnoreCase("true"))
+                // if(status!= null && status.equalsIgnoreCase("true"))
                 //{
                    /* if(jsonObject.has("datetime"))
                         currentdatetime =  jsonObject.getString("datetime");*/
 
-                    response = "success";
-                    json_array = jsonObject.getJSONArray("data");
+                response = "success";
+                json_array = jsonObject.getJSONArray("data");
 
-                    for (int i = 0; i < json_array.length(); i++)
-                    {
-                        JSONObject jsonObject1 = new JSONObject(json_array.getString(i));
-
-
-                        counsellorid = jsonObject1.getString("clcnslrun01");
-
-                        appointmentid = jsonObject1.getString("apntmnt_id");
-
-                        if(jsonObject1.has("questionid"))
-                            questionid = jsonObject1.getString("questionid");
-
-                        if(jsonObject1.has("clun01"))
-                            userid = jsonObject1.getString("clun01");
-
-                        if(jsonObject1.has("questiontext"))
-                            questiontext = jsonObject1.getString("questiontext");
-
-                        if(jsonObject1.has("rattingcount")) {
-                            String   rattingcount1 = jsonObject1.getString("rattingcount");
-                            rattingcount = Integer.parseInt(rattingcount1);
-                        }
+                for (int i = 0; i < json_array.length(); i++) {
+                    JSONObject jsonObject1 = new JSONObject(json_array.getString(i));
 
 
-                        acceptedAppointmentDTOs.add(new RattingQuestionDTO( counsellorid,  appointmentid,  questionid,  userid, ""
-                                , questiontext, rattingcount, ""));
+                    counsellorid = jsonObject1.getString("clcnslrun01");
 
+                    appointmentid = jsonObject1.getString("apntmnt_id");
+
+                    if (jsonObject1.has("questionid"))
+                        questionid = jsonObject1.getString("questionid");
+
+                    if (jsonObject1.has("clun01"))
+                        userid = jsonObject1.getString("clun01");
+
+                    if (jsonObject1.has("questiontext"))
+                        questiontext = jsonObject1.getString("questiontext");
+
+                    if (jsonObject1.has("rattingcount")) {
+                        String rattingcount1 = jsonObject1.getString("rattingcount");
+                        rattingcount = Integer.parseInt(rattingcount1);
                     }
+
+
+                    acceptedAppointmentDTOs.add(new RattingQuestionDTO(counsellorid, appointmentid, questionid, userid, ""
+                            , questiontext, rattingcount, ""));
+
+                }
                 //}
 
 
-
-            } else
-            {
+            } else {
                 return null;
             }
         } catch (Exception e) {
@@ -336,14 +345,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -415,7 +424,7 @@ public class IfriendRequest {
                         AppSession.save(mContext, Constants.USER_SECURITY_QUESTION, CryptLib.decrypt(security_question));
                         AppSession.save(mContext, Constants.USER_SECURITY_ANSWER, CryptLib.decrypt(security_answer));
                         AppSession.save(mContext, Constants.USER_GENDER, gender);
-                        AppSession.save(mContext, Constants.USER_AGE, age);
+                      //  AppSession.save(mContext, Constants.USER_AGE, age);
                     }
                 } else {
                     if (jsonObject.has("msg"))
@@ -438,14 +447,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -459,14 +468,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -475,19 +484,191 @@ public class IfriendRequest {
     }
 
 
-    public List<Comment> GetComment(GetCommentObjectDTO contact) {
-        String jsonData = new Gson().toJson(contact);
+    public String flagRoomComment(String jsonData) {
+        //  String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, jsonData);
+            }
+        }
+        return json;
+    }
+    public List<RoomComment> GetRoomComment(String jsonData) {
+      //  String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, jsonData);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, jsonData);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, jsonData);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, jsonData);
+            }
+        }
+        return ParseRoomComment(json);
+    }
+
+    private List<RoomComment> ParseRoomComment(String jsonResponse) {
+
+        String cltxt01 = "";
+        String clun01 = "";
+        String comment_id = "";
+        String flagged = "";
+        String is_reply = "";
+        String secret_id = "";
+        String seen_by = "";
+        String pet_name = "";
+        String reply_to = "";
+        String reply_cmnt_unq_id = "";
+        String created_at = "";
+        String room_clun01 = "";
+        PetAvtarInfoDTO petAvtarInfoDTO = null;
+        List<RoomComment> comments = new ArrayList<>();
+        String status = "";
+        try {
+            Object object = new JSONTokener(jsonResponse).nextValue();
+            if (object instanceof JSONObject) {
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+
+                if (jsonObject.has("status"))
+                    status = jsonObject.getString("status");
+
+                if (status != null && status.equalsIgnoreCase("true")) {
+                    String userinfo = "";
+
+                    if (jsonObject.has("data"))
+                        userinfo = jsonObject.getString("data");
+
+                    JSONArray json_array = null;
+                    if (jsonObject.has("data"))
+                        json_array = jsonObject.getJSONArray("data");
+
+                    for (int i = 0; i < json_array.length(); i++)
+                    {
+
+                        RoomComment comment = new RoomComment();
+                        JSONObject UserInfoobj = new JSONObject(json_array.getString(i));
+
+
+                        if (UserInfoobj.has("cmnttext01"))
+                            cltxt01 = UserInfoobj.getString("cmnttext01");
+
+                        comment.setText(CryptLib.decrypt(cltxt01));
+
+                        if (UserInfoobj.has("clun01"))
+                            clun01 = UserInfoobj.getString("clun01");
+                        comment.setUser(clun01);
+
+                        if (UserInfoobj.has("room_clun01"))
+                            room_clun01 = UserInfoobj.getString("room_clun01");
+                        comment.setRoom_user(room_clun01);
+
+
+                        if (UserInfoobj.has("cmnt_unq_id"))
+                            comment_id = UserInfoobj.getString("cmnt_unq_id");
+
+                        comment.setComment_id(comment_id);
+
+                        if (UserInfoobj.has("is_flagged"))
+                            flagged = UserInfoobj.getString("is_flagged");
+
+                        if (flagged != null && flagged.equalsIgnoreCase("true"))
+                            comment.setFlagged(true);
+                        else
+                            comment.setFlagged(false);
+
+
+                        if (UserInfoobj.has("is_reply"))
+                            is_reply = UserInfoobj.getString("is_reply");
+
+                        if (is_reply != null && is_reply.equalsIgnoreCase("true"))
+                            comment.setReply(true);
+                        else
+                            comment.setReply(false);
+
+
+                        if (UserInfoobj.has("reply_clun01"))
+                            reply_to = UserInfoobj.getString("reply_clun01");
+
+
+                        if (UserInfoobj.has("reply_cmnt_unq_id"))
+                            reply_cmnt_unq_id = UserInfoobj.getString("reply_cmnt_unq_id");
+
+                        comment.setReply_cmnt_unq_id(reply_cmnt_unq_id);
+                        comment.setReplyTo(reply_to);
+
+                        if (UserInfoobj.has("petname"))
+                            pet_name = UserInfoobj.getString("petname");
+
+
+                        comment.setPet_name(pet_name);
+
+
+
+
+                        if (UserInfoobj.has("rm_unq_id"))
+                            secret_id = UserInfoobj.getString("rm_unq_id");
+
+                        comment.setRoom_id(secret_id);
+
+                        if (UserInfoobj.has("created_at"))
+                            created_at = UserInfoobj.getString("created_at");
+
+
+                        try {
+                            Date Created_at = Utils.StringTodate(created_at);
+                            Created_at = getLocalTime(Created_at);
+                            comment.setCreatedAt(Created_at);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        comments.add(comment);
+                    }
+                } else {
+                    if (jsonObject.has("msg"))
+                        status = jsonObject.getString("msg");
+                }
+
+
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return comments;
+    }
+
+    public List<Comment> GetComment(GetCommentObjectDTO contact) {
+        String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, jsonData);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, jsonData);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, jsonData);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -614,7 +795,7 @@ public class IfriendRequest {
 
                         try {
                             Date Created_at = Utils.StringTodate(created_at);
-                            Created_at  = getLocalTime(Created_at);
+                            Created_at = getLocalTime(Created_at);
                             comment.setCreatedAt(Created_at);
 
                         } catch (Exception e) {
@@ -643,14 +824,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -664,16 +845,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response))
-            {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response))
-            {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -687,14 +866,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -704,7 +883,7 @@ public class IfriendRequest {
 
     private List<ChatMessageDTO> ParseChat(String jsonResponse) {
 
-        String  sender = "", receiver = "", risk_word = "", message = "", flags = "", flag_risk = "", read = "";
+        String sender = "", receiver = "", risk_word = "", message = "", flags = "", flag_risk = "", read = "";
         Date created_at = null, curretime = null;
 
         List<ChatMessageDTO> chatMessageDTO = new ArrayList<>();
@@ -717,8 +896,7 @@ public class IfriendRequest {
                 if (jsonObject.has("status"))
                     status = jsonObject.getString("status");
 
-                if (status != null && status.equalsIgnoreCase("true"))
-                {
+                if (status != null && status.equalsIgnoreCase("true")) {
                     JSONArray json_array = null;
                     if (jsonObject.has("data"))
                         json_array = jsonObject.getJSONArray("data");
@@ -756,10 +934,8 @@ public class IfriendRequest {
                             created_at = Utils.StringTodate(UserInfoobj.getString("created_at"));
 
 
-
-
-                        created_at =  getLocalTime(created_at);
-                        chatMessageDTO.add(new ChatMessageDTO(sender, receiver, risk_word, CryptLib.decrypt(message), flags, flag_risk, read, created_at,curretime));
+                        created_at = getLocalTime(created_at);
+                        chatMessageDTO.add(new ChatMessageDTO(sender, receiver, risk_word, CryptLib.decrypt(message), flags, flag_risk, read, created_at, curretime));
                     }
                 } else {
                     if (jsonObject.has("msg"))
@@ -780,14 +956,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -795,26 +971,46 @@ public class IfriendRequest {
         return "";
     }
 
-    public String Getsecretflagverified(FindbynameObjectDTO contact) {
-        String jsonData = new Gson().toJson(contact);
+    public String GetsecretflagverifiedForAndroid(  String jsonData) {
+       // String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, jsonData);
+            }
+        }
+        return ParseSecretverifiedFlaggedForAndroid(json);
+    }
+
+    public String Getsecretflagverified(  Object contact)
+    {
+          String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, jsonData);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, jsonData);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, jsonData);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
         }
         return ParseSecretverifiedFlagged(json);
     }
-
     private String ParseSecretverifiedFlagged(String jsonResponse) {
 
         String isverified = "", isflagged = "";
@@ -848,9 +1044,6 @@ public class IfriendRequest {
 
 
                     }
-                } else {
-                    if (jsonObject.has("msg"))
-                        status = jsonObject.getString("msg");
                 }
 
 
@@ -863,20 +1056,67 @@ public class IfriendRequest {
         return isverified;
     }
 
+    private String ParseSecretverifiedFlaggedForAndroid(String jsonResponse) {
+
+        String isverified = "", isflagged = "";
+
+        String status = "";
+        try {
+            Object object = new JSONTokener(jsonResponse).nextValue();
+            if (object instanceof JSONObject) {
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+
+                if (jsonObject.has("status"))
+                    status = jsonObject.getString("status");
+
+               /* if (status != null && status.equalsIgnoreCase("true"))
+                {
+                    String userinfo = "";
+
+                    if (jsonObject.has("data"))
+                        userinfo = jsonObject.getString("data");
+
+                    JSONArray json_array = null;
+                    if (jsonObject.has("data"))
+                        json_array = jsonObject.getJSONArray("data");
+
+                    for (int i = 0; i < json_array.length(); i++) {
+
+                        JSONObject UserInfoobj = new JSONObject(json_array.getString(i));
+
+                        if (UserInfoobj.has("is_verified"))
+                            isverified = UserInfoobj.getString("is_verified");
+
+
+                    }
+                }*/
+
+
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
+
+
 
     public String SetNotificationRead(FinalObjectDTO contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -890,14 +1130,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -910,14 +1150,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -930,14 +1170,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -946,20 +1186,19 @@ public class IfriendRequest {
     }
 
 
-
     public String ClearmySecret(ClearMysecretObjectDTO contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1014,14 +1253,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1078,16 +1317,39 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
+            }
+        }
+        return ParseGetsupport(json);
+    }
+
+
+
+
+    public List<SupportOrganisation> GetSupportlistWihtCountry(String contact) {
+        //  String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, contact);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, contact);
             }
         }
         return ParseGetsupport(json);
@@ -1099,14 +1361,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1115,20 +1377,19 @@ public class IfriendRequest {
     }
 
 
-
     public List<Secret> GetSearchSecret(SearchSecretObjectDTO contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1142,14 +1403,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1163,14 +1424,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1230,8 +1491,7 @@ public class IfriendRequest {
                                 item.setObjectId(UserInfoobj.getString(Constants.NOTIFICATION_ID) != null ? UserInfoobj.getString(Constants.NOTIFICATION_ID) : EMPTY);
 
 
-
-;
+                            ;
                             notifications.add(item);
 
 
@@ -1260,14 +1520,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1397,20 +1657,19 @@ public class IfriendRequest {
     }
 
 
-
     public String Schoolrating(SchoolRatingObjectDTO contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1419,22 +1678,19 @@ public class IfriendRequest {
     }
 
 
-
-    public String RedeemCounsellingCode(FinalObjectDTO contact)
-    {
+    public String RedeemCounsellingCode(FinalObjectDTO contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response))
-            {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1443,20 +1699,19 @@ public class IfriendRequest {
     }
 
 
-    public String AcceptAppointment(Object contact)
-    {
+    public String AcceptAppointment(Object contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1465,20 +1720,19 @@ public class IfriendRequest {
     }
 
 
-    public String SuggestTime(Object contact)
-    {
+    public String SuggestTime(Object contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1493,14 +1747,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1509,20 +1763,19 @@ public class IfriendRequest {
         return ParseQuestion(json);
     }
 
-    public String Getappointment(Object contact)
-    {
+    public String Getappointment(Object contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1531,20 +1784,61 @@ public class IfriendRequest {
     }
 
 
-    public String SendPetname(String contact)
+    public String JoinRoom(String contact)
     {
-      //  String jsonData = new Gson().toJson(contact);
+        //  String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, contact);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, contact);
             }
         } else {
             json = makeConnection(RecoveryServer, contact);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, contact);
+            }
+        }
+        return json;
+    }
+
+    public List<RoomsInfoDTO> GetRooms(String contact) {
+        //  String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, contact);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, contact);
+            }
+        }
+        return ParseRooms(json);
+    }
+
+
+    public String UpdateUserFirstName(String contact) {
+        //  String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, contact);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, contact);
             }
@@ -1553,20 +1847,347 @@ public class IfriendRequest {
     }
 
 
-    public String CheckUserSession(CheckUserSessionObjectDTO contact)
-    {
+
+    private List<RoomsInfoDTO> ParseRooms(String jsonResponse) {
+
+        String room_name = "", room_creator = "", room_image = "", room_search_text = "", room_unique_id = "" , ruby_code = "";
+
+
+        String status = "";
+
+        List<RoomsInfoDTO> roomsInfoDTOs = new ArrayList<>();
+        try {
+            Object object = new JSONTokener(jsonResponse).nextValue();
+            if (object instanceof JSONObject) {
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+
+                if (jsonObject.has("status"))
+                    status = jsonObject.getString("status");
+
+                if (status != null && status.equalsIgnoreCase("true")) {
+                    String userinfo = "";
+
+                    if (jsonObject.has("data"))
+                        userinfo = jsonObject.getString("data");
+
+                    JSONArray json_array = null;
+                    if (jsonObject.has("data"))
+                        json_array = jsonObject.getJSONArray("data");
+
+                    for (int i = 0; i < json_array.length(); i++)
+                    {
+                        String first_name = "";
+
+                        ArrayList<String> hug_users = new ArrayList<String>();
+                        ArrayList<String> heart_users = new ArrayList<String>();
+                        ArrayList<String> me2_users = new ArrayList<String>();
+                        ArrayList<String> comment_users = new ArrayList<String>();
+                        ArrayList<String> join_users = new ArrayList<String>();
+                        JSONObject UserInfoobj = null;
+                        if(json_array.getString(i)!= null) {
+                             UserInfoobj = new JSONObject(json_array.getString(i));
+                        }
+                        else
+                        continue;
+
+                        if (UserInfoobj.has("clrmnm01"))
+                            room_name = UserInfoobj.getString("clrmnm01");
+
+                        if (UserInfoobj.has("clun01"))
+                            room_creator = UserInfoobj.getString("clun01");
+
+
+                        if (UserInfoobj.has("clrmimg01"))
+                            room_image = UserInfoobj.getString("clrmimg01");
+
+                        if (UserInfoobj.has("clsearchrmnm"))
+                            room_search_text = UserInfoobj.getString("clsearchrmnm");
+
+
+                        if (UserInfoobj.has("user_firstname"))
+                            first_name = UserInfoobj.getString("user_firstname");
+
+
+
+                        if (UserInfoobj.has("rm_unq_id"))
+                            room_unique_id = UserInfoobj.getString("rm_unq_id");
+
+                        if (UserInfoobj.has("ruby_code"))
+                            ruby_code = UserInfoobj.getString("ruby_code");
+
+
+
+                        if (UserInfoobj.has("hug_users")) {
+                            JSONArray flausers = UserInfoobj.getJSONArray("hug_users");
+                            String flausers1[] = toStringArray(flausers);
+                            for (int k = 0; k < flausers1.length; k++) {
+                                hug_users.add(flausers1[k]);
+                            }
+                        }
+
+                        if (UserInfoobj.has("heart_users")) {
+                            JSONArray flausers = UserInfoobj.getJSONArray("heart_users");
+                            String flausers1[] = toStringArray(flausers);
+                            for (int k = 0; k < flausers1.length; k++) {
+                                heart_users.add(flausers1[k]);
+                            }
+                        }
+
+                        if (UserInfoobj.has("me2_users")) {
+                            JSONArray flausers = UserInfoobj.getJSONArray("me2_users");
+                            String flausers1[] = toStringArray(flausers);
+                            for (int k = 0; k < flausers1.length; k++) {
+                                me2_users.add(flausers1[k]);
+                            }
+                        }
+
+                        if (UserInfoobj.has("comment_users")) {
+                            JSONArray flausers = UserInfoobj.getJSONArray("comment_users");
+                            String flausers1[] = toStringArray(flausers);
+                            for (int k = 0; k < flausers1.length; k++) {
+                                comment_users.add(flausers1[k]);
+                            }
+                        }
+
+                        if (UserInfoobj.has("join_users")) {
+                            JSONArray flausers = UserInfoobj.getJSONArray("join_users");
+                            String flausers1[] = toStringArray(flausers);
+                            for (int k = 0; k < flausers1.length; k++) {
+                                join_users.add(flausers1[k]);
+                            }
+                        }
+
+                        Bitmap bitmap = null;
+                        if(room_image!= null && !room_image.contains("http"))
+                        {
+                            bitmap = CommonFunction.StringToBitMap(room_image);
+                        }
+
+
+                        RoomsInfoDTO roomsInfoDTO = new RoomsInfoDTO(room_name,room_image, bitmap , me2_users, hug_users, heart_users, me2_users.size(),
+                                hug_users.size(), heart_users.size(), room_unique_id, room_creator, room_search_text, comment_users, join_users , first_name , ruby_code);
+
+                        roomsInfoDTOs.add(roomsInfoDTO);
+                    }
+                }
+
+
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return roomsInfoDTOs;
+    }
+
+    public List<TopicInfoDTO> get_room_topic(String contact) {
+        //  String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, contact);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, contact);
+            }
+        }
+        return ParseRoomsTopic(json);
+    }
+
+
+    private List<TopicInfoDTO> ParseRoomsTopic(String jsonResponse) {
+
+        String topic_name = "", rm_topic_unq_id = "", topic_image = "", topic_desc = "", room_unique_id = "" , first_name = "";
+
+        String topic_formate = "";
+        String status = "";
+
+        List<TopicInfoDTO> topicInfoDTOs = new ArrayList<>();
+        try {
+            Object object = new JSONTokener(jsonResponse).nextValue();
+            if (object instanceof JSONObject) {
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+
+                if (jsonObject.has("status"))
+                    status = jsonObject.getString("status");
+
+                if (status != null && status.equalsIgnoreCase("true")) {
+                    String userinfo = "";
+
+                    if (jsonObject.has("data"))
+                        userinfo = jsonObject.getString("data");
+
+                    JSONObject UserInfoobjc = new JSONObject(userinfo);
+
+                    String roomtopic = "";
+                    if (UserInfoobjc.has("roomtopic"))
+                        roomtopic = UserInfoobjc.getString("roomtopic");
+
+                    JSONObject UserInfoobj = new JSONObject(roomtopic);
+
+                    if (UserInfoobj.has("cltopicname01"))
+                        topic_name = UserInfoobj.getString("cltopicname01");
+
+                    if (UserInfoobj.has("cltopicimage01"))
+                        topic_image = UserInfoobj.getString("cltopicimage01");
+
+
+                    if (UserInfoobj.has("rm_unq_id"))
+                        room_unique_id = UserInfoobj.getString("rm_unq_id");
+
+                    if (UserInfoobj.has("cltopicdescription01"))
+                        topic_desc = UserInfoobj.getString("cltopicdescription01");
+
+
+                    if (UserInfoobj.has("rm_unq_id"))
+                        room_unique_id = UserInfoobj.getString("rm_unq_id");
+
+                    if (UserInfoobj.has("user_firstname"))
+                        first_name = UserInfoobj.getString("user_firstname");
+
+
+                    if (UserInfoobj.has("rm_topic_unq_id"))
+                        rm_topic_unq_id = UserInfoobj.getString("rm_topic_unq_id");
+
+
+                    if (UserInfoobj.has("topic_format"))
+                        topic_formate = UserInfoobj.getString("topic_format");
+
+
+                   /* Bitmap top_img = null;
+                    if (topic_image != null && !topic_image.equalsIgnoreCase(""))
+                        top_img = CommonFunction.StringToBitMap(topic_image);
+*/
+
+                    Bitmap top_img = null;
+                    if (topic_image != null && !topic_image.equalsIgnoreCase(""))
+                    {
+                        if(!topic_image.contains("http"))
+                            top_img = CommonFunction.StringToBitMap(topic_image);
+                    }
+
+
+
+                    topicInfoDTOs.add(new TopicInfoDTO(topic_name,topic_image, top_img, room_unique_id,topic_desc, rm_topic_unq_id , first_name , topic_formate));
+
+
+
+                    JSONArray json_array = null;
+                    if (UserInfoobjc.has("topicReply"))
+                        json_array = UserInfoobjc.getJSONArray("topicReply");
+
+                    int length = json_array.length();
+
+                    for (int i = length -1; i >= 0; i--)
+                    {
+
+                        String topic_reply_image = ""  ;
+                        first_name = "";
+                        JSONObject Reply_obj = new JSONObject(json_array.getString(i));
+
+                        if (Reply_obj.has("cltxt01"))
+                            topic_name = Reply_obj.getString("cltxt01");
+
+                        if (Reply_obj.has("reply_image"))
+                            topic_reply_image = Reply_obj.getString("reply_image");
+
+
+                        if (Reply_obj.has("rm_unq_id"))
+                            room_unique_id = Reply_obj.getString("rm_unq_id");
+
+                        if (Reply_obj.has("user_firstname"))
+                            first_name = Reply_obj.getString("user_firstname");
+
+
+                        if (Reply_obj.has("rm_topic_unq_id"))
+                            rm_topic_unq_id = Reply_obj.getString("rm_topic_unq_id");
+
+                        Bitmap top_reply_img = null;
+                        if (topic_reply_image != null && !topic_reply_image.equalsIgnoreCase(""))
+                        {
+                            if(!topic_reply_image.contains("http"))
+                            top_reply_img = CommonFunction.StringToBitMap(topic_reply_image);
+                        }
+
+                        topicInfoDTOs.add(new TopicInfoDTO("", topic_reply_image , top_reply_img, room_unique_id,topic_name, rm_topic_unq_id , first_name , topic_formate));
+
+
+
+                    }
+                }
+
+
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topicInfoDTOs;
+    }
+
+
+    public String Create_room(String contact) {
+        //  String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, contact);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, contact);
+            }
+        }
+        return json;
+    }
+
+    public String SendPetname(String contact) {
+
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, contact);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, contact);
+            }
+        }
+        return json;
+    }
+
+
+    public String CheckUserSession(CheckUserSessionObjectDTO contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1575,20 +2196,19 @@ public class IfriendRequest {
     }
 
 
-
     public String Getflagverified(FindbynameObjectDTO contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1602,14 +2222,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1677,14 +2297,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1723,14 +2343,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1744,14 +2364,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1770,7 +2390,8 @@ public class IfriendRequest {
 
         List<SecretCategoryDTO> secretCategoryDTOs = new ArrayList<>();
 
-        String status = "", state = "", keywords = "", requestduration = "", maxfriend = "", quotes = "", creator ="", safeguard_update_date = "",session_duration = "", school_name = "", school_code = "", school_id = "";
+        String status = "", state = "", keywords = "", requestduration = "", maxfriend = "", quotes = "", creator = "", safeguard_update_date = "", session_duration = "", school_name = "",
+                school_code = "", school_id = "" , banned_word = "" , default_word = "";
         try {
             Object object = new JSONTokener(jsonResponse).nextValue();
             if (object instanceof JSONObject) {
@@ -1893,7 +2514,15 @@ public class IfriendRequest {
                         if (UserInfoobj.has("creator"))
                             creator = UserInfoobj.getString("creator");
 
-                        iFriendSettingDTO = new IFriendSettingDTO(requestduration, maxfriend, session_duration , safeguard_update_date ,quotes , creator);
+                        if (UserInfoobj.has("banned_word"))
+                            banned_word = UserInfoobj.getString("banned_word");
+
+                        if (UserInfoobj.has("default_word"))
+                            default_word = UserInfoobj.getString("default_word");
+
+
+
+                        iFriendSettingDTO = new IFriendSettingDTO(requestduration, maxfriend, session_duration, safeguard_update_date, quotes, creator , banned_word , default_word);
 
                     }
 
@@ -1961,14 +2590,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -1981,14 +2610,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2072,14 +2701,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2087,8 +2716,7 @@ public class IfriendRequest {
         return ParseHappy(json);
     }
 
-    public List<Secret> ParseOfflinesecret(String jsonResponse)
-    {
+    public List<Secret> ParseOfflinesecret(String jsonResponse) {
         String username = "";
         String age = "", gender = "", pin = "", security_answer = "", security_question = "";
         List<Secret> list = new ArrayList<>();
@@ -2100,332 +2728,325 @@ public class IfriendRequest {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
 
 
-
-
-
-
-
-                    JSONArray json_array = null;
-                    if (jsonObject.has("data"))
-                        json_array = jsonObject.getJSONArray("data");
-
-                    for (int i = 0; i < json_array.length(); i++) {
-                        Secret secret = new Secret();
-                        JSONObject UserInfoobj = new JSONObject(json_array.getString(i));
-
-                        if (UserInfoobj.has("address"))
-                            secret.setAddress(UserInfoobj.getString("address"));
-                        if (UserInfoobj.has("age"))
-                            secret.setAge(UserInfoobj.getString("age"));
-                        if (UserInfoobj.has("bgImageName"))
-                            secret.setBgImageName(UserInfoobj.getString("bgImageName"));
-
-                        if (UserInfoobj.has("category"))
-                            secret.setCategory(UserInfoobj.getString("category"));
-
-                        try {
-                            if (UserInfoobj.has("createdByUser"))
-                                secret.setCreatedByUser(UserInfoobj.getString("createdByUser"));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-
-                        }
-
-                        try {
-                            if (UserInfoobj.has("date"))
-                                secret.setDate(Utils.StringTodate(UserInfoobj.getString("date")));
-                        } catch (Exception e) {
-
-                        }
-                        if (UserInfoobj.has("feel"))
-                            secret.setFeel(UserInfoobj.getString("feel"));
-
-
-                        if (UserInfoobj.has("flagUsers")) {
-
-
-                            JSONArray flausers = UserInfoobj.getJSONArray("flagUsers");
-
-                            String flausers1[] = toStringArray(flausers);
-
-                            ArrayList<String> flagusers = new ArrayList<String>();
-                            for (int k = 0; k < flausers1.length; k++) {
-                                flagusers.add(flausers1[k]);
-                            }
-                            secret.setFlagUsers(flagusers);
-
-
-                        } else {
-                            secret.setFlagUsers(new ArrayList<String>());
-                        }
-                        if (UserInfoobj.has("flags")) {
-                            String flags = UserInfoobj.getString("flags");
-                            secret.setFlags(Integer.parseInt(flags));
-                        } else {
-                            secret.setFlags(0);
-                        }
-                        if (UserInfoobj.has("gender")) {
-                            gender = UserInfoobj.getString("gender");
-                            secret.setGender(gender);
-
-                        } else {
-                            secret.setGender("");
-                        }
-
-                        if (UserInfoobj.has("hasNotification")) {
-                            String hasNotification = UserInfoobj.getString("hasNotification");
-
-                            if (hasNotification != null && hasNotification.equalsIgnoreCase("true"))
-                                secret.setHasNotification(true);
-                            else
-                                secret.setHasNotification(false);
-                        } else
-                            secret.setHasNotification(false);
-
-
-                        if (UserInfoobj.has(Constants.SECRET_HASH_TAGS)) {
-                            String temp = UserInfoobj.getString(Constants.SECRET_HASH_TAGS);
-                            secret.setHashtags(temp);
-
-                        } else {
-                            secret.setHashtags("");
-                        }
-
-
-                        if (UserInfoobj.has("heartUsers")) {
-
-                            JSONArray flausers = UserInfoobj.getJSONArray("heartUsers");
-
-                            String flausers1[] = toStringArray(flausers);
-
-                            ArrayList<String> flagusers = new ArrayList<String>();
-                            for (int k = 0; k < flausers1.length; k++) {
-                                flagusers.add(flausers1[k]);
-                            }
-                            secret.setHeartUsers(flagusers);
-                        } else {
-                            secret.setHeartUsers(new ArrayList<String>());
-                        }
-
-
-                        if (UserInfoobj.has(Constants.SECRET_HEARTS)) {
-                            String flags = UserInfoobj.getString(Constants.SECRET_HEARTS);
-                            secret.setHearts(Integer.parseInt(flags));
-                        } else {
-                            secret.setHearts(0);
-                        }
-
-                        if (UserInfoobj.has(Constants.SECRET_HOME)) {
-                            String temp = UserInfoobj.getString(Constants.SECRET_HOME);
-                            secret.setHome(temp);
-
-                        } else {
-                            secret.setHome("");
-                        }
-
-                        if (UserInfoobj.has("hugUsers")) {
-                            JSONArray flausers = UserInfoobj.getJSONArray("hugUsers");
-
-                            String flausers1[] = toStringArray(flausers);
-
-                            ArrayList<String> flagusers = new ArrayList<String>();
-                            for (int k = 0; k < flausers1.length; k++) {
-                                flagusers.add(flausers1[k]);
-                            }
-                            secret.setHugUsers(flagusers);
-
-
-                        } else {
-                            secret.setHugUsers(new ArrayList<String>());
-                        }
-
-                        try {
-                            if (UserInfoobj.has(Constants.SECRET_HUGS)) {
-                                String flags = UserInfoobj.getString(Constants.SECRET_HUGS);
-                                secret.setHugs(Integer.parseInt(flags));
-                            } else {
-                                secret.setHugs(0);
-                            }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            secret.setHugs(0);
-                        }
-
-
-                        //   secret.setImage(data.getParseFile(Constants.SECRET_IMAGE) != null ? data.getParseFile(Constants.SECRET_IMAGE) : null);
-
-                        if (UserInfoobj.has("latLon")) {
-                            String temp = UserInfoobj.getString("latLon");
-                            secret.setLatLon(temp);
-
-                        } else {
-                            secret.setLatLon("");
-                        }
-
-
-                        try {
-                            if (UserInfoobj.has(Constants.SECRET_LIKES)) {
-                                String flags = UserInfoobj.getString(Constants.SECRET_LIKES);
-                                secret.setLikes(Integer.parseInt(flags));
-                            } else {
-                                secret.setLikes(0);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            secret.setLikes(0);
-                        }
-                        if (UserInfoobj.has("me2Users")) {
-                            try {
-                                JSONArray flausers = UserInfoobj.getJSONArray("me2Users");
-
-                                String flausers1[] = toStringArray(flausers);
-
-                                ArrayList<String> flagusers = new ArrayList<String>();
-                                for (int k = 0; k < flausers1.length; k++) {
-                                    flagusers.add(flausers1[k]);
-                                }
-                                secret.setMe2Users(flagusers);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-
-                        } else {
-                            secret.setMe2Users(new ArrayList<String>());
-                        }
-
-                        try {
-                            if (UserInfoobj.has(Constants.SECRET_ME2S)) {
-                                String flags = UserInfoobj.getString(Constants.SECRET_ME2S);
-                                secret.setMe2s(Integer.parseInt(flags));
-                            } else {
-                                secret.setMe2s(0);
-                            }
-                        } catch (Exception e) {
-                            secret.setMe2s(0);
-                            e.printStackTrace();
-                        }
-
-
-                        if (UserInfoobj.has("notificationSent")) {
-                            String flags = UserInfoobj.getString("notificationSent");
-                            secret.setNotificationSent(Integer.parseInt(flags));
-                        } else {
-                            secret.setNotificationSent(0);
-                        }
-
-
-                        if (UserInfoobj.has("readNotification"))
-                        {
-                            String hasNotification = UserInfoobj.getString("readNotification");
-                            if (hasNotification != null && hasNotification.equalsIgnoreCase("true"))
-                                secret.setReadNotification(true);
-                            else
-                                secret.setReadNotification(false);
-                        } else
-                            secret.setReadNotification(false);
-
-
-                        if (UserInfoobj.has("riskState")) {
-                            String temp = UserInfoobj.getString("riskState");
-                            secret.setRiskState(temp);
-
-                        } else {
-                            secret.setRiskState("");
-                        }
-
-                        if (UserInfoobj.has(Constants.SECRET_STRESS_LEVEL)) {
-                            String temp = UserInfoobj.getString(Constants.SECRET_STRESS_LEVEL);
-                            secret.setStressLevel(temp);
-
-                        } else {
-                            secret.setStressLevel("");
-                        }
-
-                        if (UserInfoobj.has("supportOrganisations")) {
-                            String flausers = UserInfoobj.getString("supportOrganisations");
-                            ArrayList<String> flagusers = new ArrayList<String>();
-                            flagusers.add(flausers);
-                            secret.setSupportOrganisations(flagusers);
-
-                        } else {
-                            secret.setSupportOrganisations(new ArrayList<String>());
-                        }
-
-                        if (UserInfoobj.has("text")) {
-                            String temp = UserInfoobj.getString("text");
-                            secret.setText(temp);
-
-                        } else {
-                            secret.setText("");
-                        }
-
-                        try {
-                            if (UserInfoobj.has(Constants.SECRET_WMS)) {
-                                String flags = UserInfoobj.getString(Constants.SECRET_WMS);
-                                secret.setWms(Integer.parseInt(flags));
-                            } else {
-                                secret.setWms(0);
-                            }
-                        } catch (Exception e) {
-                            secret.setWms(0);
-                            e.printStackTrace();
-                        }
-
-
-                        if (UserInfoobj.has("objectId")) {
-                            String temp = UserInfoobj.getString("objectId");
-                            secret.setObjectId(temp);
-
-                        } else {
-                            secret.setObjectId("");
-                        }
-
-
-                        if (UserInfoobj.has("comment_count")) {
-                            String temp = UserInfoobj.getString("comment_count");
-                            if (temp != null && !temp.equalsIgnoreCase("") && !temp.equalsIgnoreCase("null"))
-                                secret.setComment_count(temp);
-                            else
-                                secret.setComment_count("0");
-
-
-                        } else {
-                            secret.setComment_count("0");
-                        }
-
-
-                        try {
-                            if (UserInfoobj.has("createdDate"))
-                                secret.setCreatedDate(Utils.StringTodate(UserInfoobj.getString("createdDate")));
-                        } catch (Exception e) {
-
-                        }
-
-                        try {
-                            if (UserInfoobj.has(Constants.SECRET_FONT)) {
-                                String flags = UserInfoobj.getString(Constants.SECRET_FONT);
-                                secret.setFont(Integer.parseInt(flags));
-                            } else {
-
-                            }
-
-                        } catch (Exception e) {
-                            secret.setFont(0);
-                            e.printStackTrace();
-                        }
-
-                        secret.setShowCoupon(i % 3);
-
-
-                        list.add(secret);
-                        //  secret.setUserFilled(data.getParseObject(Constants.INCLUDE_USER_POINTER) != null ? data.getParseObject(Constants.INCLUDE_USER_POINTER) : null);
-                        // secret.setFont(data.get(Constants.SECRET_FONT) != null ? data.getInt(Constants.SECRET_FONT) : 1);
-
+                JSONArray json_array = null;
+                if (jsonObject.has("data"))
+                    json_array = jsonObject.getJSONArray("data");
+
+                for (int i = 0; i < json_array.length(); i++) {
+                    Secret secret = new Secret();
+                    JSONObject UserInfoobj = new JSONObject(json_array.getString(i));
+
+                    if (UserInfoobj.has("address"))
+                        secret.setAddress(UserInfoobj.getString("address"));
+                    if (UserInfoobj.has("age"))
+                        secret.setAge(UserInfoobj.getString("age"));
+                    if (UserInfoobj.has("bgImageName"))
+                        secret.setBgImageName(UserInfoobj.getString("bgImageName"));
+
+                    if (UserInfoobj.has("category"))
+                        secret.setCategory(UserInfoobj.getString("category"));
+
+                    try {
+                        if (UserInfoobj.has("createdByUser"))
+                            secret.setCreatedByUser(UserInfoobj.getString("createdByUser"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
 
                     }
 
+                    try {
+                        if (UserInfoobj.has("date"))
+                            secret.setDate(Utils.StringTodate(UserInfoobj.getString("date")));
+                    } catch (Exception e) {
+
+                    }
+                    if (UserInfoobj.has("feel"))
+                        secret.setFeel(UserInfoobj.getString("feel"));
+
+
+                    if (UserInfoobj.has("flagUsers")) {
+
+
+                        JSONArray flausers = UserInfoobj.getJSONArray("flagUsers");
+
+                        String flausers1[] = toStringArray(flausers);
+
+                        ArrayList<String> flagusers = new ArrayList<String>();
+                        for (int k = 0; k < flausers1.length; k++) {
+                            flagusers.add(flausers1[k]);
+                        }
+                        secret.setFlagUsers(flagusers);
+
+
+                    } else {
+                        secret.setFlagUsers(new ArrayList<String>());
+                    }
+                    if (UserInfoobj.has("flags")) {
+                        String flags = UserInfoobj.getString("flags");
+                        secret.setFlags(Integer.parseInt(flags));
+                    } else {
+                        secret.setFlags(0);
+                    }
+                    if (UserInfoobj.has("gender")) {
+                        gender = UserInfoobj.getString("gender");
+                        secret.setGender(gender);
+
+                    } else {
+                        secret.setGender("");
+                    }
+
+                    if (UserInfoobj.has("hasNotification")) {
+                        String hasNotification = UserInfoobj.getString("hasNotification");
+
+                        if (hasNotification != null && hasNotification.equalsIgnoreCase("true"))
+                            secret.setHasNotification(true);
+                        else
+                            secret.setHasNotification(false);
+                    } else
+                        secret.setHasNotification(false);
+
+
+                    if (UserInfoobj.has(Constants.SECRET_HASH_TAGS)) {
+                        String temp = UserInfoobj.getString(Constants.SECRET_HASH_TAGS);
+                        secret.setHashtags(temp);
+
+                    } else {
+                        secret.setHashtags("");
+                    }
+
+
+                    if (UserInfoobj.has("heartUsers")) {
+
+                        JSONArray flausers = UserInfoobj.getJSONArray("heartUsers");
+
+                        String flausers1[] = toStringArray(flausers);
+
+                        ArrayList<String> flagusers = new ArrayList<String>();
+                        for (int k = 0; k < flausers1.length; k++) {
+                            flagusers.add(flausers1[k]);
+                        }
+                        secret.setHeartUsers(flagusers);
+                    } else {
+                        secret.setHeartUsers(new ArrayList<String>());
+                    }
+
+
+                    if (UserInfoobj.has(Constants.SECRET_HEARTS)) {
+                        String flags = UserInfoobj.getString(Constants.SECRET_HEARTS);
+                        secret.setHearts(Integer.parseInt(flags));
+                    } else {
+                        secret.setHearts(0);
+                    }
+
+                    if (UserInfoobj.has(Constants.SECRET_HOME)) {
+                        String temp = UserInfoobj.getString(Constants.SECRET_HOME);
+                        secret.setHome(temp);
+
+                    } else {
+                        secret.setHome("");
+                    }
+
+                    if (UserInfoobj.has("hugUsers")) {
+                        JSONArray flausers = UserInfoobj.getJSONArray("hugUsers");
+
+                        String flausers1[] = toStringArray(flausers);
+
+                        ArrayList<String> flagusers = new ArrayList<String>();
+                        for (int k = 0; k < flausers1.length; k++) {
+                            flagusers.add(flausers1[k]);
+                        }
+                        secret.setHugUsers(flagusers);
+
+
+                    } else {
+                        secret.setHugUsers(new ArrayList<String>());
+                    }
+
+                    try {
+                        if (UserInfoobj.has(Constants.SECRET_HUGS)) {
+                            String flags = UserInfoobj.getString(Constants.SECRET_HUGS);
+                            secret.setHugs(Integer.parseInt(flags));
+                        } else {
+                            secret.setHugs(0);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        secret.setHugs(0);
+                    }
+
+
+                    //   secret.setImage(data.getParseFile(Constants.SECRET_IMAGE) != null ? data.getParseFile(Constants.SECRET_IMAGE) : null);
+
+                    if (UserInfoobj.has("latLon")) {
+                        String temp = UserInfoobj.getString("latLon");
+                        secret.setLatLon(temp);
+
+                    } else {
+                        secret.setLatLon("");
+                    }
+
+
+                    try {
+                        if (UserInfoobj.has(Constants.SECRET_LIKES)) {
+                            String flags = UserInfoobj.getString(Constants.SECRET_LIKES);
+                            secret.setLikes(Integer.parseInt(flags));
+                        } else {
+                            secret.setLikes(0);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        secret.setLikes(0);
+                    }
+                    if (UserInfoobj.has("me2Users")) {
+                        try {
+                            JSONArray flausers = UserInfoobj.getJSONArray("me2Users");
+
+                            String flausers1[] = toStringArray(flausers);
+
+                            ArrayList<String> flagusers = new ArrayList<String>();
+                            for (int k = 0; k < flausers1.length; k++) {
+                                flagusers.add(flausers1[k]);
+                            }
+                            secret.setMe2Users(flagusers);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } else {
+                        secret.setMe2Users(new ArrayList<String>());
+                    }
+
+                    try {
+                        if (UserInfoobj.has(Constants.SECRET_ME2S)) {
+                            String flags = UserInfoobj.getString(Constants.SECRET_ME2S);
+                            secret.setMe2s(Integer.parseInt(flags));
+                        } else {
+                            secret.setMe2s(0);
+                        }
+                    } catch (Exception e) {
+                        secret.setMe2s(0);
+                        e.printStackTrace();
+                    }
+
+
+                    if (UserInfoobj.has("notificationSent")) {
+                        String flags = UserInfoobj.getString("notificationSent");
+                        secret.setNotificationSent(Integer.parseInt(flags));
+                    } else {
+                        secret.setNotificationSent(0);
+                    }
+
+
+                    if (UserInfoobj.has("readNotification")) {
+                        String hasNotification = UserInfoobj.getString("readNotification");
+                        if (hasNotification != null && hasNotification.equalsIgnoreCase("true"))
+                            secret.setReadNotification(true);
+                        else
+                            secret.setReadNotification(false);
+                    } else
+                        secret.setReadNotification(false);
+
+
+                    if (UserInfoobj.has("riskState")) {
+                        String temp = UserInfoobj.getString("riskState");
+                        secret.setRiskState(temp);
+
+                    } else {
+                        secret.setRiskState("");
+                    }
+
+                    if (UserInfoobj.has(Constants.SECRET_STRESS_LEVEL)) {
+                        String temp = UserInfoobj.getString(Constants.SECRET_STRESS_LEVEL);
+                        secret.setStressLevel(temp);
+
+                    } else {
+                        secret.setStressLevel("");
+                    }
+
+                    if (UserInfoobj.has("supportOrganisations")) {
+                        String flausers = UserInfoobj.getString("supportOrganisations");
+                        ArrayList<String> flagusers = new ArrayList<String>();
+                        flagusers.add(flausers);
+                        secret.setSupportOrganisations(flagusers);
+
+                    } else {
+                        secret.setSupportOrganisations(new ArrayList<String>());
+                    }
+
+                    if (UserInfoobj.has("text")) {
+                        String temp = UserInfoobj.getString("text");
+                        secret.setText(temp);
+
+                    } else {
+                        secret.setText("");
+                    }
+
+                    try {
+                        if (UserInfoobj.has(Constants.SECRET_WMS)) {
+                            String flags = UserInfoobj.getString(Constants.SECRET_WMS);
+                            secret.setWms(Integer.parseInt(flags));
+                        } else {
+                            secret.setWms(0);
+                        }
+                    } catch (Exception e) {
+                        secret.setWms(0);
+                        e.printStackTrace();
+                    }
+
+
+                    if (UserInfoobj.has("objectId")) {
+                        String temp = UserInfoobj.getString("objectId");
+                        secret.setObjectId(temp);
+
+                    } else {
+                        secret.setObjectId("");
+                    }
+
+
+                    if (UserInfoobj.has("comment_count")) {
+                        String temp = UserInfoobj.getString("comment_count");
+                        if (temp != null && !temp.equalsIgnoreCase("") && !temp.equalsIgnoreCase("null"))
+                            secret.setComment_count(temp);
+                        else
+                            secret.setComment_count("0");
+
+
+                    } else {
+                        secret.setComment_count("0");
+                    }
+
+
+                    try {
+                        if (UserInfoobj.has("createdDate"))
+                            secret.setCreatedDate(Utils.StringTodate(UserInfoobj.getString("createdDate")));
+                    } catch (Exception e) {
+
+                    }
+
+                    try {
+                        if (UserInfoobj.has(Constants.SECRET_FONT)) {
+                            String flags = UserInfoobj.getString(Constants.SECRET_FONT);
+                            secret.setFont(Integer.parseInt(flags));
+                        } else {
+
+                        }
+
+                    } catch (Exception e) {
+                        secret.setFont(0);
+                        e.printStackTrace();
+                    }
+
+                    secret.setShowCoupon(i % 3);
+
+
+                    list.add(secret);
+                    //  secret.setUserFilled(data.getParseObject(Constants.INCLUDE_USER_POINTER) != null ? data.getParseObject(Constants.INCLUDE_USER_POINTER) : null);
+                    // secret.setFont(data.get(Constants.SECRET_FONT) != null ? data.getInt(Constants.SECRET_FONT) : 1);
+
+
+                }
 
 
             } else {
@@ -2460,8 +3081,7 @@ public class IfriendRequest {
                     if (jsonObject.has("data"))
                         json_array = jsonObject.getJSONArray("data");
 
-                    for (int i = 0; i < json_array.length(); i++)
-                    {
+                    for (int i = 0; i < json_array.length(); i++) {
                         Secret secret = new Secret();
                         JSONObject UserInfoobj = new JSONObject(json_array.getString(i));
 
@@ -2469,9 +3089,7 @@ public class IfriendRequest {
                             secret.setAddress(UserInfoobj.getString("cladd01"));
 
 
-
-                        if (UserInfoobj.has("hide_users"))
-                        {
+                        if (UserInfoobj.has("hide_users")) {
 
                             JSONArray flausers = UserInfoobj.getJSONArray("hide_users");
                             String flausers1[] = toStringArray(flausers);
@@ -2480,8 +3098,8 @@ public class IfriendRequest {
                                 flagusers.add(flausers1[k]);
                             }
 
-                                if(flagusers.contains(MainActivity.enc_username))
-                                    continue;
+                            if (flagusers.contains(MainActivity.enc_username))
+                                continue;
                         }
 
                         if (UserInfoobj.has("age"))
@@ -2685,8 +3303,7 @@ public class IfriendRequest {
                         }
 
 
-                        if (UserInfoobj.has(Constants.SECRET_READ_NOTIFICATION))
-                        {
+                        if (UserInfoobj.has(Constants.SECRET_READ_NOTIFICATION)) {
                             String hasNotification = UserInfoobj.getString(Constants.SECRET_READ_NOTIFICATION);
                             if (hasNotification != null && hasNotification.equalsIgnoreCase("true"))
                                 secret.setReadNotification(true);
@@ -2724,7 +3341,7 @@ public class IfriendRequest {
 
                         if (UserInfoobj.has("cltxt01")) {
                             String temp = UserInfoobj.getString("cltxt01");
-                            temp =  CryptLib.decrypt(temp);
+                            temp = CryptLib.decrypt(temp);
                             secret.setText(temp);
 
                         } else {
@@ -2750,6 +3367,15 @@ public class IfriendRequest {
 
                         } else {
                             secret.setObjectId("");
+                        }
+
+
+                        if (UserInfoobj.has("skin_pattern")) {
+                            String temp = UserInfoobj.getString("skin_pattern");
+                            secret.setSkin_pattern(temp);
+
+                        } else {
+                            secret.setSkin_pattern("");
                         }
 
 
@@ -2786,6 +3412,14 @@ public class IfriendRequest {
                             e.printStackTrace();
                         }
 
+                        if (UserInfoobj.has(Constants.SECRET_FLICKER_IMAGE)) {
+                            String temp = UserInfoobj.getString(Constants.SECRET_FLICKER_IMAGE);
+                            secret.setFlicker_image(temp);
+
+                        } else {
+                            secret.setFlicker_image("");
+                        }
+
                         secret.setShowCoupon(i % 3);
 
 
@@ -2811,19 +3445,44 @@ public class IfriendRequest {
     }
 
 
-    public String AddComment(CommentObjectDTO contact) {
+
+    public String AddRoomComment(Object contact) {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, jsonData);
+            }
+        }
+        return ParseOnlySuccess(json);
+    }
+
+
+
+    public String AddComment(CommentObjectDTO contact)
+    {
+        String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, jsonData);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response))
+            {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, jsonData);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, jsonData);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2837,14 +3496,15 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response))
+            {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2856,8 +3516,6 @@ public class IfriendRequest {
     private String ParseOnlySuccess(String jsonResponse) {
         String username = "";
         String age = "", gender = "", pin = "", security_answer = "", security_question = "";
-
-
         String status = "";
         try {
             Object object = new JSONTokener(jsonResponse).nextValue();
@@ -2893,14 +3551,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")||  json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2914,14 +3572,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2935,14 +3593,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2955,14 +3613,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2976,14 +3634,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -2994,8 +3652,8 @@ public class IfriendRequest {
     private String ParseLogin(String jsonResponse) {
         String username = "";
         String age = "", gender = "", pin = "", security_answer = "", security_question = "";
-        String me2s = "", hugs = "", hearts = "", pet_name = "",tandc = "",user_firstname = "",
-                isverified = "", isflagged = "", secrets = "", birthday = "",safe_guard = "", disclaimer = "" , custom_pet_name = "";
+        String me2s = "", hugs = "",code = "",codetype = "", hearts = "", pet_name = "", tandc = "", user_firstname = "",
+                isverified = "", isflagged = "", secrets = "", birthday = "", safe_guard = "", disclaimer = "", custom_pet_name = "";
 
         String status = "";
         try {
@@ -3091,12 +3749,21 @@ public class IfriendRequest {
                             user_firstname = UserInfoobj.getString("user_firstname");
 
 
+                        if (UserInfoobj.has("custom_pet_name"))
+                            custom_pet_name = UserInfoobj.getString("custom_pet_name");
 
                         if (UserInfoobj.has("custom_pet_name"))
                             custom_pet_name = UserInfoobj.getString("custom_pet_name");
 
-                        if (disclaimer != null && !disclaimer.equalsIgnoreCase("") && disclaimer.equalsIgnoreCase("true"))
-                        {
+                        if (UserInfoobj.has("codetype"))
+                            codetype = UserInfoobj.getString("codetype");
+
+
+                        if (UserInfoobj.has("code"))
+                            code = UserInfoobj.getString("code");
+
+
+                        if (disclaimer != null && !disclaimer.equalsIgnoreCase("") && disclaimer.equalsIgnoreCase("true")) {
                             Preference.saveUserDisclaimer(true);
 
                         } else {
@@ -3105,7 +3772,8 @@ public class IfriendRequest {
 
                         AppSession.save(mContext, Constants.USER_SAFE_GUARD, safe_guard);
 
-
+                        AppSession.save(mContext, Constants.USER_CODE_TYPE, codetype);
+                        AppSession.save(mContext, Constants.USER_CODE, code);
                         AppSession.save(mContext, Constants.USER_ME2S, me2s);
                         AppSession.save(mContext, Constants.USER_HEARTS, hearts);
                         AppSession.save(mContext, Constants.USER_HUGS, hugs);
@@ -3120,12 +3788,12 @@ public class IfriendRequest {
                         AppSession.save(mContext, Constants.USER_AGE, age);
                         AppSession.save(mContext, Constants.USER_PET_NAME, pet_name);
 
-                        if(birthday != null && !birthday.equalsIgnoreCase("")) {
-                            birthday = birthday.substring(0,10);
+                        if (birthday != null && !birthday.equalsIgnoreCase("")) {
+                            birthday = birthday.substring(0, 10);
 
                             AppSession.save(mContext, Constants.USER_DATE_OF_BIRTH, birthday);
                         }
-                        AppSession.save(mContext,Constants.USER_TERMSCONDITION,tandc);
+                        AppSession.save(mContext, Constants.USER_TERMSCONDITION, tandc);
 
                         if (secrets != null && !secrets.equalsIgnoreCase("")) {
                             AppSession.save(mContext, Constants.USER_SECRETS, secrets);
@@ -3168,14 +3836,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3231,14 +3899,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3254,14 +3922,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3301,14 +3969,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3324,14 +3992,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3349,14 +4017,14 @@ public class IfriendRequest {
             if (Constants.primary_server) {
                 json = makeConnection(MainServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = false;
                     json = makeConnection(RecoveryServer, jsonData);
                 }
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -3377,14 +4045,14 @@ public class IfriendRequest {
             if (Constants.primary_server) {
                 json = makeConnection(MainServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = false;
                     json = makeConnection(RecoveryServer, jsonData);
                 }
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -3398,7 +4066,6 @@ public class IfriendRequest {
     }
 
 
-
     public String SendAttanduser(Object contact) {
 
         try {
@@ -3406,14 +4073,14 @@ public class IfriendRequest {
             if (Constants.primary_server) {
                 json = makeConnection(MainServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = false;
                     json = makeConnection(RecoveryServer, jsonData);
                 }
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -3433,14 +4100,14 @@ public class IfriendRequest {
             if (Constants.primary_server) {
                 json = makeConnection(MainServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = false;
                     json = makeConnection(RecoveryServer, jsonData);
                 }
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -3460,14 +4127,14 @@ public class IfriendRequest {
             if (Constants.primary_server) {
                 json = makeConnection(MainServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = false;
                     json = makeConnection(RecoveryServer, jsonData);
                 }
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -3481,7 +4148,6 @@ public class IfriendRequest {
     }
 
 
-
     public List<SendImpactRatingDTO> GetImpactRatingquestion(GetImpactRatingObjectDTO contact) {
 
         try {
@@ -3489,14 +4155,14 @@ public class IfriendRequest {
             if (Constants.primary_server) {
                 json = makeConnection(MainServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = false;
                     json = makeConnection(RecoveryServer, jsonData);
                 }
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -3517,14 +4183,14 @@ public class IfriendRequest {
             if (Constants.primary_server) {
                 json = makeConnection(MainServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = false;
                     json = makeConnection(RecoveryServer, jsonData);
                 }
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -3574,14 +4240,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3613,14 +4279,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3629,21 +4295,20 @@ public class IfriendRequest {
         //  return  "";
     }
 
-    public String SendfriendReuest(IfriendSendRequestObjectDTO contact) {
-
-
+    public String SendfriendReuest(IfriendSendRequestObjectDTO contact)
+    {
         String jsonData = new Gson().toJson(contact);
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3677,14 +4342,14 @@ public class IfriendRequest {
             if (Constants.primary_server) {
                 json = makeConnection(MainServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = false;
                     json = makeConnection(RecoveryServer, jsonData);
                 }
             } else {
                 json = makeConnection(RecoveryServer, jsonData);
 
-                if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+                if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                     Constants.primary_server = true;
                     json = makeConnection(MainServer, jsonData);
                 }
@@ -3703,14 +4368,14 @@ public class IfriendRequest {
         if (Constants.primary_server) {
             json = makeConnection(MainServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = false;
                 json = makeConnection(RecoveryServer, jsonData);
             }
         } else {
             json = makeConnection(RecoveryServer, jsonData);
 
-            if (json == null || json.equalsIgnoreCase("")|| json.contains(failer_response)) {
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
                 Constants.primary_server = true;
                 json = makeConnection(MainServer, jsonData);
             }
@@ -3765,8 +4430,7 @@ public class IfriendRequest {
                         status = jsonObject1.getString("status");
 
 
-
-                        if(!friendname.contains(friend)) {
+                        if (!friendname.contains(friend)) {
                             friendname.add(friend);
                             ifriendListDTO.add(new IfriendListDTO(username, friend, possition, secretpn, requestid
                                     , profilepic, status));
@@ -4016,7 +4680,7 @@ public class IfriendRequest {
                         if (jsonObject1.has("_created_at"))
                             CreatedAt = Utils.StringTodate(jsonObject1.getString("_created_at"));
 
-                        CreatedAt =  getLocalTime(CreatedAt);
+                        CreatedAt = getLocalTime(CreatedAt);
                         ifriendListDTO.add(new IfriendPendingRequestDTO(sender, target, status, sender_lat, sender_lng, CreatedAt, requestid));
 
                     }

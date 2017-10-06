@@ -12,7 +12,7 @@
         android:layout_marginLeft="@dimen/rate_item_sides_m"
         android:layout_marginRight="@dimen/rate_item_sides_m"
         android:layout_marginTop="@dimen/rate_item_mt"
-        android:background="@color/homemenu"
+        android:background="@drawable/search_top_header"
         android:gravity="center"
         android:padding="10dp"
         android:textColor="@color/white"
@@ -24,7 +24,7 @@
         android:layout_marginBottom="@dimen/rate_item_mt"
         android:layout_marginLeft="@dimen/rate_item_sides_m"
         android:layout_marginRight="@dimen/rate_item_sides_m"
-        android:background="@color/homemain">
+        android:background="@drawable/search_center">
 
         <RatingBar
             android:id="@+id/rate_school_rate_bar"
@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
+
             android:numStars="5"
             android:rating="0"
             android:stepSize="1.0" />

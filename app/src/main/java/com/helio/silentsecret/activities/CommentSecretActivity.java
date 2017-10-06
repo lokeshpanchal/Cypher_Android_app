@@ -55,7 +55,6 @@ import com.helio.silentsecret.models.IfriendRequestObjectDTO;
 import com.helio.silentsecret.models.RiskState;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.utils.AppSession;
-import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.ImageLoaderUtil;
 import com.helio.silentsecret.utils.KeyboardUtil;
@@ -64,6 +63,7 @@ import com.helio.silentsecret.utils.ToastUtil;
 import com.nirhart.parallaxscroll.views.ParallaxListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -180,7 +180,25 @@ public class CommentSecretActivity extends BaseActivity
             }
         });
 
+        try
+        {
+            if (MainActivity.stataicObjectDTO != null) {
+                if (MainActivity.stataicObjectDTO.getKeywords() != null)
+                {
+                    if(keyWords == null)
+                        keyWords = new ArrayList<>();
+                    else
+                        keyWords.clear();
+                    keyWords.addAll(Arrays.asList(MainActivity.stataicObjectDTO.getKeywords().split(", ")));
+                }
+            }
 
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         close_comment = (ImageView) findViewById(R.id.close_comment);
 
@@ -665,8 +683,8 @@ public class CommentSecretActivity extends BaseActivity
             attantionPopup = result;
 
             try {
-
                 int commnet_cont = 1;
+                /*int commnet_cont = 1;
                 String secrets =   secretObject.getComment_count();
                 try{
                     if(secrets!= null && !secrets.equalsIgnoreCase(""))
@@ -679,35 +697,35 @@ public class CommentSecretActivity extends BaseActivity
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                }
+                }*/
 
                 List<String> seen_by = new ArrayList<>();
 
                 seen_by.add(MainActivity.enc_username);
 
 
-                int water = 10;
-                if(MainActivity.petAvtarInfoDTO!= null)
-                {
-                    try {
-                        String me2_water = MainActivity.petAvtarInfoDTO.getM2_water();
-                        if (me2_water != null && !me2_water.equalsIgnoreCase("") && !me2_water.equalsIgnoreCase("null")) {
-                            water = Integer.parseInt(me2_water);
-                            if (water <= 90)
-                                water = water + 10;
+                //int water = 10;
+//                if(MainActivity.petAvtarInfoDTO!= null)
+//                {
+//                    try {
+//                        String me2_water = MainActivity.petAvtarInfoDTO.getM2_water();
+//                        if (me2_water != null && !me2_water.equalsIgnoreCase("") && !me2_water.equalsIgnoreCase("null")) {
+//                            water = Integer.parseInt(me2_water);
+//                            if (water <= 90)
+//                                water = water + 10;
+//
+//
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    MainActivity.petAvtarInfoDTO.setM2_water("" + water);
+//                    CommonFunction.water_maintain();
+//                }
 
 
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    MainActivity.petAvtarInfoDTO.setM2_water("" + water);
-                    CommonFunction.water_maintain();
-                }
-
-
-                String total_count = "";
+                /*String total_count = "";
                 int total_scrcount = 0;
                 if(MainActivity.petAvtarInfoDTO!= null)
                 {
@@ -724,7 +742,7 @@ public class CommentSecretActivity extends BaseActivity
                         total_scrcount = 1;
                         e.printStackTrace();
                     }
-                }
+                }*/
 
                     String petname = AppSession.getValue(mActivity, Constants.USER_PET_NAME);
                 long mseconds = System.currentTimeMillis();
@@ -743,8 +761,11 @@ public class CommentSecretActivity extends BaseActivity
                     AppSession.save(this,Constants.COMMENT_TIMING,"");
                 }
 
-                commentConditionDTO = new CommentConditionDTO( secretObject.getObjectId() ,  commnet_cont ,MainActivity.enc_username,  sendfriendList, false
-                , doowappmReplyComment != null ? doowappmReplyComment.getUser(): null ,  doowapmReplyState.get(), CryptLib.encrypt(text),riskState , user_id ,riskWord,""+water,petname,seen_by,reply_comment_id, secretObject.getCreatedByUser(),""+total_scrcount,timing);
+                String flag_value = "0";
+                if(attantionPopup)
+                    flag_value = "7";
+                commentConditionDTO = new CommentConditionDTO( secretObject.getObjectId() ,  commnet_cont ,MainActivity.enc_username,  sendfriendList, attantionPopup
+                , doowappmReplyComment != null ? doowappmReplyComment.getUser(): null ,  doowapmReplyState.get(), CryptLib.encrypt(text),riskState , user_id ,riskWord,"10",petname,seen_by,reply_comment_id, secretObject.getCreatedByUser(),"1",timing , flag_value);
 
                new CreatNewComment().execute();
 

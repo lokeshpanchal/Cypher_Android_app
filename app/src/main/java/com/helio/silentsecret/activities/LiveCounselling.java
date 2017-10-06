@@ -32,7 +32,6 @@ import com.helio.silentsecret.R;
 import com.helio.silentsecret.Services.NotificationService;
 import com.helio.silentsecret.Services.SinchService;
 import com.helio.silentsecret.WebserviceDTO.FindbyNameDTO;
-import com.helio.silentsecret.adapters.ChatDetailsAdapter;
 import com.helio.silentsecret.adapters.CounsellingChatDetailsAdapter;
 import com.helio.silentsecret.appCounsellingDTO.AppointmentAutoCancelDTO;
 import com.helio.silentsecret.appCounsellingDTO.AppointmentCompleteDTO;
@@ -68,7 +67,6 @@ import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.KeyboardUtil;
 import com.helio.silentsecret.utils.ToastUtil;
 import com.helio.silentsecret.utils.Utils;
-
 import com.sinch.android.rtc.SinchError;
 import com.sinch.android.rtc.calling.Call;
 
@@ -261,7 +259,7 @@ public class LiveCounselling extends SinchBaseActivity implements SinchService.S
                 if (is_allSubmit) {
                     if (ConnectionDetector.isNetworkAvailable(ct)) {
                         // ThankYouPopup();
-                        impactratinglayout.setVisibility(View.GONE);
+
 
                         new SendImpactRating().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         ImpactRatingdone();
@@ -2458,7 +2456,7 @@ public class LiveCounselling extends SinchBaseActivity implements SinchService.S
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+                progress_bar.setVisibility(View.VISIBLE);
 
         }
 
@@ -2482,9 +2480,23 @@ public class LiveCounselling extends SinchBaseActivity implements SinchService.S
             return null;
         }
 
-
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+          //  impactratinglayout.setVisibility(View.GONE);
+            progress_bar.setVisibility(View.GONE);
+            restartActivity(LiveCounselling.this);
+        }
     }
 
+    public static void restartActivity(Activity act){
+
+        Intent intent=new Intent();
+        intent.setClass(act, act.getClass());
+        act.startActivity(intent);
+        act.finish();
+
+    }
 
     static List<SendMessageObjectDTO> sendMessageObjectDTOs = new ArrayList<>();
     /*     SendMessageDataDTO sendMessageDataDTO = null;
@@ -3127,7 +3139,7 @@ public class LiveCounselling extends SinchBaseActivity implements SinchService.S
 
     public String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
         byte[] b = baos.toByteArray();
         String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;

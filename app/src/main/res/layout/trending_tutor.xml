@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="10"
+
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:layout_width="@dimen/trending_tutor_width"
+        android:layout_height="@dimen/trending_tutor_height"
+      android:layout_marginTop="@dimen/trending_tutor_top_margin"
+        android:layout_marginLeft="@dimen/trending_tutor_left_margin"
+
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="-31dp"
+        android:background="@drawable/trending_tutor" />
+
+</RelativeLayout>

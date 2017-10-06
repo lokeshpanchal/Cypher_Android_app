@@ -19,7 +19,6 @@ import com.helio.silentsecret.activities.MySecretsActivity;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.Preference;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

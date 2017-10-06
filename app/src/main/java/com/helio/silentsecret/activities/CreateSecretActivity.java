@@ -5,14 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,22 +17,24 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.helio.silentsecret.EncryptionDecryption.CryptLib;
@@ -61,13 +60,13 @@ import com.helio.silentsecret.dialogs.ProgressDialog;
 import com.helio.silentsecret.fragments.CreateSecretDatePickerFragment;
 import com.helio.silentsecret.location.GPSCoordinateReceiver;
 import com.helio.silentsecret.location.GeoHelper;
+import com.helio.silentsecret.models.DisplaySizes;
 import com.helio.silentsecret.models.IfriendListDTO;
 import com.helio.silentsecret.models.IfriendRequestDTO;
 import com.helio.silentsecret.models.IfriendRequestObjectDTO;
-import com.helio.silentsecret.models.RiskState;
-import com.helio.silentsecret.models.School;
 import com.helio.silentsecret.models.SecretPushNotificayionDTO;
 import com.helio.silentsecret.utils.AppSession;
+import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.ImageLoaderUtil;
 import com.helio.silentsecret.utils.KeyboardUtil;
@@ -76,35 +75,66 @@ import com.helio.silentsecret.utils.ToastUtil;
 import com.helio.silentsecret.utils.Utils;
 import com.nineoldandroids.animation.Animator;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
+
+
 public class CreateSecretActivity extends BaseActivity implements View.OnClickListener, GPSCallback {
 
-    private ImageView imageBack;
+    /*======= Flicker ============*/
+
+
+    List<DisplaySizes> PhotoModels = new ArrayList<>();
+
+
+
+
+    String search_string = "", local_string = "";
+
+
+
+
+
+
     private TextView topMessage;
     private TextView hintMessage;
     private TextView bottomCount;
     private EditText secretText;
+    private ViewFlipper viewPager;
 
     private TextView mYears;
     private TextView mMonth;
     private TextView mDays;
     private TextView done_dob;
 
+    List<ImageView> bannerimage_list = new ArrayList<>();
     private RelativeLayout dob_layout;
-    String FinalString = "";
+
 
     List<String> school_users = null;
     String school_id = "";
-    String school_code = "",Age = "";
-
+    String school_code = "", Age = "";
+    String flicker_image = "";
     private int itemPosition;
     private String itemValue;
     StringBuilder s;
@@ -114,20 +144,17 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
     private int imagePosition = 0;
     private ImageLoaderUtil mImageLoader;
 
-    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MIN_DISTANCE = 10;
     private static final int SWIPE_MAX_OFF_PATH = 250;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-
-    private GestureDetector gestureDetector;
-    private View.OnTouchListener gestureListener;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 20;
 
 
+
+    boolean show_swipe = false;
     private String address;
 
     private List<String> keyWords;
-    private List<RiskState> riskWords;
 
-    private List<School> schools;
 
     private String currentMood = null;
     TextView loading = null;
@@ -144,7 +171,7 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
     private boolean fontChange = false;
     SecretDataDTO secretDataDTO = null;
     int secrets_count = 0;
-    LinearLayout main_color_layout = null;
+
     private List<String> friendArrayList = null;
     private List<String> duplicateArrayList = null;
     public static ListView friendListView;
@@ -156,10 +183,14 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
     private String one[] = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"};
     private String word = "";
 
+    int page = 1;
 
-    int addmusicount = 0;
 
     Context ct = null;
+
+    boolean is_processing = false;
+
+    private GestureDetector gestureDetector = new GestureDetector(new SwipeGestureDetector());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,22 +205,12 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
         findViewById(R.id.create_progress_bg_iv).setOnClickListener(this);
 
         friendListView = (ListView) findViewById(R.id.friendsList);
-        main_color_layout = (LinearLayout) findViewById(R.id.main_color_layout);
 
 
+        CACHE_PATH = ct.getCacheDir().getAbsolutePath();
         loading = new TextView(this);
-        gestureDetector = new GestureDetector(this, new MyGestureDetector());
-        gestureListener = new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        };
-        drawcolor();
-
-
         currentBackground = imageList.get(imagePosition);
         mImageLoader = new ImageLoaderUtil(this);
-
         mBuilder = new StringBuilder();
 
 
@@ -203,11 +224,7 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
                 }
             }
 
-            // loadSchools();
-            //CommonFunction.fetchTriggerWords();
 
-
-            // fetchmyFriends();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -223,8 +240,269 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
 
     }
 
+    private void initViews() {
 
-    private class GetFriendlist extends android.os.AsyncTask<String, String, Bitmap> {
+        try {
+
+
+            topMessage = (TextView) findViewById(R.id.create_top_message);
+            inputMessageWorry = (TextView) findViewById(R.id.create_dont_message);
+            bottomCount = (TextView) findViewById(R.id.create_text_count);
+
+            secretText = (EditText) findViewById(R.id.create_text_data);
+            viewPager = (ViewFlipper) findViewById(R.id.viewpager);
+
+            secretText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            hintMessage = (TextView) findViewById(R.id.create_hint);
+
+            secretText.setCursorVisible(false);
+            secretText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    secretText.requestFocus();
+                    KeyboardUtil.showKeyBoard(secretText, CreateSecretActivity.this);
+                    secretText.setCursorVisible(true);
+                }
+            });
+            findViewById(R.id.create_home).setOnClickListener(this);
+            findViewById(R.id.create_get_support).setOnClickListener(this);
+            //  topMessage.setOnClickListener(this);
+            bottomCount.setOnClickListener(this);
+
+            findViewById(R.id.create_swipe_root).setOnClickListener(this);
+
+
+            findViewById(R.id.create_scared).setOnClickListener(this);
+            //findViewById(R.id.create_surprise).setOnClickListener(this);
+            findViewById(R.id.create_sad).setOnClickListener(this);
+            //findViewById(R.id.create_disgust).setOnClickListener(this);
+            findViewById(R.id.create_happy).setOnClickListener(this);
+            //findViewById(R.id.create_comtempt).setOnClickListener(this);
+            findViewById(R.id.create_angry).setOnClickListener(this);
+            findViewById(R.id.create_ashamed).setOnClickListener(this);
+            findViewById(R.id.create_anxious).setOnClickListener(this);
+            findViewById(R.id.create_fml).setOnClickListener(this);
+            findViewById(R.id.create_lonely).setOnClickListener(this);
+            findViewById(R.id.create_lol).setOnClickListener(this);
+            findViewById(R.id.create_love).setOnClickListener(this);
+            findViewById(R.id.create_greatful).setOnClickListener(this);
+            findViewById(R.id.create_frustrated).setOnClickListener(this);
+
+            changeFont(1);
+
+
+            viewPager.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(final View view, final MotionEvent event) {
+                    gestureDetector.onTouchEvent(event);
+                    return true;
+                }
+            });
+            secretText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(final CharSequence text, int start, int before, int count) {
+
+                    try {
+                        if (text.toString() != null && !text.toString().equalsIgnoreCase("")) {
+
+
+                            search_string = secretText.getText().toString();
+
+
+                            if (search_string.length() > 2 && !is_processing)
+                            {
+                                String banned_word = CommonFunction.checkBannedword(search_string);
+                                if (banned_word != null && !banned_word.equalsIgnoreCase(""))
+                                {
+                                    Toast.makeText(ct, "\"" + banned_word + "\" is an inappropriate word remove it.", Toast.LENGTH_SHORT).show();
+                                    search_string = search_string.trim();
+                                    search_string = "";
+                                    secretText.removeCallbacks(make_new_req);
+                                    secretText.postDelayed(make_new_req, 1500);
+                                } else
+                                {
+                                    search_string = search_string.trim();
+                                    secretText.removeCallbacks(make_new_req);
+                                    secretText.postDelayed(make_new_req, 1500);
+                                }
+
+                            }
+                            else
+                            {
+                                if(is_processing == true)
+                                {
+                                    secretText.postDelayed(new Runnable()
+                                    {
+                                        @Override
+                                        public void run() {
+                                            is_processing = false;
+                                        }
+                                    }, 3000);
+                                }
+                            }
+
+
+                            if (text.toString().contains("@")) {
+                                try {
+                                    if (duplicateArrayList != null && duplicateArrayList.size() > 0) {
+
+                                        List<String> temprorylist = new ArrayList<String>();
+
+                                        for (int k = 0; k < duplicateArrayList.size(); k++) {
+                                            if (!text.toString().contains(duplicateArrayList.get(k))) {
+                                                temprorylist.add(duplicateArrayList.get(k));
+                                            }
+                                        }
+
+                                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity,
+                                                R.layout.friend_listitem, temprorylist);
+
+
+                                        friendListView.setAdapter(adapter);
+
+                                        friendListView.setVisibility(View.VISIBLE);
+
+                                        friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                                itemPosition = position;
+
+                                                itemValue = (String) friendListView.getItemAtPosition(position);
+
+                                                s = new StringBuilder(text);
+                                                s.append(itemValue);
+                                                mText = text + itemValue;
+
+
+                                                mText = mText.toString().replace("@", "");
+                                                secretText.setText(mText);
+
+                                                secretText.setSelection(secretText.getText().length());
+                                                secretText.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        friendListView.setVisibility(View.GONE);
+
+                                                    }
+                                                }, 200);
+
+                                            }
+                                        });
+                                    }
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            } else
+                                friendListView.setVisibility(View.GONE);
+
+
+                        } else {
+                            friendListView.setVisibility(View.GONE);
+
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                    }
+                    updateCounter(text.length());
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
+            hintMessage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    YoYo.with(Techniques.FadeOut).withListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            hintMessage.setVisibility(View.GONE);
+                            inputMessageWorry.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    }).duration(500).playOn(hintMessage);
+
+                    secretText.requestFocus();
+                    KeyboardUtil.showKeyBoard(secretText, CreateSecretActivity.this);
+                    secretText.setCursorVisible(true);
+                }
+            });
+
+            final View activityRootView = findViewById(R.id.create_root);
+            activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                    if (heightDiff > MIN_HEIGHT_KEYBOARD) {
+                        hideMoodHome();
+                    } else {
+                        showMoodHome();
+                    }
+                }
+            });
+
+            findViewById(R.id.create_font).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (fontChange) {
+                        changeFont(1);
+                        fontChange = false;
+                    } else {
+                        changeFont(2);
+                        fontChange = true;
+                    }
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    Runnable make_new_req = new Runnable() {
+        @Override
+        public void run() {
+            try {
+
+
+                if(search_string!= null && !search_string.equalsIgnoreCase("")) {
+                    is_processing = true;
+                    page = 1;
+                    search_string = search_string.replace(" ", "%20");
+                    new SearchAsync().execute();
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private class GetFriendlist extends AsyncTask<String, String, Bitmap> {
 
         android.app.ProgressDialog pDialog;
         String data = "0";
@@ -319,65 +597,13 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-/*
-    private void fetchmyFriends() {
-
-
-        friendArrayList = new ArrayList<String>();
-        duplicateArrayList = new ArrayList<String>();
-
-        ParseQuery myfriend1 = new ParseQuery(MainActivity.friend_table_name);
-        myfriend1.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-        myfriend1.whereEqualTo("status", "approved");
-        myfriend1.setLimit(1000);
-        myfriend1.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> userList, ParseException e) {
-
-                if (e == null) {
-                    if (userList != null && userList.size() > 0) {
-
-                        if (friendArrayList.size() > 0) {
-                            friendArrayList.clear();
-                        }
-
-                        for (int i = 0; i < userList.size(); i++) {
-
-                            ParseObject currentFriendObject = userList.get(i);
-                            //String currentuser = currentFriendObject.getString("username");
-                            requestuser = currentFriendObject.getString("friend");
-
-                            int temp = i + 1;
-                            friendArrayList.add(requestuser);
-                            duplicateArrayList.add("iFriend" + temp);
-                        }
-                    }
-
-                } else {
-
-                    System.out.println("Something wrong ----> " + e.getMessage());
-                }
-            }
-        });
-
-    }
-*/
 
     public void updateImageList() {
         try {
 
 
             imageList = new ArrayList<>();
-           /* ParseUser user = ParseUser.getCurrentUser();
 
-            if (user == null) {
-                finish();
-            }*/
-
-           /* int invites = user.get(Constants.USER_INVITES) != null
-                    ? user.getInt(Constants.USER_INVITES) : 0;
-*/
-            //  int backgroundsCount = invites / Constants.INVITE_THRESHOLD;
 
             int count = 93;
             try {
@@ -507,273 +733,20 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
 
     }
 
-    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            try {
-                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
-                    return false;
-                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    if (imagePosition == (imageList.size() - 1)) {
-                        imagePosition = 0;
-                        currentBackground = imageList.get(imagePosition);
-                        loadImage();
-                        return false;
-                    }
-                    imagePosition++;
-                    currentBackground = imageList.get(imagePosition);
-                    loadImage();
-                } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    if (imagePosition == 0) {
-                        imagePosition = imageList.size() - 1;
-                        currentBackground = imageList.get(imagePosition);
-                        loadImage();
-                        return false;
-                    }
-                    imagePosition--;
-                    currentBackground = imageList.get(imagePosition);
-                    loadImage();
-                }
-            } catch (Exception e) {
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-    }
-
-    private void loadImage() {
-        mImageLoader.loadSimpleDraw(currentBackground, imageBack);
-        fixStyle();
-    }
-
-    private void fixStyle() {
-        String bgImageName = currentBackground;
-        bgImageName = bgImageName.replaceAll("[^\\d]", "");
-
-        if (bgImageName != null && bgImageName.equalsIgnoreCase("26")) {
-            secretText.setTextAppearance(this, R.style.BlackShadowText);
-        } else {
-            // if (Utils.checkBackgroundImage(currentBackground)) {
-            secretText.setTextAppearance(this, R.style.ShadowText);
-            /*} else {
-                secretText.setTextAppearance(this, R.style.NormalText);
-            }*/
-        }
-    }
-
-    private void initViews() {
-
-        try {
 
 
-            topMessage = (TextView) findViewById(R.id.create_top_message);
-            inputMessageWorry = (TextView) findViewById(R.id.create_dont_message);
-
-            loading.postDelayed(loader, 5000);
-            bottomCount = (TextView) findViewById(R.id.create_text_count);
-            imageBack = (ImageView) findViewById(R.id.create_back_image);
-            secretText = (EditText) findViewById(R.id.create_text_data);
-            secretText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-            hintMessage = (TextView) findViewById(R.id.create_hint);
-
-            secretText.setCursorVisible(false);
-
-            findViewById(R.id.create_home).setOnClickListener(this);
-            findViewById(R.id.create_get_support).setOnClickListener(this);
-            topMessage.setOnClickListener(this);
-            bottomCount.setOnClickListener(this);
-
-            findViewById(R.id.create_swipe_root).setOnClickListener(this);
-            findViewById(R.id.create_swipe_root).setOnTouchListener(gestureListener);
 
 
-            findViewById(R.id.create_scared).setOnClickListener(this);
-            //findViewById(R.id.create_surprise).setOnClickListener(this);
-            findViewById(R.id.create_sad).setOnClickListener(this);
-            //findViewById(R.id.create_disgust).setOnClickListener(this);
-            findViewById(R.id.create_happy).setOnClickListener(this);
-            //findViewById(R.id.create_comtempt).setOnClickListener(this);
-            findViewById(R.id.create_angry).setOnClickListener(this);
-            findViewById(R.id.create_ashamed).setOnClickListener(this);
-            findViewById(R.id.create_anxious).setOnClickListener(this);
-            findViewById(R.id.create_fml).setOnClickListener(this);
-            findViewById(R.id.create_lonely).setOnClickListener(this);
-            findViewById(R.id.create_lol).setOnClickListener(this);
-            findViewById(R.id.create_love).setOnClickListener(this);
-            findViewById(R.id.create_greatful).setOnClickListener(this);
-            findViewById(R.id.create_frustrated).setOnClickListener(this);
-
-            loadImage();
-
-            secretText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(final CharSequence text, int start, int before, int count) {
-
-                    try {
-                        if (text.toString() != null && !text.toString().equalsIgnoreCase("")) {
-
-
-                            if (text.toString().contains("@")) {
-                                try {
-                                    if (duplicateArrayList != null && duplicateArrayList.size() > 0) {
-
-                                        List<String> temprorylist = new ArrayList<String>();
-
-                                        for (int k = 0; k < duplicateArrayList.size(); k++) {
-                                            if (!text.toString().contains(duplicateArrayList.get(k))) {
-                                                temprorylist.add(duplicateArrayList.get(k));
-                                            }
-                                        }
-
-                                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity,
-                                                R.layout.friend_listitem, temprorylist);
-
-
-                                        friendListView.setAdapter(adapter);
-
-                                        friendListView.setVisibility(View.VISIBLE);
-
-                                        friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                            @Override
-                                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                                                itemPosition = position;
-
-                                                itemValue = (String) friendListView.getItemAtPosition(position);
-
-                                                s = new StringBuilder(text);
-                                                s.append(itemValue);
-                                                mText = text + itemValue;
-
-
-                                                mText = mText.toString().replace("@", "");
-                                                secretText.setText(mText);
-
-                                                secretText.setSelection(secretText.getText().length());
-                                                secretText.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        friendListView.setVisibility(View.GONE);
-
-                                                    }
-                                                }, 200);
-
-                                            }
-                                        });
-                                    }
-                                } catch (Exception e1) {
-                                    e1.printStackTrace();
-                                }
-                            } else
-                                friendListView.setVisibility(View.GONE);
-
-
-                            updateCounter(text.length());
-                        } else
-                            friendListView.setVisibility(View.GONE);
-                    } catch (IndexOutOfBoundsException e) {
-                    }
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
-
-            hintMessage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    YoYo.with(Techniques.FadeOut).withListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            hintMessage.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    }).duration(500).playOn(hintMessage);
-
-                    secretText.requestFocus();
-                    KeyboardUtil.showKeyBoard(secretText, CreateSecretActivity.this);
-                    secretText.setCursorVisible(true);
-                }
-            });
-
-            final View activityRootView = findViewById(R.id.create_root);
-            activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                    if (heightDiff > MIN_HEIGHT_KEYBOARD) {
-                        hideMoodHome();
-                    } else {
-                        showMoodHome();
-                    }
-                }
-            });
-
-            findViewById(R.id.create_font).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (fontChange) {
-                        changeFont(1);
-                        fontChange = false;
-                    } else {
-                        changeFont(2);
-                        fontChange = true;
-                    }
-                }
-            });
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private void changeFont(int font) {
         mFont = font;
 
-        switch (font) {
-            case 1:
-                secretText.setTypeface(Typeface.DEFAULT);
-                fixStyle();
-                break;
-            case 2:
-                secretText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/2.ttf"));
-                break;
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         KeyboardUtil.hideKeyBoard(secretText, this);
-
-
         loading.removeCallbacks(loader);
 
         if (topMessage != null) {
@@ -791,6 +764,7 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
             case R.id.create_home:
                 finish();
                 break;
+
             case R.id.create_scared:
                 runSecretPostWithFlagCheck(getString(R.string.scared));
                 break;
@@ -831,8 +805,10 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
                 showDatePickerDialog();
                 break;
 
+
         }
     }
+
 
     private void runSupport() {
         startActivity(new Intent(this, SupportActivity.class));
@@ -843,20 +819,11 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
         if (!ConnectionDetector.isNetworkAvailable(this))
             return;
 
+
         showProgress();
 
         startCreation(mood);
 
-        /*new FlaggedReviewLoader(new VerifyCallback() {
-            @Override
-            public void onUpdate(boolean result) {
-                if (!result) {
-                    startCreation(mood);
-                } else {
-                    stopProgress();
-                }
-            }
-        }).execute();*/
     }
 
     @Override
@@ -873,17 +840,27 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
 
         try {
 
-            text = secretText.getText().toString();
+            text = secretText.getText().toString().trim();
 
             if (text.isEmpty()) {
                 stopProgress();
+                Toast.makeText(ct, "Please enter your post.", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (flicker_image == null || flicker_image.equalsIgnoreCase("")) {
+                stopProgress();
+                Toast.makeText(ct, "Please select post image.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+
+            String banned_word = CommonFunction.checkBannedword(search_string);
+            if (banned_word != null && !banned_word.equalsIgnoreCase("")) {
+                Toast.makeText(ct, "\"" + banned_word + "\" is an inappropriate word remove it.", Toast.LENGTH_SHORT).show();
+                stopProgress();
+                return;
+            }
             text = checkForSchool(secretText.getText().toString());
-
             sendfriendList = new ArrayList<String>();
-
             for (int i = 1; i <= friendArrayList.size(); i++) {
                 if (text.contains("iFriend" + i)) {
                     text = text.replace("iFriend" + i, "iFriend" + one[i - 1]);
@@ -892,12 +869,8 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
                     TAGFRIEND = true;
                 }
             }
-
-
             String[] data = text.split(" ");
             String phone = null;
-
-
             for (String item : data) {
                 if (item.length() > 5) {
                     phone = item;
@@ -926,7 +899,6 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -950,18 +922,16 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void fillDataAndCreate(final boolean result, final String riskWord, final String state, final String text) {
-        final String userLocation;
+       /* final String userLocation;
 
         if (address != null) {
             userLocation = address;
         } else {
             userLocation = GeoHelper.returnAddressString(this);
-        }
-
-
-        /*if (Utils.checkBackgroundImage(currentBackground)) {
-            mFont = 2;
         }*/
+
+
+
 
         new AsyncTask<Void, Void, Integer>() {
             @Override
@@ -1024,7 +994,7 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
 
                     secretDataDTO = new SecretDataDTO(user_id, CryptLib.encrypt(AppSession.getValue(ct, Constants.USER_NAME)), AppSession.getValue(ct, Constants.USER_GENDER), AppSession.getValue(ct, Constants.USER_AGE), addrs, CategoryHelper.returnCategory(currentMood), sendfriendList, "" + integer,
                             currentMood, mFont, currentBackground, CryptLib.encrypt(text), state, secrets_count, riskWord, school_users,
-                            school_id, school_code, search_text);
+                            school_id, school_code, search_text, flicker_image, "");
                     new CreatSecret().execute();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1086,9 +1056,17 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
     private void finishCreating() {
         try {
             stopProgress();
-            Intent data = new Intent();
-            data.putExtra(Constants.SECRET_POST_KEY, 1);
-            setResult(Constants.SECRET_POST, data);
+            MainActivity.is_from_secret_post = true;
+            try {
+                if (MySecretsActivity.my_secret_activity != null) {
+                    MySecretsActivity.my_secret_activity.finish();
+                    MySecretsActivity.my_secret_activity = null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
             finish();
         } catch (Exception e) {
             e.printStackTrace();
@@ -1102,34 +1080,37 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
         } else
             return text;
 
+
         try {
-            for (SchoolDTO item : MainActivity.stataicObjectDTO.getSchoolDTOs()) {
 
-                if (item.getCode() != null && !item.getCode().equalsIgnoreCase("")) {
-                    Pattern pattern = Pattern.compile(Pattern.quote(item.getCode()), Pattern.CASE_INSENSITIVE);
-                    Matcher match = pattern.matcher(text);
-                    if (match.find()) {
-                        if (item.getUsers() != null && item.getUsers().contains(MainActivity.enc_username)) {
-                            String find = match.group();
-                            text = text.replace(find, "");
-                        } else {
-                            if (item.getUsers() != null)
-                                school_users = item.getUsers();
-                            else
-                                school_users = new ArrayList<>();
+            if (text.contains("$$=")) {
+                for (SchoolDTO item : MainActivity.stataicObjectDTO.getSchoolDTOs()) {
 
-                            school_users.add(MainActivity.enc_username);
-                            school_id = item.getSchool_id();
-                            school_code = item.getCode();
+                    if (item.getCode() != null && !item.getCode().equalsIgnoreCase("")) {
+                        Pattern pattern = Pattern.compile(Pattern.quote(item.getCode()), Pattern.CASE_INSENSITIVE);
+                        Matcher match = pattern.matcher(text);
+                        if (match.find()) {
+                            if (item.getUsers() != null && item.getUsers().contains(MainActivity.enc_username)) {
+                                String find = match.group();
+                                text = text.replace(find, "");
+                            } else {
+                                if (item.getUsers() != null)
+                                    school_users = item.getUsers();
+                                else
+                                    school_users = new ArrayList<>();
 
-                            String find = match.group();
-                            text = text.replace(find, "");
+                                school_users.add(MainActivity.enc_username);
+                                school_id = item.getSchool_id();
+                                school_code = item.getCode();
+
+                                String find = match.group();
+                                text = text.replace(find, "");
+                            }
+                            return text;
                         }
-                        return text;
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1220,7 +1201,31 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
             try {
                 if (topMessage != null && inputMessageWorry != null) {
                     YoYo.with(Techniques.FadeOutUp).playOn(topMessage);
-                    YoYo.with(Techniques.FadeOut).playOn(inputMessageWorry);
+
+
+                    YoYo.with(Techniques.FadeOut).withListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            topMessage.setVisibility(View.GONE);
+
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    }).duration(500).playOn(topMessage);
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1274,80 +1279,6 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
     }
 
 
-    int[] bgarray = {R.drawable.bg0, R.drawable.bg1,
-            R.drawable.bg2, R.drawable.bg3,
-            R.drawable.bg4, R.drawable.bg5,
-            R.drawable.bg6, R.drawable.bg7,
-            R.drawable.bg8, R.drawable.bg9, R.drawable.bg10, R.drawable.bg11,
-            R.drawable.bg12, R.drawable.bg13};
-
-    private int width = 0, height;
-
-    static int indexing = 0;
-
-    private void drawcolor() {
-        indexing = 0;
-        main_color_layout.removeAllViews();
-
-        try {
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            width = displayMetrics.widthPixels;
-            height = displayMetrics.heightPixels;
-
-        } catch (Exception e) {
-            if (width <= 0) {
-                Display display = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                width = size.x;
-                height = size.y;
-            }
-            e.printStackTrace();
-        }
-
-        for (int i = 0; i < 14; i++) {
-            main_color_layout.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ImageView colorimage = new ImageView(ct);
-
-                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width / 13, width / 13);
-                        Bitmap icon = BitmapFactory.decodeResource(getResources(), bgarray[indexing]);
-                        colorimage.setImageBitmap(getCroppedBitmap(icon));
-                        colorimage.setLayoutParams(lp);
-                        colorimage.setId(indexing + 1);
-
-                        colorimage.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                int index = v.getId() - 1;
-                                imageBack.setImageResource(bgarray[index]);
-                                currentBackground = "bg" + index + ".jpg";
-                                fixStyle();
-                            }
-                        });
-
-                        TextView space = new TextView(ct);
-                        lp = new RelativeLayout.LayoutParams(width / 23, width / 23);
-                        space.setLayoutParams(lp);
-                        main_color_layout.addView(colorimage);
-                        main_color_layout.addView(space);
-                        indexing++;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }, 170 * i);
-
-
-        }
-
-
-    }
-
-
     public void showDatePickerDialog() {
         CreateSecretDatePickerFragment newFragment = new CreateSecretDatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "DATE_PICKER");
@@ -1368,9 +1299,8 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
             long days = difference / (24 * 60 * 60 * 1000);
 
             int years = (int) days / 365;
-            if (years > 10)
-            {
-                Age = ""+years;
+            if (years > 10) {
+                Age = "" + years;
                 dateofbirth = (String) android.text.format.DateFormat.format("yyyy/MM/dd", date);
                 populateDate(date);
             } else
@@ -1392,7 +1322,7 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
         mDays.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
     }
 
-    private class SetDOB extends android.os.AsyncTask<String, String, Bitmap> {
+    private class SetDOB extends AsyncTask<String, String, Bitmap> {
 
         android.app.ProgressDialog pDialog;
         String data = "0";
@@ -1413,7 +1343,7 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
 
 
                 IfriendRequest http = new IfriendRequest(ct);
-                SetDatetDataDTO findbyNameDTO = new SetDatetDataDTO(MainActivity.enc_username, dateofbirth,Age);
+                SetDatetDataDTO findbyNameDTO = new SetDatetDataDTO(MainActivity.enc_username, dateofbirth, Age);
                 SetDateOfBirthDTO findNameDTO = new SetDateOfBirthDTO(findbyNameDTO);
                 http.SetDAte(new SetDateOfBitrhObjectDTO(findNameDTO));
 
@@ -1430,6 +1360,200 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
             dob_layout.setVisibility(View.GONE);
         }
     }
+
+
+    private class SearchAsync extends AsyncTask<String, String, Bitmap> {
+
+
+        List<DisplaySizes> Models = new ArrayList<>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showProgress();
+
+        }
+
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                Models = search();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+
+
+            try {
+                local_string = search_string;
+
+
+                if (Models != null && Models.size() > 0)
+                {
+                    stopProgress();
+                    Timer timerObj1 = new Timer();
+                    TimerTask timerTaskObj1 = new TimerTask() {
+                        public void run() {
+                            try {
+                                is_processing = false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    };
+                    timerObj1.schedule(timerTaskObj1, 1000);
+
+
+                    viewPager.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            is_processing = false;
+                        }
+                    }, 1000);
+
+                    if (page == 1)
+                    {
+                        image_counter = 0;
+                        viewPager.postDelayed(new Runnable()
+                        {
+                            @Override
+                            public void run() {
+
+
+                               try
+                               {
+                                   PhotoModels.clear();
+                                   PhotoModels.addAll(Models);
+                                   if (show_swipe == false)
+                                   {
+                                       showViewPager();
+                                   }
+
+                                   flicker_image = PhotoModels.get(image_counter).getImageUrl();
+
+                                   if (bannerimage_list.size() > 0)
+                                   {
+                                       viewPager.setDisplayedChild(0);
+                                   }
+
+                                   new LoadImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                               }
+                               catch (Exception e)
+                               {
+                                   e.printStackTrace();
+                               }
+
+                            }
+                        }, 1000);
+
+
+                    } else
+                    {
+                        PhotoModels.addAll(Models);
+                        new LoadImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+
+                } else
+                {
+                    if (page == 1) {
+                        search_string = CommonFunction.GetdefualtWord();
+                        new SearchAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+/*
+    public void searchAsync(final int page) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    PhotoModels = search(page);
+                    showViewPager();
+                } catch (IOException | JSONException e) {
+
+                }
+            }
+        }).start();
+    }
+
+*/
+
+   // private static final String API_KEY = "n88pxentayj653upyb8476z8";
+    private static final String API_KEY = "js54xr27j2aa57r8snrwv7vs";
+    private static final String COLUMN_PHOTO = "images";
+    private static final long CACHE_SIZE_IN_MB = 10 * 1024 * 1024;
+    private static String CACHE_PATH = "";
+    private List<DisplaySizes> search() throws IOException, JSONException
+    {
+        List<DisplaySizes> displaySizes = new ArrayList<>();
+        try
+        {
+            String url = "https://api.gettyimages.com/v3/search/images?fields=comp&phrase="+search_string + "&page_size=30&page="+page;
+            // String url = "https://api.gettyimages.com/v3/search/images?fields=thumb&phrase="+search_string;
+            Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("api-key", API_KEY)
+                    .build();
+            Response response = getClient().newCall(request).execute();
+            String json = response.body().string();
+            JSONArray jsonArray = new JSONObject(json).getJSONArray(COLUMN_PHOTO);
+
+            for (int i = 0; i < jsonArray.length(); i++)
+            {
+                try
+                {
+                    JSONObject UserInfoobj = new JSONObject(jsonArray.getString(i));
+                    DisplaySizes displaySizes1 = new DisplaySizes();
+
+                    JSONArray jsonArray1 = UserInfoobj.getJSONArray("display_sizes");
+
+
+                    JSONObject UserInfoobj1 = new JSONObject(jsonArray1.getString(0));
+                    if (UserInfoobj1.has("uri"))
+                        displaySizes1.setUri(UserInfoobj1.getString("uri"));
+
+                    if(displaySizes1!= null && !displaySizes1.equals(""))
+                        displaySizes.add(displaySizes1);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+
+        return displaySizes;
+
+    }
+    private OkHttpClient getClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .cache(new Cache(new File(CACHE_PATH), CACHE_SIZE_IN_MB))
+                .build();
+    }
+
 
 
     private void loadData() {
@@ -1463,7 +1587,388 @@ public class CreateSecretActivity extends BaseActivity implements View.OnClickLi
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    int image_counter = 0;
+
+   /* public void Drawbanner()
+    {
+
+        image_counter = 0;
+        for (int i = 0; i < PhotoModels.size(); i++) {
+
+            RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            final ImageView bannerimage = new ImageView(ct);
+            bannerimage.setLayoutParams(rlp1);
+            bannerimage.setScaleType(ImageView.ScaleType.FIT_XY);
 
 
+*//*            Glide.with(this)
+                    .load(PhotoModels.get(i).getImageUrl(ImageSize.MEDIUM))
+                    .placeholder(R.drawable.loading_gif)
+                    .into(bannerimage);*//*
+
+           *//* Glide.with(this)
+                    .load(PhotoModels.get(i).getImageUrl(ImageSize.MEDIUM))
+                    .asBitmap()
+                    .placeholder(R.drawable.loading_gif)
+                    .into(new SimpleTarget<Bitmap>(100, 100)
+                    {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            Drawable drawable = new BitmapDrawable(resource);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                bannerimage.setBackground(drawable);
+                            }
+                        }
+                    });*//*
+
+
+            bannerimage_list.add(bannerimage);
+
+            viewPager.addView(bannerimage);
+
+          *//*  try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+*//*
+
+        }
+
+        new LoadImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    private void update_banner() {
+        image_counter = 0;
+        for (int i = 0; i < PhotoModels.size(); i++) {
+            try {
+                if (bannerimage_list.size() > i) {
+                    *//*Glide.with(this)
+                            .load(PhotoModels.get(i).getImageUrl(ImageSize.MEDIUM))
+                            .placeholder(R.drawable.loading_gif)
+                            .into(bannerimage_list.get(i));
+
+
+                    Thread.sleep(100);*//*
+                } else {
+                    RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    final ImageView bannerimage = new ImageView(ct);
+                    bannerimage.setLayoutParams(rlp1);
+                    bannerimage.setScaleType(ImageView.ScaleType.FIT_XY);
+
+
+                  *//*  Glide.with(this)
+                            .load(PhotoModels.get(i).getImageUrl(ImageSize.MEDIUM))
+                            .placeholder(R.drawable.loading_gif)
+                            .into(bannerimage);
+*//*
+
+                    bannerimage_list.add(bannerimage);
+
+                    viewPager.addView(bannerimage);
+*//*
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }*//*
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        new LoadImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        viewPager.setDisplayedChild(0);
+    }
+
+    private void update_banner_nextpage() {
+        image_counter = 0;
+        for (int i = 0; i < PhotoModels.size(); i++) {
+            try {
+                if (bannerimage_list.size() > i) {
+                   *//* Glide.with(this)
+                            .load(PhotoModels.get(i).getImageUrl(ImageSize.MEDIUM))
+                            .placeholder(R.drawable.loading_gif)
+                            .into(bannerimage_list.get(i));
+
+                    Thread.sleep(100);*//*
+                } else {
+                    RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    final ImageView bannerimage = new ImageView(ct);
+                    bannerimage.setLayoutParams(rlp1);
+                    bannerimage.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                  *//*  Glide.with(this)
+                            .load(PhotoModels.get(i).getImageUrl(ImageSize.MEDIUM))
+                            .placeholder(R.drawable.loading_gif)
+                            .into(bannerimage);
+
+*//*
+                    bannerimage_list.add(bannerimage);
+
+                    viewPager.addView(bannerimage);
+
+                   *//* try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }*//*
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        new LoadImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+*/
+
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        // TODO Auto-generated method stub
+//        return gestureDetector.onTouchEvent(event);
+//    }
+
+    private void showViewPager() {
+        try {
+
+            try {
+                show_swipe = true;
+                Timer timerObj1 = new Timer();
+                TimerTask timerTaskObj1 = new TimerTask() {
+                    public void run() {
+                        try {
+
+                            topMessage.setVisibility(View.GONE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                };
+                timerObj1.schedule(timerTaskObj1, 1500);
+                topMessage.setVisibility(View.VISIBLE);
+
+                topMessage.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        topMessage.setVisibility(View.GONE);
+                    }
+                }, 1500);
+
+
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+            for (int i = 0; i < PhotoModels.size(); i++)
+            {
+                try
+                {
+
+                    RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    ImageView bannerimage = new ImageView(ct);
+                    bannerimage.setLayoutParams(rlp1);
+                    bannerimage.setScaleType(ImageView.ScaleType.FIT_XY);
+                    bannerimage_list.add(bannerimage);
+                    viewPager.addView(bannerimage);
+                    Thread.sleep(100);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            viewPager.setDisplayedChild(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    class SwipeGestureDetector extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            return super.onSingleTapConfirmed(e);
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return super.onDown(e);
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                // right to left swipe
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+
+                    int index = viewPager.getDisplayedChild();
+                    if (index >= PhotoModels.size() - 1)
+                    {
+
+                        page++;
+                        new SearchAsync().execute();
+                        /*
+                        int pagesize = PhotoModels.size() / 14;
+                        if (pagesize == page) {
+                            page++;
+                            new SearchAsync().execute();
+                        }*/
+                    } else {
+                        flicker_image = PhotoModels.get(index + 1).getImageUrl();
+                                //PhotoModels.get(index + 1).getImageUrl(ImageSize.MEDIUM);
+                        viewPager.setInAnimation(inFromRightAnimation());
+                        viewPager.setOutAnimation(outToLeftAnimation());
+                        viewPager.showNext();
+
+                    }
+                    return true;
+                } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+
+                    int index = viewPager.getDisplayedChild();
+                    if (index != 0)
+                    {
+                       // flicker_image = PhotoModels.get(index - 1).getImageUrl(ImageSize.MEDIUM);
+                        flicker_image = PhotoModels.get(index - 1).getImageUrl();
+                        viewPager.setInAnimation(inFromLeftAnimation());
+                        viewPager.setOutAnimation(outToRightAnimation());
+
+                        viewPager.showPrevious();
+                    }
+                    return true;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+    }
+
+
+
+    private Animation inFromRightAnimation() {
+
+        Animation inFromRight = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, +1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        inFromRight.setDuration(600);
+
+        inFromRight.setInterpolator(new AccelerateInterpolator());
+        return inFromRight;
+    }
+
+    private Animation outToLeftAnimation() {
+        Animation outtoLeft = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, -1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        outtoLeft.setDuration(600);
+        outtoLeft.setInterpolator(new AccelerateInterpolator());
+        return outtoLeft;
+    }
+
+
+    private Animation inFromLeftAnimation() {
+        Animation inFromLeft = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, -1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        inFromLeft.setDuration(600);
+        inFromLeft.setInterpolator(new AccelerateInterpolator());
+        return inFromLeft;
+    }
+
+    private Animation outToRightAnimation() {
+        Animation outtoRight = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, +1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        outtoRight.setDuration(600);
+        outtoRight.setInterpolator(new AccelerateInterpolator());
+        return outtoRight;
+    }
+
+
+    private class LoadImages extends AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String data = "0";
+
+        Bitmap bmp = null;
+        InputStream in = null;
+        int responseCode = -1;
+        List<IfriendListDTO> userList = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+            if (bannerimage_list.size() > image_counter)
+            {
+                bannerimage_list.get(image_counter).setImageResource(R.drawable.loading_gif);
+            } else {
+                RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                final ImageView bannerimage = new ImageView(ct);
+                bannerimage.setLayoutParams(rlp1);
+                bannerimage.setScaleType(ImageView.ScaleType.FIT_XY);
+
+
+                bannerimage_list.add(bannerimage);
+
+                bannerimage_list.get(image_counter).setImageResource(R.drawable.loading_gif);
+                viewPager.addView(bannerimage);
+
+            }
+
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+            //    bmp =   loadBitmap(PhotoModels.get(image_counter).getDisplay_sizes().get(0).getImageUrl());
+
+
+                Thread.sleep(20);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image)
+        {
+
+            try
+            {
+                Glide.with(ct)
+                        .load(PhotoModels.get(image_counter).getImageUrl())
+                        .placeholder(R.drawable.loading_gif)
+                        .into(bannerimage_list.get(image_counter));
+
+                if (image_counter < PhotoModels.size()) {
+                    image_counter++;
+                    new LoadImages().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

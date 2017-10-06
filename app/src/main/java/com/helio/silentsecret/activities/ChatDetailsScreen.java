@@ -81,9 +81,6 @@ public class ChatDetailsScreen extends BaseActivity implements View.OnClickListe
 
     SendMessagetofriedDataDTO sendMessagetofriedDataDTO = null;
 
-    String MainServer = "https://dev1.eu-gb.mybluemix.net/api/service";
-   // String MainServer = "https://dev2.eu-gb.mybluemix.net/api/service";
-    String RecoveryServer = "https://dev1.eu-gb.mybluemix.net/api/service";
 
 
     private ChatDetailsAdapter mChatDetailsAdapter;

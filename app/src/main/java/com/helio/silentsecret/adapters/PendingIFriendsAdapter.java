@@ -323,7 +323,7 @@ public class PendingIFriendsAdapter extends BaseAdapter {
                                         String userlat = "" + latitudeTarget;
                                         String userlang = "" + longitudeTarget;
                                        // userlat = "28.7041";
-                                       // userlang = "77.1025";
+                                      // userlang = "77.1025";
                                         String sendarlat = "" + bean.getLatitudeSend();
                                         String sendarlang = "" + bean.getLongitudeSend();
 

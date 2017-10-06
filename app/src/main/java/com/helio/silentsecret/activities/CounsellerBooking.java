@@ -116,7 +116,7 @@ public class CounsellerBooking extends Activity {
     TextView chat_text, moodgraphtext = null, request_status = null, book_appointment, counsellingmode = null, counseldate_time = null, text_chat_text, audio_calling, audio_calling_text, video_calling, video_calling_text;
     boolean is_select = true;
     List<String> hourslist, minutelist;
-    String is_samecounseller = "false", counseller_id = "", counsellor_name = "";
+    String is_samecounseller = "false", counseller_id = "", counsellor_name = "" , selected_counsellor_name = "";
     List<TextView> hourtextview = null;
     List<TextView> minutetextview = null;
     RelativeLayout progress_bar = null;
@@ -783,10 +783,10 @@ public class CounsellerBooking extends Activity {
 
                             show_bookdate.setText(Dayname + " " + daymont + " " + MonthName + ", " + YearName + " " + Hour + ":" + Minute + " " + Ampmtext);
                         }
-
+/*
                         sethourslist();
                         blockminuteto = 55;
-                        setminutelist();
+                        setminutelist();*/
                     }
 
                    /* } else {
@@ -892,8 +892,8 @@ public class CounsellerBooking extends Activity {
             updateAlert.setMessage("Are you sure you want to send a request for counselling using \"" + Mode + "\" at \"" + Dayname + " " + daymont + " " + MonthName + ", " + YearName + " " + Hour + ":" + Minute + " " + Ampmtext + "\"?");
         else
             updateAlert.setMessage("Are you sure you want to suggest new time for counselling using \"" + suggestedby_counseller_chat_mode + "\" at \"" + Dayname + " " + daymont + " " + MonthName + ", " + YearName + " " + Hour + ":" + Minute + " " + Ampmtext + "\"?");
-
-        updateAlert.setPositiveButton(
+            updateAlert.setPositiveButton
+                (
                 "Ok",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -1035,7 +1035,7 @@ public class CounsellerBooking extends Activity {
 
                 } else {
 
-                    String hour_suggestby_counseller1 = "";
+                    String hour_suggestby_counseller1 = "12";
                     if (hour_suggestby_counseller != null && !hour_suggestby_counseller.equalsIgnoreCase("12")) {
                         int local = Integer.parseInt(hour_suggestby_counseller);
                         local = 12 + local;
@@ -1122,7 +1122,8 @@ public class CounsellerBooking extends Activity {
 
                     blocked_hourlist = new ArrayList<String>();
                     blocked_minutelist = new ArrayList<String>();
-                    for (int j = 0; j < counselleracceptlist.size(); j++) {
+                    for (int j = 0; j < counselleracceptlist.size(); j++)
+                    {
                         if (counselleracceptlist.get(j).contains(Final_date)) {
                             String Date_sel = "", time_sell, hour = "", minut = "", ampmtext = "";
 
@@ -1130,22 +1131,34 @@ public class CounsellerBooking extends Activity {
                                 String appointmentdate = counselleracceptlist.get(j);
                                 String appint_array[] = appointmentdate.split(" ");
 
-                                if (appint_array != null && appint_array.length > 0) {
+                                if (appint_array != null && appint_array.length > 0)
+                                {
 
                                     time_sell = appint_array[1];
 
                                     String sephourmi[] = time_sell.split(":");
-                                    if (sephourmi != null && sephourmi.length > 0) {
+                                    if (sephourmi != null && sephourmi.length > 0)
+                                    {
                                         hour = sephourmi[0];
                                         minut = sephourmi[1];
 
                                         int hourint = Integer.parseInt(hour);
+                                        int minutint = Integer.parseInt(minut);
 
                                         if (hourint > 9)
                                             hour = "" + hourint;
                                         else
                                             hour = "0" + hourint;
 
+                                                if(minutint ==0)
+                                                {
+                                                    int blhr = 0;
+                                                    if(hourint>0)
+                                                     blhr =  hourint -1;
+
+                                                    blocked_hourlist.add("" + blhr);
+                                                    blocked_minutelist.add(""+minutint);
+                                                }
                                         blocked_hourlist.add("" + hour);
                                         blocked_minutelist.add(minut);
 
@@ -2736,6 +2749,7 @@ public class CounsellerBooking extends Activity {
 
                                 AlertDialog alertUp = updateAlert.create();
                                 alertUp.setCanceledOnTouchOutside(false);
+                                alertUp.setCancelable(false);
                                 alertUp.show();
 
                             } else if (req_status != null && req_status.equalsIgnoreCase("Accepted")) {
@@ -4074,17 +4088,18 @@ public class CounsellerBooking extends Activity {
 
                                 counselor_unaval_time_form = final_list.get(select_counce_index).getTo();
                                 counselunaval_timeto = final_list.get(select_counce_index).getFrom();
-
-                                if (counselor_unaval_time_form.equalsIgnoreCase("always")) {
+                                  if (counselor_unaval_time_form.equalsIgnoreCase("always")) {
                                     show_counsellor_list.setVisibility(View.GONE);
                                     is_counsellor_unavailable = false;
                                     time_lyout_bg.setVisibility(View.VISIBLE);
                                     if(counselor_unavail_list!= null)
                                     counselor_unavail_list.clear();
-                                    sethourslist();
-                                    blockminuteto = 55;
-                                    setminutelist();
-                                } else if (counselor_unaval_time_form.equalsIgnoreCase("not")) {
+
+                                      selected_counsellor_name = final_list.get(select_counce_index).getClcnslrun01();
+                                      new GetSelectedCounsellorAppointment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+                                  } else if (counselor_unaval_time_form.equalsIgnoreCase("not")) {
                                     new ToastUtil(ct, CryptLib.decrypt(final_list.get(select_counce_index).getCounce_firstname()) + " is not available for today.");
                                 } else {
 
@@ -4103,10 +4118,12 @@ public class CounsellerBooking extends Activity {
                                     show_counsellor_list.setVisibility(View.GONE);
 
                                     time_lyout_bg.setVisibility(View.VISIBLE);
-                                    sethourslist();
-                                    blockminuteto = 55;
-                                    setminutelist();
-                                }
+
+
+                                      selected_counsellor_name = final_list.get(select_counce_index).getClcnslrun01();
+                                      new GetSelectedCounsellorAppointment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                  }
                             } else {
                                 new ToastUtil(ct, "Please select Counsellor.");
                             }
@@ -4126,6 +4143,107 @@ public class CounsellerBooking extends Activity {
         }
 
     }
+
+
+
+
+    private class GetSelectedCounsellorAppointment extends android.os.AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String data = "0";
+        Bitmap bitmap;
+        String response = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progress_bar.setVisibility(View.VISIBLE);
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(ct);
+                GetCounsellorAppointmentDTO getCounsellorAppointmentDTO = new GetCounsellorAppointmentDTO(selected_counsellor_name);
+                CommonRequestTypeDTO appointmentCancelObjectDTO = new CommonRequestTypeDTO(getCounsellorAppointmentDTO, "getAppointmentForCounsellor");
+                FinalObjectDTO finalObjectDTO = new FinalObjectDTO(appointmentCancelObjectDTO);
+                response = http.AcceptAppointment(finalObjectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            try {
+                progress_bar.setVisibility(View.GONE);
+
+                if (counselleracceptlist != null)
+                    counselleracceptlist = null;
+
+                counselleracceptlist = new ArrayList<String>();
+
+                String status = "";
+                Object object = new JSONTokener(response).nextValue();
+                if (object instanceof JSONObject) {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    if (jsonObject.has("status"))
+                        status = jsonObject.getString("status");
+                    if (status != null && status.equalsIgnoreCase("true")) {
+                        JSONArray json_array = null;
+                        if (jsonObject.has("data"))
+                            json_array = jsonObject.getJSONArray("data");
+
+                        if (json_array != null && json_array.length() > 0) {
+                            for (int i = 0; i < json_array.length(); i++) {
+                                JSONObject UserInfoobj = new JSONObject(json_array.getString(i));
+
+                                String app_status = "";
+                                if (UserInfoobj.has("status")) {
+                                  //  suggestedby_counseller_chat_mode = UserInfoobj.getString("status");
+                                    app_status = UserInfoobj.getString("status");
+                                }
+
+
+
+                                if (UserInfoobj.has("apntmnt_date") && app_status.equalsIgnoreCase("Accepted"))
+                                    counselleracceptlist.add(getLocalTime(UserInfoobj.getString("apntmnt_date")));
+
+                            }
+
+
+                        }
+                    }
+
+
+                }
+
+
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+            try
+            {
+                sethourslist();
+                blockminuteto = 55;
+                setminutelist();
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+    }
+
 
 
 

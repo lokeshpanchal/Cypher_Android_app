@@ -8,8 +8,6 @@ import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 
-import com.helio.silentsecret.R;
-
 import java.util.Random;
 
 public class BounceAnimation {
@@ -40,18 +38,7 @@ public class BounceAnimation {
     private static TranslateAnimation getAnimationView(View view, View root) {
 
         switch (view.getId()) {
-            case R.id.glimpse_mood_layout:
-                return new TranslateAnimation(0, -root.getWidth() /30 /*(new Random().nextInt(20) + 6)*/, 0, -view.getHeight());
-           /* case R.id.glimpse_enter_layout:
-                return new TranslateAnimation(0, root.getWidth() / 30, 0, -view.getHeight() / 1.5f);
-            case R.id.glimpse_news_layout:
-                return new TranslateAnimation(0, -view.getWidth() / 2, 0, -view.getHeight() / 5);
-            case R.id.glimpse_lifestyle_layout:
-                return new TranslateAnimation(0, root.getWidth() / 8, 0, view.getHeight());
-            case R.id.glimpse_pages_layout:
-                return new TranslateAnimation(0, -view.getWidth(), 0, 0);*/
-            case R.id.glimpse_counselling_layout:
-                return new TranslateAnimation(0,0, 0,  view.getHeight());
+
 
         }
 

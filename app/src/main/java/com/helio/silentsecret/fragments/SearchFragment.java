@@ -18,6 +18,7 @@ import com.helio.silentsecret.WebserviceDTO.SearchSecretConditionDTO;
 import com.helio.silentsecret.WebserviceDTO.SearchSecretDTO;
 import com.helio.silentsecret.WebserviceDTO.SearchSecretObjectDTO;
 import com.helio.silentsecret.activities.MainActivity;
+import com.helio.silentsecret.activities.MySecretsActivity;
 import com.helio.silentsecret.adapters.FeedAdapter;
 import com.helio.silentsecret.callbacks.SearchUpdateCallback;
 import com.helio.silentsecret.connection.IfriendRequest;
@@ -196,7 +197,8 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            ((MainActivity) getActivity()).showProgress();
+            progress_bar.setVisibility(View.VISIBLE);
+           // ((MainActivity) getActivity()).showProgress();
 
         }
 
@@ -206,9 +208,15 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
 
 
                 String age = AppSession.getValue(getActivity(), Constants.USER_AGE);
-                IfriendRequest http = new IfriendRequest((MainActivity) getActivity());
+                IfriendRequest http = new IfriendRequest(getActivity());
 
-                SearchSecretObjectDTO searchSecretObjectDTO = new SearchSecretObjectDTO(new SearchSecretDTO(new SearchSecretConditionDTO(((MainActivity) getActivity()).searchText, age,""+SKIP)));
+                int intage = Integer.parseInt(age);
+                if(intage <11)
+                {
+                    age = "11";
+                }
+
+                SearchSecretObjectDTO searchSecretObjectDTO = new SearchSecretObjectDTO(new SearchSecretDTO(new SearchSecretConditionDTO(((MySecretsActivity) getActivity()).searchText, age,""+SKIP)));
                 list = http.GetSearchSecret(searchSecretObjectDTO);
 
             } catch (Exception e) {
@@ -219,41 +227,60 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
 
         protected void onPostExecute(Bitmap image)
         {
-            progress_bar.setVisibility(View.GONE);
-            ((MainActivity) getActivity()).stopProgress();
-            secret_id = "";
+            try {
 
-            if(SKIP == 0)
-                mDataList.clear();
+                MainActivity.is_running = true;
+               try
+               {
+                   progress_bar.setVisibility(View.GONE);
+              //     ((MainActivity) getActivity()).stopProgress();
+               }
+               catch (Exception e)
+               {
+                   e.printStackTrace();
+               }
 
-            if (list != null && list.size() > 0)
-            {
+                secret_id = "";
 
-                for (int i = 0; i < list.size(); i++)
+                if(SKIP == 0)
+                    mDataList.clear();
+
+                if (list != null && list.size() > 0)
                 {
-                    mDataList.add(list.get(i));
-                    MainActivity.is_from_commNotif = false;
-                }
 
-                adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity());
-
-                mListView.setAdapter(adapter);
-
-                adapter.notifyDataSetChanged();
-
-                if (SKIP == 0 && mDataList != null && mDataList.size() > 0)
-                {
-                    mListView.setVisibility(View.VISIBLE);
-                    mView.findViewById(R.id.search_not_found).setVisibility(View.GONE);
-                    mListView.setSelection(0);
-                } else
-                {
-                    if(SKIP == 0)
+                    for (int i = 0; i < list.size(); i++)
                     {
-                        mListView.setVisibility(View.GONE);
-                        mView.findViewById(R.id.search_not_found).setVisibility(View.VISIBLE);
+                        mDataList.add(list.get(i));
+                        MainActivity.is_from_commNotif = false;
                     }
-                }
+
+                    adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity());
+
+                    mListView.setAdapter(adapter);
+
+                    adapter.notifyDataSetChanged();
+
+                    mListView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                            MainActivity.is_running = true;
+                        }
+                    },1000);
+
+                    if (SKIP == 0 && mDataList != null && mDataList.size() > 0)
+                    {
+                        mListView.setVisibility(View.VISIBLE);
+                        mView.findViewById(R.id.search_not_found).setVisibility(View.GONE);
+                        mListView.setSelection(0);
+                    } else
+                    {
+                        if(SKIP == 0)
+                        {
+                            mListView.setVisibility(View.GONE);
+                            mView.findViewById(R.id.search_not_found).setVisibility(View.VISIBLE);
+                        }
+                    }
 
 
               /*  mListView.postDelayed(new Runnable() {
@@ -262,14 +289,20 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
                         secret_id = "";
                     }
                 }, 15000);*/
-            }else
-            {
-                if(SKIP == 0)
+                }else
                 {
-                    mListView.setVisibility(View.GONE);
-                    mView.findViewById(R.id.search_not_found).setVisibility(View.VISIBLE);
+                    if(SKIP == 0)
+                    {
+                        mListView.setVisibility(View.GONE);
+                        mView.findViewById(R.id.search_not_found).setVisibility(View.VISIBLE);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
 
         }
     }
@@ -311,6 +344,8 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
 
         protected void onPostExecute(Bitmap image)
         {
+            MainActivity.is_running = true;
+
             progress_bar.setVisibility(View.GONE);
             ((MainActivity) getActivity()).stopProgress();
 
@@ -330,8 +365,17 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
 
                 mListView.setAdapter(adapter);
 
-                adapter.notifyDataSetChanged();
 
+
+                adapter.notifyDataSetChanged();
+                mListView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.is_running = true;
+                        adapter.notifyDataSetChanged();
+
+                    }
+                },1000);
                 if (SKIP == 0 && mDataList != null && mDataList.size() > 0)
                 {
                     mListView.setVisibility(View.VISIBLE);

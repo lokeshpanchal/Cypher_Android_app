@@ -87,4 +87,32 @@ public class IFriendsBean {
 
     public int unreadcount = 0;
 
+
+    public String getMe2s() {
+        return me2s;
+    }
+
+    public void setMe2s(String me2s) {
+        this.me2s = me2s;
+    }
+
+    public String getHugs() {
+        return hugs;
+    }
+
+    public void setHugs(String hugs) {
+        this.hugs = hugs;
+    }
+
+    public String getHearts() {
+        return hearts;
+    }
+
+    public void setHearts(String hearts) {
+        this.hearts = hearts;
+    }
+
+    public String me2s = "";
+    public String hugs = "";
+    public String hearts = "";
 }

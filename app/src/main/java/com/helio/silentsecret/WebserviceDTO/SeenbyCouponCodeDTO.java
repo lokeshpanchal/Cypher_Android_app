@@ -9,15 +9,16 @@ public class SeenbyCouponCodeDTO {
 
 
 
-    String code = "";
+    String code = "" , email = "";
     List<String> users ;
 
 
-    public SeenbyCouponCodeDTO(String code , List<String> users )
+    public SeenbyCouponCodeDTO(String code , List<String> users ,String email )
     {
         super();
 
            this.code = code;
+        this.email = email;
         this.users = users;
 
     }

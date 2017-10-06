@@ -17,7 +17,7 @@
         android:layout_height="match_parent">
 
         <View
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
 
@@ -49,11 +49,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <LinearLayout
-                            android:id="@+id/input_view"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
+                            android:layout_height="50dp"
+                            android:id="@+id/header_dialog"
+                            android:background="@drawable/ic_dialog_top">
+
 
                             <TextView
                                 android:layout_marginLeft="@dimen/pin_input_margin"
@@ -64,9 +65,19 @@
                                 android:text="@string/enter_pin"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/button_ts"
-                                android:layout_weight="1.5"
+                               android:layout_centerInParent="true"
                                 android:layout_width="match_parent"
-                                android:layout_height="0dp" />
+                                android:layout_height="wrap_content" />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:id="@+id/input_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/header_dialog"
+                            android:orientation="vertical">
+
+
 
                             <EditText
                                 android:id="@+id/dialog_text"
@@ -74,14 +85,15 @@
                                 android:layout_marginRight="@dimen/pin_input_margin"
                                 android:imeOptions="actionDone"
                                 android:textSize="@dimen/button_ts"
+                                android:layout_marginTop="30dp"
                                 android:maxLength="50"
                                 android:gravity="center"
                                 android:paddingLeft="@dimen/sign_up_edit_input_tp"
                                 android:paddingRight="@dimen/sign_up_edit_input_tp"
                                 android:textColorHint="@color/grey"
                                 android:textColor="@color/back"
-                                android:background="@drawable/pin_shape"
-                                android:layout_weight="1"
+                                android:background="@drawable/alma_bg"
+                                android:layout_weight="1.0"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp" />
 
@@ -91,7 +103,7 @@
                                 android:gravity="center"
                                 android:textColor="@color/red"
                                 android:textSize="@dimen/button_ts"
-                                android:layout_weight="2.5"
+                                android:layout_weight="1.5"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp" />
                         </LinearLayout>
@@ -158,7 +170,7 @@
         </LinearLayout>
 
         <View
-            android:layout_weight="3"
+            android:layout_weight="3.5"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
     </LinearLayout>

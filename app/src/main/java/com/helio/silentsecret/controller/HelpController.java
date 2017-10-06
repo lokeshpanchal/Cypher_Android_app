@@ -18,51 +18,9 @@ public class HelpController {
 
 
 
-   /* public static void updateHelpUsersArray(String item) {
-        ParseUser user = ParseUser.getCurrentUser();
-        if (user == null)
-            return;
 
-        if (item == null) {
-            user.put(Constants.USER_HELP_USERS, new ArrayList<String>());
-            user.saveInBackground();
-            return;
-        }
-
-        ArrayList<String> users = (ArrayList<String>)
-                user.get(Constants.USER_HELP_USERS);
-
-        if (users == null) {
-            users = new ArrayList<>();
-        } else if (users.contains(item)) {
-            return;
-        }
-
-        users.add(item);
-        user.put(Constants.USER_HELP_USERS, users);
-        user.saveInBackground();
-    }
-*/
     public static void shareHelpResults(Context context) {
 
-
-        /*ParseUser user = ParseUser.getCurrentUser();
-        if (user == null)
-            return;*/
-
-/*        ArrayList<String> users = (ArrayList<String>)
-                user.get(Constants.USER_HELP_USERS);*/
-
-
-       /* if (user.get(Constants.USER_HELP_DATE) == null)
-        {
-
-           // getme2count();
-        } else if (System.currentTimeMillis() - user.getDate(Constants.USER_HELP_DATE).getTime() > Constants.ONE_DAY) {
-
-           // getme2count();
-        }
-*/
 
         if (MainActivity.users == null || MainActivity.users.isEmpty()) {
             new ToastUtil(context, context.getString(R.string.you_cant_help_zero));
@@ -71,9 +29,6 @@ public class HelpController {
 
         if (shareHelp(context, MainActivity.users.size()))
         {
-
-
-           // updateCommentsState(user);
             MainActivity.users = null;
         }
     }
@@ -140,13 +95,6 @@ public class HelpController {
         }
         return null;
     }
-
-   /* private static void updateCommentsState(ParseUser user) {
-        user.put(Constants.USER_HELP_DATE, Calendar.getInstance().getTime());
-        updateHelpUsersArray(null);
-        user.saveInBackground();
-    }*/
-
 
 
 }

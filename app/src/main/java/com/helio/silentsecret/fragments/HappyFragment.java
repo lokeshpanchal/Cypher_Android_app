@@ -23,7 +23,6 @@ import com.helio.silentsecret.application.SilentSecretApplication;
 import com.helio.silentsecret.callbacks.UpdateCallback;
 import com.helio.silentsecret.connection.ConnectionDetector;
 import com.helio.silentsecret.connection.IfriendRequest;
-import com.helio.silentsecret.controller.Controller;
 import com.helio.silentsecret.models.OfflineSecretObjectDTO;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.utils.AppSession;
@@ -78,27 +77,18 @@ public class HappyFragment extends Fragment implements UpdateCallback {
         adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity(), true);
         //  ((MainActivity) getActivity()).setupHappyCallback(this);
 
-        mView.findViewById(R.id.shareemotion).setOnClickListener(new View.OnClickListener() {
+       /* mView.findViewById(R.id.shareemotion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity.postEmotion();
             }
         });
-
+*/
 
         mListView.setAdapter(adapter);
 
 
-        if (MainActivity.is_from_push_noti != null && MainActivity.is_from_push_noti.equalsIgnoreCase(Constants.ENTERTAINMENT_PUSH)) {
-            mListView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    MainActivity.is_from_push_noti = "";
-                    Controller.runGlimpse(Controller.ENTER, getActivity(), false);
-                }
-            }, 1000);
 
-        }
 
         if (ConnectionDetector.isNetworkAvailable(getActivity()))
             new FindSecret().execute();
@@ -107,27 +97,9 @@ public class HappyFragment extends Fragment implements UpdateCallback {
 
 
 
-        if (MainActivity.is_from_push_noti != null && MainActivity.is_from_push_noti.equalsIgnoreCase(Constants.NEWS_PUSH)) {
-            mListView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    MainActivity.is_from_push_noti = "";
-                    Controller.runGlimpse(Controller.NEWS, getActivity(), false);
-                }
-            }, 1000);
 
-        }
 
-        if (MainActivity.is_from_push_noti != null && MainActivity.is_from_push_noti.equalsIgnoreCase(Constants.LIFESTYLE_PUSH)) {
-            mListView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    MainActivity.is_from_push_noti = "";
-                    Controller.runGlimpse(Controller.LIFE, getActivity(), false);
-                }
-            }, 1000);
 
-        }
 
 
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -221,8 +193,8 @@ public class HappyFragment extends Fragment implements UpdateCallback {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //  ((MainActivity) getActivity()).showProgress();
-            // showProgress();
+            if (SKIP != 0)
+                ((MainActivity) getActivity()).showProgress();
         }
 
         protected Bitmap doInBackground(String... args) {

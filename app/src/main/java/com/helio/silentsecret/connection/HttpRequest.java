@@ -60,12 +60,29 @@ public class HttpRequest {
     }
 
 
-    public List<DoowappTagDTO> gettagname(int page_number) {
-        // http://api.doowapp.me/1.0/doowappTag/category/1.json?apikey=573f314f4f979
 
-        serviceUrl = Baseurl + "doowappTag/category/" + page_number + ".json?apikey=" + APIkey;
+    public String makeconnection(String serurl) {
+
+
+        try {
+            URL url = new URL(serurl);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            return getStringFromInputStream(in);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return "";
+    }
+
+    public String gettagname() {
+
+
+        serviceUrl = "http://192.168.4.1/basic";
         String data = makeconnection();
-        return Parsetagname(data);
+        return data;
     }
 
 

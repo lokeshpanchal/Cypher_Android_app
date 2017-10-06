@@ -28,8 +28,11 @@ import com.helio.silentsecret.fragments.PendingIFriendsFragment;
  * Created by Maroof Ahmed Siddique on 8/2/2016.
  */
 public class ChatFriends extends AppCompatActivity {
+
+
+
     TabLayout tabLayout;
-    TextView help = null;
+    TextView help = null , back_iv;
     public static boolean is_frompush = false;
     TextView changetab = null;
     RelativeLayout time_lyout_bg = null;
@@ -49,9 +52,15 @@ public class ChatFriends extends AppCompatActivity {
         ct = this;
         help = (TextView) findViewById(R.id.help);
         cancel_help = (TextView) findViewById(R.id.cancel_help);
+        back_iv = (TextView) findViewById(R.id.back_iv);
         time_lyout_bg = (RelativeLayout) findViewById(R.id.time_lyout_bg);
 
-
+        back_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         findViewById(R.id.ic_home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

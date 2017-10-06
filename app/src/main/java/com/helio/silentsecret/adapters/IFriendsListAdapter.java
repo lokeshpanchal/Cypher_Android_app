@@ -58,6 +58,9 @@ List <String> duble_name = null;
     public static class ViewHolder{
         public TextView iFriendName;
         public TextView dummyName;
+        public TextView me2s;
+        public TextView hearts;
+        public TextView hugs;
         private ImageView mFriendAvatar;
     }
 
@@ -77,6 +80,9 @@ List <String> duble_name = null;
             holder = new ViewHolder();
             holder.iFriendName = (TextView) convertView.findViewById(R.id.name_of_ifriends);
             holder.dummyName = (TextView) convertView.findViewById(R.id.dummy_name_of_ifriends);
+            holder.hugs = (TextView) convertView.findViewById(R.id.hugs);
+            holder.hearts = (TextView) convertView.findViewById(R.id.hearts);
+            holder.me2s = (TextView) convertView.findViewById(R.id.me2s);
             holder.mFriendAvatar = (ImageView) convertView.findViewById(R.id.chat_avatar);
 
             /************  Set holder with LayoutInflater ************/
@@ -92,9 +98,33 @@ List <String> duble_name = null;
             holder.iFriendName.setTextColor(mActivity.getResources().getColor(R.color.red));
         }
         else {
-            holder.iFriendName.setTextColor(mActivity.getResources().getColor(R.color.black));
+            holder.iFriendName.setTextColor(mActivity.getResources().getColor(R.color.ifriend_text_color));
         }
 
+        try
+        {
+            if(bean.getHearts() == null || bean.getHearts().equalsIgnoreCase(""))
+            holder.hearts.setText("0");
+            else
+                holder.hearts.setText(bean.getHearts());
+
+            if(bean.getMe2s() == null || bean.getMe2s().equalsIgnoreCase(""))
+                holder.me2s.setText("0");
+            else
+                holder.me2s.setText(bean.getMe2s());
+
+            if(bean.getHugs() == null || bean.getHugs().equalsIgnoreCase(""))
+                holder.hugs.setText("0");
+            else
+                holder.hugs.setText(bean.getHugs());
+
+
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         int tempPos = position + 1;
         holder.iFriendName.setText(bean.getiFriendName() + tempPos);
         holder.dummyName.setText(bean.getDummyName());
@@ -132,7 +162,11 @@ List <String> duble_name = null;
 
     }
 
-
+    @Override
+    public void notifyDataSetChanged() {
+        duble_name.clear();
+        super.notifyDataSetChanged();
+    }
 
     public static int randInt(int min, int max) {
 

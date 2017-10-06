@@ -41,10 +41,8 @@ public class PrivatePolicyActivity extends BaseActivity {
         AppSession.save(ct, Constants.USER_SAFE_GUARD, safeguard_date);
 
         new UpdateDisclaimer().execute();
-
      //   initWebView("https://cypher-admin.eu-gb.mybluemix.net/privacypolicy.html"); dev server
-
-        initWebView("https://cypheradmin.eu-gb.mybluemix.net/privacypolicy.html");
+        initWebView(Constants.PRIVACY_POLICY_URL);
         findViewById(R.id.policy_home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,9 +83,21 @@ public class PrivatePolicyActivity extends BaseActivity {
 
         webview.setWebViewClient(new WebViewClient() {
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(WebView view, String url)
+            {
 
-                webview.loadUrl(url);
+                if(url.contains("team@"))
+                {
+                    url  = url.replace("mailto:","");
+                    Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    emailIntent.setType("vnd.android.cursor.item/email");
+                    emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{url});
+                    startActivity(Intent.createChooser(emailIntent, "Send mail using..."));
+                    return true;
+                }
+                else
+                    webview.loadUrl(url);
                 return false;
 
             }

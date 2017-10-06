@@ -1,5 +1,6 @@
 package com.helio.silentsecret.utils;
 
+import com.helio.silentsecret.models.RoomsInfoDTO;
 import com.helio.silentsecret.models.Secret;
 
 public class Constants {
@@ -58,7 +59,7 @@ public class Constants {
 
 
 
-
+    public static final String CYPHER_TUTORIALS = "cypher_tutorials";
 
 
 
@@ -114,6 +115,7 @@ public class Constants {
     public final static String USER_HUGS = "hugs";
     public final static String USER_ID = "id";
     public final static String USER_IS_VERIFIED = "isVerified";
+    public final static String USER_EMAIL = "email_id";
 
     public final static String USER_VERIFIED = "is_verified";
     public final static String USER_FLAG = "is_flaged";
@@ -204,7 +206,7 @@ public class Constants {
     public final static String SECRET_STRESS_LEVEL = "stressLevel";
     public final static String SECRET_SUPPORT_ORGANISATIONS = "supportOrganisations";
     public final static String SECRET_TEXT = "text";
-
+    public final static String SECRET_FLICKER_IMAGE = "flicker_image";
     public final static String SECRET_ID = "secret_id";
 
     public final static String SECRET_USER = "user";
@@ -253,10 +255,14 @@ public class Constants {
     public final static String ACCESS_YEAR_COMMENTS = "access_year_comments";
     public final static String SELECT_ALL = "select_all_sec_del";
 
+    public final static String ACCESS_ROOM = "access_room";
+
     public final static String ACCESS_QR_READER = "access_qr_reader";
     public final static String ACCESS_BOOK_APPONTMENT = "access_book_appointment";
     public final static String ACCESS_PENDING_RATING = "access_pending_rating";
 
+
+    public final static String ACCESS_UNVERIFY_ME = "access_unverify_me";
 
     public final static String USED_QR_CODE = "used_qr_code";
 
@@ -303,6 +309,15 @@ public class Constants {
     public static final String USER_FIRST_NAME = "user_firstname";
     public static final String SHOW_THANK_MESSAGE = "thank_you_message";
 
+
+    public static final String GUEST_USER_NAME = "guest_username";
+
+    public static final String DONE_LANDING_SCREEN = "done_landing_screen";
+
+
+    public static final String USER_CODE = "user_signup_code";
+    public static final String USER_CODE_TYPE = "user_code_type";
+
     public static final String USER_NAME_PARSE = "old_username";
     public static final String WEB_URL = "url";
     public static final String IMPACT_REMINDER = "impact_reminder";
@@ -321,6 +336,7 @@ public class Constants {
     public static final String FOR_SHARE_LINK = "FOR_SHARE_LINK";
 
     public static Secret secretComment = null;
+    public static RoomsInfoDTO roomComment = null;
 
     public static final String PUSH_DATA = "com.parse.Data";
     public static final String PUSH_ALERT = "alert";
@@ -355,7 +371,11 @@ public class Constants {
     public final static String SUPPORT_WEB_VIEW = "support";
     public final static String BACKEND_WEB_VIEW = "backend";
     public final static String DIALOG_KEY = "key_dialog";
-    public final static String BACKEND_URL = "http://www.silentsecret.uk/message.html";
+   // public final static String BACKEND_URL = "http://www.silentsecret.uk/message.html";
+    public final static String BACKEND_URL = "http://www.getcypherapp.com/message.html";
+   // public final static String PRIVACY_POLICY_URL = "https://cypheradmin.eu-gb.mybluemix.net/privacypolicy.html";
+    public final static String PRIVACY_POLICY_URL = "https://www.getcypherapp.com/privacypolicynew.html";
+
     public static final String INCLUDE_USER_POINTER = "user";
     public static final String INCLUDE_RUSER_POINTER = "receivingUser";
 
