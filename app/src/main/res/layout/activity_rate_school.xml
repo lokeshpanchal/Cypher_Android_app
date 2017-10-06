@@ -1,0 +1,128 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/glimpse_gray">
+
+
+    <RelativeLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/homemenu">
+
+
+        <ImageView
+            android:id="@+id/rate_school_close"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/back" />
+
+        <TextView
+            android:id="@+id/rate_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="Rate your school"
+
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header_layout"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <!--
+                       <ImageView
+                           android:id="@+id/rate_school_close"
+                           android:layout_width="65dp"
+                           android:layout_height="65dp"
+                           android:layout_alignParentRight="true"
+                           android:paddingRight="15dp"
+                           android:paddingLeft="15dp"
+                           android:src="@drawable/ic_close_white" />-->
+
+
+                <EditText
+                    android:id="@+id/rate_school_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_weight="10"
+                    android:background="@drawable/gray_search_bg"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:hint="@string/name_of_school"
+                    android:textColor="#6b6d70"
+                    android:textColorHint="#6b6d70"
+                    android:textSize="@dimen/rate_ts"></EditText>
+
+
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/rate_school_lv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:divider="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none"></ListView>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/top_bar">
+
+        <TextView
+            android:id="@+id/rate_school_submit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/submit"
+            android:textColor="@color/white"
+            android:typeface="serif"
+            android:textStyle="bold"
+            android:textSize="@dimen/rate_ts" />
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/rate_school_progress_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/rate_school_progress_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#44999999"
+        android:visibility="gone" />
+
+    <include layout="@layout/caution_layout" />
+
+</RelativeLayout>

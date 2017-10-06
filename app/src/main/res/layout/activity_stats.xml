@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/glimpse_gray"
+  >
+
+
+    <!--<RelativeLayout
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/homemenu"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/stats_verify"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_verified_icon"
+                android:visibility="invisible"></ImageView>
+
+            <TextView
+                android:id="@+id/stats_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/stats_username_ts" />
+        </LinearLayout>
+
+    </RelativeLayout>-->
+
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/petscrollview"
+        android:background="@color/homemain"
+       >
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/petlayout"
+                android:layout_width="match_parent"
+                android:layout_height="305dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal"
+
+                android:visibility="gone">
+
+
+                <ProgressBar
+                    android:id="@+id/water_progress"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="230dp"
+                    android:layout_height="230dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="-100dp"
+                    android:layout_marginTop="5dp"
+                    android:progress="10"
+                    android:progressDrawable="@drawable/progressbar_stateblue"
+
+                    />
+
+                <ProgressBar
+                    android:id="@+id/food_progress"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="230dp"
+                    android:layout_height="230dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="-100dp"
+                    android:layout_marginTop="5dp"
+                    android:progress="30"
+                    android:progressDrawable="@drawable/progressbar_state">
+
+                </ProgressBar>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="40dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+
+                    android:layout_marginTop="15dp">
+
+                    <WebView
+
+                        android:id="@+id/petimage"
+                        android:layout_width="match_parent"
+                        android:layout_marginRight="40dp"
+                        android:layout_marginLeft="40dp"
+                        android:layout_height="250dp"
+                        android:visibility="gone"
+                        android:scrollbars="none"
+                        android:background="@color/white"
+                        />
+
+
+                    <ImageView
+                        android:id="@+id/petimage_normal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        />
+
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/water_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginTop="20dp"
+                    android:text="30%"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="2dp"
+                    android:text="Water"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="2dp"
+                    android:text="Comments"
+
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+
+                <TextView
+                    android:id="@+id/food_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginTop="20dp"
+                    android:text="30%"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginRight="5dp"
+                    android:text="Food"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="1dp"
+                    android:text="Hearts"
+
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/oxygen_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginRight="20dp"
+                    android:text="Oxygen : 30%"
+                    android:textColor="#ffffff"
+                    android:textSize="13sp" />
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginRight="20dp"
+                    android:text="Hugs"
+                    android:textColor="#ffffff"
+                    android:textSize="13sp" />
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/petlayout"
+                android:id="@+id/doblayout"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="@string/date_of_birth"
+
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/stats_main_ts" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="15"
+
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="5"
+
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/stats_birthday"
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:layout_weight="0.9"
+
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/stats_days"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="5"
+                                    android:background="@color/white"
+                                    android:gravity="center"
+                                    android:text="@string/days"
+                                    android:textColor="#000000"
+                                    android:textSize="@dimen/stats_main_ts" />
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1" />
+
+                                <TextView
+                                    android:id="@+id/stats_month"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="5"
+                                    android:background="@color/white"
+                                    android:gravity="center"
+                                    android:text="@string/month"
+                                    android:textColor="#000000"
+                                    android:textSize="@dimen/stats_main_ts" />
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1" />
+                                <TextView
+                                    android:id="@+id/stats_years"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="8"
+                                    android:background="@color/white"
+                                    android:gravity="center"
+                                    android:text="@string/years"
+                                    android:textColor="#000000"
+                                    android:textSize="@dimen/stats_main_ts" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:gravity="center"
+                                android:text="@string/we_would_like"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/stats_main_ts"
+                            />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="@string/you_have_given"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/stats_main_ts"
+                                android:visibility="gone" />
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="3" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/oxygenlevel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="35dp"
+        android:background="#00222222" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Please select a pet first."
+        android:gravity="center"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:id="@+id/slecetpettext"
+        android:textColor="@color/white"
+        />
+
+
+
+
+
+
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:orientation="horizontal"
+    android:id="@+id/bottomlaytou"
+    android:visibility="gone"
+    android:layout_alignParentBottom="true"
+    android:weightSum="10">
+
+
+
+
+    <TextView
+        android:id="@+id/back"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="#dddddd"
+        android:gravity="center"
+        android:text="GO BACK"
+        android:textColor="@color/black"
+        android:textSize="@dimen/stats_go_back" />
+
+
+    <TextView
+        android:id="@+id/update_pet"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="#dddddd"
+        android:gravity="center"
+        android:text="CHANGE PET"
+        android:textColor="@color/black"
+        android:textSize="@dimen/stats_go_back" />
+
+</LinearLayout>
+
+
+    <TextView
+        android:id="@+id/stats_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/go_back"
+        android:textColor="@color/black"
+        android:textSize="@dimen/stats_go_back" />
+
+
+    <RelativeLayout
+        android:id="@+id/pet_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/buller_color"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="150dp"
+            android:layout_marginRight="150dp"
+
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/pet_header_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/homemenu"
+               >
+
+                <TextView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="Select your pet"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pet_header_layout"
+                android:layout_marginBottom="45dp">
+
+
+                <LinearLayout
+                    android:id="@+id/pet_main_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/skip_pet"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:background="@color/darkorange"
+                    android:gravity="center"
+                    android:text="Not Now"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/done_pet"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:background="@color/green"
+                    android:gravity="center"
+                    android:text="Select"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/set_pet_name"
+    android:paddingLeft="50dp"
+    android:paddingRight="50dp"
+    android:paddingBottom="4dp"
+    android:paddingTop="4dp"
+    android:text="Give me a name"
+    android:textSize="16sp"
+    android:background="#bbdddddd"
+    android:layout_centerHorizontal="true"
+    android:textColor="@color/black"/>
+
+
+
+    <RelativeLayout
+        android:id="@+id/pet_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#55000000"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginLeft="120dp"
+            android:layout_marginRight="120dp"
+            android:layout_centerVertical="true">
+
+            <LinearLayout
+                android:id="@+id/setpetname_header_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/menu"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:text="Set your pet name"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+
+
+
+            <EditText
+                android:id="@+id/pet_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#e8e8e8"
+                android:gravity="center"
+                android:hint="Enter your pet name."
+                android:padding="@dimen/search_tp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="#666666"
+                android:textSize="@dimen/search_ts"
+                android:layout_below="@+id/setpetname_header_layout"/>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_below="@+id/pet_name_input"
+                android:layout_marginTop="20dp"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/cancel_pet_name"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:background="@color/darkorange"
+                    android:gravity="center"
+                    android:text="Cancel"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/pet_name_ok"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:background="@color/green"
+                    android:gravity="center"
+                    android:text="Ok"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+
+    <include layout="@layout/caution_layout" />
+
+    <ImageView
+        android:id="@+id/stats_progress_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/glimpse_gray"
+        android:visibility="gone" />
+    <ProgressBar
+        android:id="@+id/stats_progress_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+</RelativeLayout>
+

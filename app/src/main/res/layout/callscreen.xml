@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="5"
+        android:background="#ffffffff">
+
+
+    <RelativeLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/main">
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/appointmenttext"
+            android:gravity="center"
+            android:text="@string/appcounselling"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:id="@+id/callbutton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/appointmenttext"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/call_icon" />
+
+        <TextView
+        android:id="@+id/show_counsel_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:text="00:00"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:background="#fffafafa"
+            >
+
+        <TextView
+                android:id="@+id/remoteUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:text=""
+                android:textColor="@color/sinch_purple"
+                android:textSize="28sp"/>
+
+        <TextView
+                android:id="@+id/callState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Ringing"
+                android:textColor="@color/sinch_purple"
+                android:textSize="16sp"
+                android:textAllCaps="true"
+                />
+
+        <TextView
+                android:id="@+id/callDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+            android:visibility="gone"
+                android:layout_marginTop="4dp"
+                android:text="00:00"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/sinch_purple"
+                android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:padding="0dip"
+            android:layout_weight="4"
+            android:background="#eeeeee" android:orientation="vertical">
+
+        <LinearLayout android:id="@+id/remoteVideo" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" android:layout_alignParentLeft="true"
+                      android:layout_alignParentTop="true" android:orientation="horizontal"/>
+
+        <RelativeLayout android:id="@+id/localVideo" android:layout_width="150dp"
+                        android:layout_alignParentRight="true" android:layout_height="200dp"
+            android:layout_alignParentTop="true" />
+
+    </RelativeLayout>
+    </LinearLayout>
+    <Button
+        android:id="@+id/hangupButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/button_end" />
+</RelativeLayout>

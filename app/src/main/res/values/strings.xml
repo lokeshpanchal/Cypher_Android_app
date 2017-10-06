@@ -1,0 +1,318 @@
+<resources>
+    <string name="app_name">Cypher</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="warning">Warning</string>
+    <string name="missing">Network connection is missing</string>
+    <string name="settings">Go to Settings</string>
+    <string name="please_enable_gps">Please enable the Location</string>
+    <string name="disclaimer_title">Disclaimer</string>
+    <string name="disclaimer_text">You accept that Cypher is not an emergency service, call your national emergency number in an emergency</string>
+    <string name="cancel">Cancel</string>
+    <string name="dont_have_account">Don\'t have any account yet?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in">Log In</string>
+    <string name="username_hint">Username</string>
+    <string name="pin_hint">pin</string>
+    <string name="forgot_pin">Forgot Pin</string>
+    <string name="sign_in">Sign In</string>
+    <string name="_or">OR</string>
+    <string name="iFriends_popup">Chat with Internet \n Friends </string>
+    <string name="ipet_popup">Feed your pet by giving \n out hugs, hearts, me2s  and \n comments on posts. </string>
+
+    <string name="appcounselling_popup">Connect with a \n Counsellor</string>
+    <string name="questions_prompt">security question</string>
+    <string name="gender_prompt">gender</string>
+    <string name="age_prompt">age</string>
+    <string name="_pin">Pin</string>
+    <string name="done">Done</string>
+    <string name="enter_pin">Enter Pin</string>
+    <string name="enter_your_answer">Enter your answer</string>
+    <string name="wrong_pin">Wrong Pin!</string>
+    <string name="wrong_answer">Wrong Answer!</string>
+    <string name="reset_pin">Reset Pin</string>
+    <string name="cont">Continue</string>
+    <string name="your_pin_is">Your pin is</string>
+    <string name="enter_new_pin">Enter new Pin!</string>
+    <string name="_type_new">Type new Pin!</string>
+    <string name="happy">Happy</string>
+    <string name="trending">Trending</string>
+    <string name="see_all">● See All</string>
+    <string name="light">■ Light</string>
+    <string name="tense">+ Tense</string>
+    <string name="deep">♦ Deep</string>
+    <string name="my_secrets">My Secrets</string>
+    <string name="hearts">Heart</string>
+    <string name="hug">Hug</string>
+    <string name="me_2">Me2</string>
+    <string name="safe_">Safeguarding</string>
+    <string name="swipe_to_select_text">swipe to select image</string>
+    <string name="swipe_text">swipe right or left to change the colour of the \nbackground</string>
+    <string name="create_hint">Tap here to share your\n thoughts, feelings,\n secrets, news and\n lifestyle anonymously</string>
+    <string name="create_start">0/200</string>
+    <string name="create_warning">This post will be anonymously reviewed within 30 minutes by a moderator as it has been flagged as containing a high risk keyword or personal details.</string>
+    <string name="appcounselling">appCounselling</string>
+    <string name="love">love</string>
+    <string name="ashamed">ashamed</string>
+    <string name="anxious">anxious</string>
+    <string name="angry">angry</string>
+    <string name="contempt">contempt</string>
+    <string name="frustrated">frustrated</string>
+    <string name="grateful">grateful</string>
+    <string name="happy_">happy</string>
+    <string name="disgust">disgust</string>
+    <string name="lonely">lonely</string>
+    <string name="sad">sad</string>
+    <string name="lol">lol</string>
+    <string name="surprised">surprised</string>
+    <string name="fml">FML</string>
+    <string name="scared">scared</string>
+    <string name="attention">Attention</string>
+    <string name="support">Support</string>
+    <string name="close">Close</string>
+    <string name="submit">Submit</string>
+    <string name="rate_question">How helpful was this support \n organisation?</string>
+    <string name="send">SEND</string>
+    <string name="comment_input_hint">Add comment here</string>
+    <string name="comments_hint">Don\'t share any contact information or initials!</string>
+    <string name="phone_warning">Phone number is not allowed</string>
+    <string name="comment_warning">Your comment cannot be empty</string>
+    <string name="sorry_not_verified">Sorry, you are not verified</string>
+    <string name="only_10_comments">Only 10 comments per day allowed</string>
+    <string name="google_play_error">Google Play Error</string>
+    <string name="you_have">"You have "</string>
+    <string name="commnet_left_today">" comments left today"</string>
+    <string name="my_action_">"My Actions: "</string>
+    <string name="hugs_">" hugs, "</string>
+    <string name="hearts_point">" hearts, "</string>
+    <string name="me2_s">" me2s"</string>
+    <string name="clean_message">Done</string>
+    <string name="_done">Done</string>
+    <string name="access_required">Access required</string>
+    <string name="you_got_new_commnet">You received a new comment</string>
+    <string name="you_got_reply_onComment">You received a new reply on comment</string>
+
+    <string name="people_have">" people have "</string>
+    <string name="your_secret">" your secret"</string>
+    <string name="_ok">OK</string>
+    <string name="silent_secret_menu">Cypher Menu</string>
+    <string name="share_u_secret">Share your own secret</string>
+    <string name="be_curious">Be curious</string>
+    <string name="the_most_popular_secrets">The most popular secrets</string>
+    <string name="the_latest_secrets">The latest secrets</string>
+    <string name="click_to_get_support">Click to get support</string>
+    <string name="tap_flag">Tap Flag to report an inappropriate post</string>
+    <string name="express_mutual_feeling">Express a mutual feeling</string>
+    <string name="express_love">Express love</string>
+    <string name="give_a_hug">Give a hug to show that you care</string>
+    <string name="if_u_are_verified">If you\'re verified, click the</string>
+    <string name="to_comment">to comment</string>
+    <string name="comments_are_disabled">Comments are disabled due flags reason</string>
+    <string name="you_have_shared">"You share a mutual secret with "</string>
+    <string name="people_">" people"</string>
+    <string name="how_helpful_backend">How helpful was this personalised support for you?</string>
+    <string name="_notifications">Notifications</string>
+    <string name="my_secrets_">My Secrets</string>
+    <string name="last_filtering">Latest filtering</string>
+    <string name="book_appointment">App Counselling</string>
+    <string name="settings_">Settings</string>
+    <string name="how_to_stay_safe">How To Stay safe</string>
+    <string name="reset_tutorial">Reset Tutorial</string>
+    <string name="clear_my_secrets">Clear my secrets</string>
+    <string name="get_unlimited_comments">Get unlimited comments</string>
+    <string name="_menu">Menu</string>
+    <string name="phone_state">phone</string>
+    <string name="ok_">OK</string>
+    <string name="username_missed">Username missed</string>
+    <string name="pin_missed">Pin missed</string>
+    <string name="your_pin_is_too_small">Your pin is too small</string>
+    <string name="choose_your_secret_query">Choose your secret question</string>
+    <string name="answer_the_secret_query">Answer the secret question</string>
+    <string name="select_your_gender">Select your gender</string>
+    <string name="select_your_age">Select your date of birth</string>
+    <string name="_200">/200</string>
+    <string name="get_support">get support</string>
+    <string name="only_if_u_have">Only if you have the</string>
+    <string name="sign_">sign,</string>
+    <string name="pay_to_have_unlmtd">pay to have UnLtd comments</string>
+    <string name="secret_u_have_share">Secrets you\'ve shared,</string>
+    <string name="_comma">,</string>
+    <string name="small_or">or</string>
+    <string name="locked_with_a_pin">locked with a pin</string>
+    <string name="no_data_yet">No data yet!</string>
+    <string name="no_secrets_found">No secrets found!</string>
+    <string name="you_can_comment">You can now comment ephemerally on any post with</string>
+    <string name="enter_username">Enter your username</string>
+    <string name="empty">Empty field</string>
+    <string name="people_your_share">People you share mutual secrets with</string>
+    <string name="more_verified_posts">More verified posts</string>
+    <string name="select_all">select all   </string>
+    <string name="glimpse">Glimpse</string>
+    <string name="total_social_p">This user\'s actions</string>
+    <string name="unfirify_me">Unverify me</string>
+    <string name="rate_school">Rate your school</string>
+    <string name="rate_your_college">Rate your college</string>
+    <string name="name_of_school">School name</string>
+    <string name="name_of_college">College name</string>
+    <string name="please_fill_out_fields">Please fill out all the fields</string>
+    <string name="refer_your_friends">Invite your friends</string>
+    <string name="invite_message"><![CDATA["I use this new anonymous social network app called Cypher. It's a safe anonymous sharing app for teens to share secrets, feelings, news and lifestyle. Find it on the App Store & Play Store. Or Download it here <a href=\"https://play.google.com/store/apps/details?id=com.helio.silentsecret&hl=en\">https://play.google.com/store/apps/details?id=com.helio.silentsecret&hl=en</a>"]]></string>
+    <string name="referral_coe">Referral Code</string>
+    <string name="we_would_like">We would like the whole community\nto wish you happy birthday</string>
+    <string name="you_have_received">You\'ve received:</string>
+    <string name="you_have_given">You\'ve given:</string>
+    <string name="go_back">GO BACK</string>
+    <string name="date_of_birth">Date Of Birth</string>
+    <string name="years">YYYY</string>
+    <string name="month">MM</string>
+    <string name="days">DD</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="back">Back</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="news">News</string>
+    <string name="lifestyle">Lifestyle</string>
+    <string name="search_for_inspiration">Search for inspiration</string>
+    <string name="dont_share">Don\'t share any contact information or initials</string>
+    <string name="please_enter_name">Please enter the name</string>
+    <string name="share_daily_for_verify">Share two posts daily for 2 days to get verified for comments</string>
+    <string name="share_two_post_today">Share two posts today to get verified for comments</string>
+    <string name="share_Daily">Share two posts daily for 2 days to get verified for comments</string>
+    <string name="change_background">Change background</string>
+    <string name="not_allowed">Not allowed</string>
+    <string name="checkou_app">"Checkout this cool link I found on Cypher\n"</string>
+    <string name="you_are_verified">You are verified! Click V to comment</string>
+    <string name="mood_bottom_text">Share your daily updates to see\nhow your mood changes</string>
+    <string name="comment">comment</string>
+    <string name="share_u_emotions">Share your emotions</string>
+    <string name="give_hearts_hugs">Give %1$d hugs, hearts and me2s to get verified for comments</string>
+    <string name="give_heart_hug">Give %1$d hug, heart and me2 to get verified for comments</string>
+    <string name="share_one_more">Share one more secret and give %1$d hugs, hearts and me2s to get verified for comments</string>
+    <string name="share_one_more_and_give">Share one more secret and give %1$d hug, heart and me2 to get verified for comments</string>
+    <string name="share_one_more_to_get">Share one more secret to get verified for comments</string>
+    <string name="share_and_give">Share %1$d more secrets and give %2$d hugs, hearts and me2s to get verified for comments</string>
+    <string name="share_and_give_one">Share %1$d more secrets and give %2$d hug, heart and me2 to get verified for comments</string>
+    <string name="share_to_get_verified">Share %d more secrets to get verified for comments</string>
+    <string name="trending_overlay_text">Secrets from the people you me2</string>
+    <string name="trending_last_item_text">Me2 more secrets to see more posts</string>
+    <string name="latest_overlay_text">Secrets from the people that\ninteracted with you</string>
+    <string name="latest_last_item_text">Share more secrets to see more posts</string>
+    <string name="font_aa">Aa</string>
+    <string name="u_have_unlocked">You\'ve unlocked</string>
+    <string name="u_have_unlocked_one">You\'ve unlocked a new image</string>
+    <string name="caution_points">1. Initials\n2. Names\n3. Usernames\n4. Don\'t ask for Hearts, Hugs,\nMe2s for validation\n5. Don\'t @\n6. Don\'t post inappropriate secrets\n or troll</string>
+    <string name="caution_title">Don\'t be naughty :)\ndon\'t use:</string>
+    <string name="sorry_this_user">Sorry, this user is not verified</string>
+    <string name="not_exist">This user no longer exist</string>
+    <string name="school_code_unlock_message">You\'ve unlocked new images</string>
+    <string name="new_images">" new images"</string>
+    <string name="happy_tutorial_text">This is where we create happiness :)</string>
+    <string name="u_can_rate_school_again_in">You can rate your school again in 6 months</string>
+    <string name="mot_allowed">Not allowed</string>
+    <string name="u_can_rate_your_college">You can rate your college again in 6 months</string>
+    <string name="track_glimpse">Glimpse Opened - Android</string>
+    <string name="mood_track">Mood - Android</string>
+    <string name="news_track">News - Android</string>
+    <string name="enter_track">Entertainment - Android</string>
+    <string name="life_track">Lifestyle - Android</string>
+    <string name="translate">translate</string>
+    <string name="share">share</string>
+    <string name="analytics_glimpse">Glimpse - Android</string>
+
+    <string name="analytics_Ifriend">Ifriend</string>
+    <string name="analytics_PendingFreind">PendingIFreind</string>
+    <string name="analytics_appCounselling">appCounsellingBooking</string>
+    <string name="analytics_CouponCode">CouponCode</string>
+    <string name="analytics_Notification">Notification</string>
+    <string name="analytics_PetAvtaar">PetAvtaar</string>
+    <string name="analytics_MYSecrets">MYSecrets</string>
+    <string name="analytics_RateSchool">RateSchool</string>
+    <string name="analytics_Settings">Settings</string>
+    <string name="analytics_SearchSecrets">SearchSecrets</string>
+    <string name="analytics_Comments">Comments</string>
+    <string name="analytics_like">like</string>
+    <string name="analytics_Unlike">Unlike</string>
+    <string name="analytics_hug">hug</string>
+    <string name="analytics_Unhug">Unhug</string>
+    <string name="analytics_me2">me2</string>
+    <string name="analytics_Unme2">Unme2</string>
+    <string name="analytics_GetSupport">GetSupport</string>
+    <string name="analytics_Help">Help</string>
+    <string name="analytics_Entertainment">Entertainment</string>
+    <string name="analytics_News">News</string>
+    <string name="analytics_Lifestyle">Lifestyle</string>
+    <string name="analytics_ChangeBackground">ChangeBackground</string>
+    <string name="analytics_Scratch">scratch</string>
+    <string name="analytics_How_toSafe">How to safe</string>
+    <string name="analytics_Resettutorial">Reset tutorial</string>
+    <string name="analytics_ClearMySecrets">Clear my secrets</string>
+    <string name="analytics_UnverifyMe">Unverify me</string>
+    <string name="analytics_LiveCounselling">Live Counselling</string>
+
+
+    <string name="invite_android">Invite - Android</string>
+    <string name="mood_android">Mood - Android</string>
+    <string name="create_android">Create - Android</string>
+    <string name="_error">Error</string>
+    <string name="search">Search</string>
+    <string name="help_share_text">I helped %1$d people on Cypher today\n@SilentSecretApp</string>
+    <string name="check_again_tomorrow">Check again tomorrow</string>
+    <string name="you_cant_help_zero">Unfortunately, you have not helped anyone yet</string>
+    <string name="comments_received">Comments received in %1$d</string>
+    <string name="secrets_highlights">My %1$d Happy Highlights</string>
+    <string name="secrets_highlights_text">My %1$s Happy Highlights</string>
+    <string name="no_results">No results</string>
+    <string name="help_one_person">I helped one person on Cypher today\n@SilentSecretApp</string>
+    <string name="reply">Reply</string>
+    <string name="write_your_reply">Write your reply</string>
+    <string name="help_alert_text">You can now share the good deeds that you do on Cypher with the world, by anonymously connecting your Twitter account. Let the world know about the people you have helped e.g. I helped 19 people on Cypher today. We DO NOT collect or give any personal information by connecting your account.</string>
+    <string name="unlock_invite_popup">Unlock new background\n pictures for every 2 new\n friends you invite</string>
+    <string name="you_received_new_reply">You received a new reply</string>
+    <string name="iFriendsText">my friends</string>
+    <string name="pendingFriendsText">friends request</string>
+    <string name="sendingFriendsText">Send</string>
+
+    <string name="chatsFriendsText">iFriends</string>
+    <string name="no_data">No Request Found</string>
+    <string name="no_friends">No iFriends Added</string>
+
+    <string name="have_a_code">Do you have a code?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="gps_guest_enabled">Please enable your GPS/Location in order to register as Guest.</string>
+    <string name="gps_network_not_enabled">Please enable your GPS/Location in order to send Internet Friend request.</string>
+    <string name="gps_network_accept_not_enabled">Please enable your GPS/Location in order to accept Internet Friend request.</string>
+    <string name="open_location_settings">Settings</string>
+    <string name="Cancel">Cancel</string>
+    <string name="request_send">iFriend request pending.</string>
+    <string name="ok">Ok</string>
+
+    <string-array name="queries_arrays">
+        <item>What is your mother\'s maiden name?</item>
+        <item>Who was your first crush?</item>
+        <item>What is your favorite cartoon character?</item>
+        <item>Who is your role model?</item>
+        <item>What is your guilty pleasure?</item>
+    </string-array>
+
+    <string-array name="gender_arrays">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="age_arrays">
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+    </string-array>
+    <string name="title_activity_counseller_booking">App Counselling</string>
+
+</resources>

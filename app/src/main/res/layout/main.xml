@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+    android:background="@color/homemenu">
+
+
+
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:id="@+id/header_layout"
+      android:background="@color/homemenu">
+
+
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:id="@+id/cancel_book"
+
+        android:background="@drawable/back"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:text="@string/appcounselling"/>
+  </RelativeLayout>
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/glimpse_gray"
+      android:id="@+id/qrstart_layout"
+
+      android:layout_below="@+id/header_layout">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:layout_centerInParent="true"
+        android:orientation="vertical"
+
+        >
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Enter the code to activate your appCounselling sessions"
+          android:textColor="@color/black"
+          android:layout_gravity="center"
+          android:gravity="center"
+         android:layout_margin="20dp"
+          android:textSize="18sp"
+          />
+
+      <EditText
+          android:layout_width="match_parent"
+          android:layout_height="40dp"
+          android:layout_margin="25dp"
+          android:id="@+id/edtcounselcode"
+          android:inputType="number"
+          android:hint="Enter your code here"
+          android:gravity="center"
+          android:background="@drawable/counsellcodeborder"/>
+
+      <TextView
+          android:layout_width="100dp"
+          android:layout_height="40dp"
+          android:text="Submit!"
+          android:layout_margin="20dp"
+          android:textColor="@color/white"
+          android:layout_gravity="center"
+          android:textSize="16sp"
+          android:gravity="center"
+          android:id="@+id/qrstart"
+          android:background="@drawable/theme_shape"
+          />
+
+    </LinearLayout>
+  </RelativeLayout>
+
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/glimpse_gray"
+      android:layout_below="@+id/header_layout"
+      android:visibility="gone"
+      android:id="@+id/progress_bar">
+
+    <ProgressBar
+        android:layout_width="70dp"
+        android:layout_centerInParent="true"
+        android:layout_height="70dp" />
+  </RelativeLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:background="@color/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+
+            <TextView
+                android:background="@color/homemenu"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/support_title_ts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/_notifications" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/back"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/back"/>
+
+        </RelativeLayout>
+
+        <ListView
+            android:layout_weight="8.2"
+            android:listSelector="@android:color/transparent"
+            android:divider="@color/banner_color"
+            android:scrollbars="none"
+            android:dividerHeight="1dp"
+            android:background="@color/glimpse_gray"
+            android:id="@+id/notifications_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"></ListView>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/bottombar"
+
+            android:background="@color/glimpse_gray"
+            android:layout_weight=".8">
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_home"
+                android:layout_weight="3"
+
+                android:visibility="invisible"
+                android:id="@+id/notifications_home"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+
+            <TextView
+                android:id="@+id/notifications_get_support"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:background="@drawable/getsupport" />
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_plus1"
+                android:layout_weight="3"
+                android:visibility="invisible"
+                android:id="@+id/notifications_plus_toogle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+
+
+    <FrameLayout
+        android:id="@+id/notification_frame"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"></FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/notifications_progress_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/notifications_progress_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <include layout="@layout/caution_layout" />
+
+</RelativeLayout>
+

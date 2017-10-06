@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="yellow">#edb146</color>
+    <color name="next_yellow">#f3b547</color>
+    <color name="dark_yellow">#cf7e34</color>
+    <color name="green">#45b39c</color>
+    <color name="greennew">#78CB2C</color>
+    <color name="back">#5d7e91</color>
+
+    <color name="common_signin_btn_default_background">#999999</color>
+
+
+    <color name="back_blue">#5d7e91</color>
+    <color name="back_blue_next">#76A1BB</color>
+
+    <color name="blue">#0E90F0</color>
+
+    <color name="purple">#675271</color>
+    <color name="purple_light">#7e6c86</color>
+    <color name="purple_dark">#4a3056</color>
+    <color name="purple_sweet">#cfc1c8</color>
+    <color name="glimpse_gray">#E2E6DC</color>
+    <color name="light_white">#fcfcfc</color>
+
+    <color name="secret_text_bg_circle">#f6f6f6</color>
+
+    <color name="devidercolor">#f8f8f8</color>
+    <color name="purple_light_tansparent">#c27e6c86</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="grey">#44ACACAC</color>
+    <color name="room_bar">#3bccc5</color>
+
+    <color name="mutual_back">#c23c3c3c</color>
+    <color name="grey_bar">#979797</color>
+    <color name="grey_trans">#44ACACAC</color>
+    <color name="form">#2FE0FF</color>
+   <!-- <color name="form">#32B1A0</color>-->
+    <color name="grey_transparent">#99ACACAC</color>
+    <color name="ifriend_text_color">#666666</color>
+
+
+    <color name="homemain">#3BCCC5</color>
+    <color name="homemenu">#32B1A0</color>
+    <color name="top_bar">#63c5c7</color>
+    <color name="old_top_bar">#36c2b7</color>
+
+    <color name="ifriend_top_bar">#62c9c8</color>
+    <color name="add_as_ifreind_color">#50c3c2</color>
+
+    <color name="main_trans">#ee303D4D</color>
+    <color name="menu_trans">#c21E2E3D</color>
+
+    <color name="menu">#1E2E3D</color>
+    <color name="main">#303D4D</color>
+    <color name="light_gray">#dddddd</color>
+    <color name="upper_line">#ffffff</color>
+    <color name="getsuppot_line">#00CFE5</color>
+    <color name="dialog_bg">#11151E</color>
+    <color name="red">#F63D3D</color>
+    <color name="chat_color">#AD3949</color>
+
+    <color name="video_color">#10A26D</color>
+    <color name="audio_color">#0095E1</color>
+    <color name="buller_color">#7e7e7e</color>
+
+    <color name="ratebg">#308d9d</color>
+
+
+
+
+    <color name="text_grey">#2D2D2D</color>
+    <color name="orange">#ED5F39</color>
+
+    <color name="mood_color">#f64747</color>
+    <color name="counsel_color">#546E7A</color>
+
+    <color name="enter_color">#6e1f93</color>
+    <color name="news_color">#fa8a40</color>
+    <color name="darkorange">#fe8940</color>
+
+    <color name="lifecycle_color">#35c063</color>
+    <color name="pages_color">#26c499</color>
+
+    <color name="bot_bar_mood">#373d4c</color>
+    <color name="refer_item">#61afa8</color>
+
+    <color name="filter">#c2303D4D</color>
+
+    <color name="banner_color">#c22D2D2D</color>
+
+    <color name="last_item">#ff5d5d</color>
+    <color name="caution_background">#c2ff5d5d</color>
+
+    <color name="sinch_purple">#ff63029d</color>
+    <color name="off_white">#fffafafa</color>
+    <color name="greyish">#fff2f1f2</color>
+    <color name="dark_grey">#323232</color>
+
+</resources>

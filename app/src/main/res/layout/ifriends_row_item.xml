@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <ImageView
+            android:id="@+id/chat_avatar"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_weight=".2"
+            android:src="@drawable/ic_avatar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.8"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name_of_ifriends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textStyle="bold"
+                android:text="lokesh"
+                android:background="@drawable/gray_round_border"
+                android:textColor="@color/ifriend_text_color"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/ic_hug"/>
+
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="12dp"
+                    android:layout_marginLeft="-4dp"
+                    android:id="@+id/hugs"
+                    android:text="20"
+                    android:gravity="center"
+                    android:textSize="8sp"
+                    android:background="@drawable/like_me_hug_count_bt"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="7dp"
+
+                    android:background="@drawable/ic_hearted"/>
+
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="12dp"
+                    android:layout_marginLeft="-4dp"
+                    android:text="20"
+                    android:id="@+id/hearts"
+                    android:gravity="center"
+                    android:textSize="8sp"
+                    android:background="@drawable/like_me_hug_count_bt"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+android:layout_marginLeft="7dp"
+                    android:background="@drawable/ic_me"/>
+.
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="12dp"
+                    android:layout_marginLeft="-2dp"
+                    android:text="20"
+                    android:id="@+id/me2s"
+                    android:gravity="center"
+                    android:textSize="8sp"
+                    android:background="@drawable/like_me_hug_count_bt"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/dummy_name_of_ifriends"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textColor="@color/greennew"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="What is your mother\'s maiden name?" />
+    <item android:title="Who was your first crush?" />
+    <item android:title="What is your favorite cartoon character?" />
+    <item android:title="Who is your role model?" />
+    <item android:title="What is your guilty pleasure?" />
+</menu>

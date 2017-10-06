@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/glimpse_gray">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/glimpse_rooms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/glimpse_button_height"
+                    android:layout_gravity="center_vertical"
+
+                    android:layout_weight="3"
+                    android:background="@drawable/white_left_corner"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_rooms" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:background="@drawable/glimpse_button"
+                    android:gravity="center"
+
+                    android:text="Rooms"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/glimpse_mediator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/glimpse_button_height"
+                    android:layout_gravity="center_vertical"
+
+                    android:layout_weight="3"
+                    android:background="@drawable/white_left_corner"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_mediator" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:background="@drawable/glimpse_button"
+                    android:gravity="center"
+
+                    android:text="Mediator"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/glimpse_counsell_clickable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/glimpse_button_height"
+                    android:layout_gravity="center_vertical"
+
+                    android:layout_weight="3"
+                    android:background="@drawable/white_left_corner"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_appcounsel" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:background="@drawable/glimpse_button"
+                    android:gravity="center"
+
+                    android:text="@string/appcounselling"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/glimpse_mood_clickable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/glimpse_button_height"
+                    android:layout_gravity="center_vertical"
+
+                    android:layout_weight="3"
+                    android:background="@drawable/white_left_corner"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_mood" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:background="@drawable/glimpse_button"
+                    android:gravity="center"
+
+                    android:text="Mood"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/glimpse_mysecret_clickable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="100dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/glimpse_button_height"
+                    android:layout_gravity="center_vertical"
+
+                    android:layout_weight="3"
+                    android:background="@drawable/white_left_corner"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_launcher" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:background="@drawable/glimpse_button"
+                    android:gravity="center"
+                    android:text="My Secret"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <FrameLayout
+        android:id="@+id/glimpse_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:visibility="gone"></FrameLayout>
+</RelativeLayout>

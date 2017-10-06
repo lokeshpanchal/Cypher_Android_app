@@ -86,8 +86,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.helio.silentsecret.R.id.filter_layout;
-
 //import com.google.android.gms.location.LocationListener;
 
 public class FeedAdapter extends BaseAdapter {
@@ -322,7 +320,7 @@ public class FeedAdapter extends BaseAdapter {
             holder.flliper = (ViewFlipper) convertView.findViewById(R.id.flliper);
             holder.short_sentence_layout = (RelativeLayout) convertView.findViewById(R.id.short_sentence_layout);
             holder.mIFriend = (TextView) convertView.findViewById(R.id.iFriend_icon);
-            holder.filter_layout = (LinearLayout) convertView.findViewById(filter_layout);
+
 
 
             holder.supportView = convertView.findViewById(R.id.support_tutorial_view);
@@ -1049,7 +1047,7 @@ public class FeedAdapter extends BaseAdapter {
 
                     if (is_from_long_tab)
                     {
-                        holder.filter_layout.setVisibility(View.GONE);
+
                     } else {
 
 
@@ -1101,7 +1099,7 @@ public class FeedAdapter extends BaseAdapter {
             public boolean onLongClick(View view)
             {
                 is_from_long_tab = true;
-                holder.filter_layout.setVisibility(View.VISIBLE);
+
              //   drawshortsent(holder, "me2");
                 return false;
             }
@@ -1731,7 +1729,7 @@ public class FeedAdapter extends BaseAdapter {
 
         public ViewFlipper flliper;
 
-           public LinearLayout filter_layout;
+
         public RelativeLayout short_sentence_layout ;
         public RelativeLayout top_bar ;
         // public TextView cancel_short_sentence;

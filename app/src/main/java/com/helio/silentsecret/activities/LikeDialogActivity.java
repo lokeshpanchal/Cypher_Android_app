@@ -10,6 +10,7 @@ import com.helio.silentsecret.R;
 public class LikeDialogActivity extends BaseActivity
 {
 
+
     TextView signup_button = null, signin_button = null, cancel_button = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

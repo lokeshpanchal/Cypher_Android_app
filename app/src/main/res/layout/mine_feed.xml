@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:background="@color/glimpse_gray"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:listSelector="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:scrollbars="none"
+
+        android:id="@+id/mine_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+
+    <TextView
+        android:id="@+id/mine_not_found"
+        android:visibility="gone"
+        android:textSize="@dimen/search_not_found_ts"
+        android:textColor="@color/black"
+        android:text="@string/no_data_yet"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/progress_bar"
+        android:visibility="gone">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</RelativeLayout>
+

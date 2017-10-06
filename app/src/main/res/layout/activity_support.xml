@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/menu">
+
+<!--    <ImageView
+        android:id="@+id/support_back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/glimpse_gray"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/homemenu"
+                android:gravity="center"
+                android:text="@string/support"
+                android:textColor="@color/white"
+                android:textSize="@dimen/support_title_ts" />
+
+            <TextView
+                android:id="@+id/support_close"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="right|center"
+                android:paddingRight="@dimen/support_close_tp"
+                android:text="@string/close"
+                android:textColor="@color/white"
+                android:textSize="@dimen/support_close_ts" />
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/support_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:dividerHeight="1dp"
+
+            android:divider="@color/buller_color"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none"></ListView>
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/support_not_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No Support Organisations \n available"
+        android:textColor="@color/black"
+        android:textSize="@dimen/search_not_found_ts"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/support_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/purple_sweet"
+        android:layout_marginTop="@dimen/header_height"
+        android:id="@+id/progress_bar"
+        android:visibility="gone"
+   >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+
+    <include layout="@layout/caution_layout" />
+
+</RelativeLayout>
+

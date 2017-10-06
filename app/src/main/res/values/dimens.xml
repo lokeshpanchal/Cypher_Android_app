@@ -1,0 +1,285 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <!-- SPLASH -->
+    <dimen name="splash_width">130dp</dimen>
+
+    <!-- LOGIN -->
+    <dimen name="login_dont">15sp</dimen>
+    <dimen name="login_sign_up">19sp</dimen>
+    <dimen name="login_sign_or">17sp</dimen>
+    <dimen name="login_edit_input_ts">15sp</dimen>
+    <dimen name="login_edit_input_tp">15dp</dimen>
+
+    <!-- SIGN UP -->
+    <dimen name="sign_up_padding">15dp</dimen>
+    <dimen name="sign_up_edit_input_tp">15dp</dimen>
+    <dimen name="sign_up_spinner_margin">5dp</dimen>
+    <dimen name="sign_up_spinner_item_padding">5dp</dimen>
+    <dimen name="sign_up_spinner_item_ts">14sp</dimen>
+
+    <!-- PIN DIALOG!-->
+    <dimen name="button_ts">15sp</dimen>
+    <dimen name="pin_input_margin">13dp</dimen>
+
+    <!-- MAIN ACTIVITY !-->
+    <dimen name="shadow_width">10dp</dimen>
+    <dimen name="slidingmenu_offset">100dp</dimen>
+    <dimen name="search_ts">15sp</dimen>
+    <dimen name="search_tp">5dp</dimen>
+    <dimen name="search_height">45dp</dimen>
+    <dimen name="activity_ts">10sp</dimen>
+    <dimen name="tab_items_ts">14sp</dimen>
+    <dimen name="main_pager_bar_height">40dp</dimen>
+    <dimen name="main_activity_text_height">20dp</dimen>
+    <dimen name="main_banner_height">50dp</dimen>
+    <dimen name="main_banner_ts">14sp</dimen>
+
+    <dimen name="caution_subtitle_ts">20sp</dimen>
+    <dimen name="caution_title_ts">30sp</dimen>
+
+
+    <dimen name="get_support_height">45dp</dimen>
+
+    <dimen name="swipe_text_size">18sp</dimen>
+
+    <!-- LEFT MENU !-->
+    <dimen name="item_height">50dp</dimen>
+    <dimen name="menu_ts">15sp</dimen>
+    <dimen name="menu_tp">10dp</dimen>
+
+    <dimen name="exit_tutor_width">200dp</dimen>
+    <dimen name="exit_tutor_height">150dp</dimen>
+
+
+    <dimen name="home_tutor_width">100dp</dimen>
+    <dimen name="home_tutor_height">120dp</dimen>
+
+
+    <!-- FEED ITEM!-->
+    <dimen name="feed_text_height">270dp</dimen>
+    <dimen name="feed_support_height">25dp</dimen>
+    <dimen name="feed_bottom_bar_height">35dp</dimen>
+    <dimen name="feed_bottom_bar_padding">10dp</dimen>
+    <dimen name="feed_count_padding">2dp</dimen>
+    <dimen name="feed_text_ts">20sp</dimen>
+    <dimen name="feed_support_ts">15sp</dimen>
+    <dimen name="feed_count_ts">8sp</dimen>
+    <dimen name="feed_padding_sides">30dp</dimen>
+    <dimen name="feed_space_height">10dp</dimen>
+    <dimen name="feed_flag_height">15dp</dimen>
+    <dimen name="feed_back_height">210dp</dimen>
+    <dimen name="feed_verify_height">35dp</dimen>
+    <dimen name="feed_verify_margin">10dp</dimen>
+    <dimen name="feed_height">330dp</dimen>
+
+    <dimen name="sign_up_dialog_margin">15dp</dimen>
+    <dimen name="sign_up_dialog_height">210dp</dimen>
+    <dimen name="feed_option_height">210dp</dimen>
+    <dimen name="glimpse_button_height">90dp</dimen>
+
+    <dimen name="home_top_header">45dp</dimen>
+    <dimen name="home_top_bar_icon">30dp</dimen>
+    <dimen name="secret_imogy">40dp</dimen>
+
+    <dimen name="chat_send_msg_height">40dp</dimen>
+
+    <dimen name="skin_height">45dp</dimen>
+
+    <dimen name="home_icon_margin">10dp</dimen>
+
+    <dimen name="my_sec_usename_width">150dp</dimen>
+    <dimen name="my_sec_usename_height">25dp</dimen>
+
+    <dimen name="stats_verify_size">12dp</dimen>
+
+    <dimen name="stats_verify_circle_size">20dp</dimen>
+
+    <dimen name="alma_width">50dp</dimen>
+    <dimen name="alma_height">30dp</dimen>
+
+    <dimen name="share_mood_size">35dp</dimen>
+
+
+    <dimen name="continue_button_quotes">40dp</dimen>
+
+
+    <dimen name="qutoe_author_size">16dp</dimen>
+
+    <dimen name="qutoe_text_size">15dp</dimen>
+
+
+    <dimen name="home_pet_size">50dp</dimen>
+
+    <!-- FEED GLOBAL!-->
+    <dimen name="watermark_size">19sp</dimen>
+    <dimen name="feed_icon_size_ts">30dp</dimen>
+    <dimen name="flag_icon_width">40dp</dimen>
+    <dimen name="check_box_size">20dp</dimen>
+    <dimen name="panel_on_blur_margin">50dp</dimen>
+    <dimen name="panel_icon_size">25dp</dimen>
+    <dimen name="feed_total_ts">18sp</dimen>
+
+    <dimen name="quotoes_icon">40dp</dimen>
+
+    <dimen name="my_secret_circle">135dp</dimen>
+
+    <!-- SEARCH !-->
+    <dimen name="search_not_found_ts">18sp</dimen>
+
+    <!-- POLICY !-->
+    <dimen name="policy_title_ts">23sp</dimen>
+    <dimen name="policy_red_title_ts">19sp</dimen>
+    <dimen name="policy_simple_ts">13sp</dimen>
+    <dimen name="policy_sides">8dp</dimen>
+
+    <!-- CREATE !-->
+    <dimen name="count_padding">20dp</dimen>
+    <dimen name="create_text_ts">20sp</dimen>
+    <dimen name="create_padding_sides">15dp</dimen>
+    <dimen name="under_text">12sp</dimen>
+
+    <!-- SUPPORT !-->
+    <dimen name="support_close_ts">16sp</dimen>
+    <dimen name="support_close_tp">20dp</dimen>
+    <dimen name="support_title_ts">20sp</dimen>
+    <dimen name="support_item_image_p">10dp</dimen>
+    <dimen name="support_item_image_h">90dp</dimen>
+    <dimen name="support_web_margin">10dp</dimen>
+    <dimen name="support_close_size">35dp</dimen>
+    <dimen name="support_close_web_margin">5dp</dimen>
+
+    <!-- COMMENTS !-->
+    <dimen name="comments_input_ts">18sp</dimen>
+    <dimen name="comments_input_tp">5dp</dimen>
+    <dimen name="comment_input_ts">16sp</dimen>
+    <dimen name="comment_close_margin">10dp</dimen>
+    <dimen name="comment_close_size">35dp</dimen>
+    <dimen name="comment_item_ts">18sp</dimen>
+    <dimen name="comment_time_ts">13sp</dimen>
+    <dimen name="comment_item_fruit_size">50dp</dimen>
+    <dimen name="comment_item_flag_size">25dp</dimen>
+    <dimen name="comment_top_hint_ts">16sp</dimen>
+    <dimen name="comments_dont_share_ts">14sp</dimen>
+
+    <!-- ACTION SECRET !-->
+    <dimen name="action_secret_done_ts">16sp</dimen>
+    <dimen name="action_secret_done_tp">20dp</dimen>
+    <dimen name="action_secret_done_tpv">10dp</dimen>
+
+    <!-- ACTION TUTORIAL !-->
+    <dimen name="tutorial_plus_margin_side">10dp</dimen>
+    <dimen name="tutorial_plus_text_padding">10dp</dimen>
+    <dimen name="tutorial_plus_view_height">40dp</dimen>
+    <dimen name="tutorial_plus_triangle_w">15dp</dimen>
+    <dimen name="tutorial_plus_triangel_h">20dp</dimen>
+    <dimen name="tutorial_third_triangle_w">30dp</dimen>
+    <dimen name="tutorial_trending_view_triangle_margin">30dp</dimen>
+    <dimen name="tutorial_verify_tall_text">50dp</dimen>
+    <dimen name="tutorial_item_top_margin">20dp</dimen>
+    <dimen name="tutorial_secret_padding">5dp</dimen>
+    <dimen name="tutorial_secre_ite_size">20dp</dimen>
+    <dimen name="tutorial_create_tr_size_w">15dp</dimen>
+    <dimen name="tutorila_tr_size_h">11dp</dimen>
+    <dimen name="tutorial_create_ts">5sp</dimen>
+    <dimen name="feed_envelope_size">30dp</dimen>
+    <dimen name="notification_item_icon_size">60dp</dimen>
+    <dimen name="people_u_share_ts">14sp</dimen>
+    <dimen name="main_tab_width">110dp</dimen>
+
+    <!-- GLIMPSE FRAGMENT !-->
+    <dimen name="bounce_size">90dp</dimen>
+    <dimen name="bounce_icon_size">35dp</dimen>
+    <dimen name="bounce_icon_top_margin">20dp</dimen>
+    <dimen name="bounce_text_top_margin">5dp</dimen>
+    <dimen name="bounce_text_ts">10sp</dimen>
+    <dimen name="bounce_metrics_place">200dp</dimen>
+    <dimen name="lifestyle_top_margin">50dp</dimen>
+    <dimen name="pages_margin">45dp</dimen>
+
+    <!-- GLIMPSE MOOD !-->
+    <dimen name="mood_chart_ts">14sp</dimen>
+
+    <!-- RATE ACTIVITY !-->
+    <dimen name="rate_ts">19sp</dimen>
+    <dimen name="rate_item_text_padding">15dp</dimen>
+    <dimen name="rate_item_mt">10dp</dimen>
+    <dimen name="rate_item_sides_m">40dp</dimen>
+    <dimen name="rate_item_collapse">50dp</dimen>
+
+    <!-- REFER ACTIVITY !-->
+    <dimen name="refer_item_width">80dp</dimen>
+
+    <!-- STATS ACTIVITY !-->
+    <dimen name="stats_main_ts">16sp</dimen>
+    <dimen name="stats_username_ts">18sp</dimen>
+    <dimen name="stats_go_back">19sp</dimen>
+
+    <dimen name="mutual_text_ts">18sp</dimen>
+    <dimen name="feed_next_arrow">25dp</dimen>
+
+    <dimen name="feed_view_item_height">100dp</dimen>
+    <dimen name="feed_view_item_ml">30dp</dimen>
+    <dimen name="feed_view_item_mt">20dp</dimen>
+    <dimen name="feed_view_item_ts">16sp</dimen>
+    <dimen name="feed_view_back_ts">15sp</dimen>
+    <dimen name="feed_view_arrow_size">20dp</dimen>
+    <dimen name="feed_view_title_ts">18sp</dimen>
+    <dimen name="feed_view_top_item_height">55dp</dimen>
+    <dimen name="feed_view_filter_m">35dp</dimen>
+    <dimen name="feed_view_filter_width">100dp</dimen>
+    <dimen name="feed_view_filter_height">26dp</dimen>
+    <dimen name="feed_view_share_size">40dp</dimen>
+    <dimen name="feed_view_view_title_ts">16sp</dimen>
+
+    <dimen name="glimpse_change_back_ts">18sp</dimen>
+    <dimen name="glimpse_bot_bar_height">80dp</dimen>
+    <dimen name="glimpse_tool_navigator_w">40dp</dimen>
+    <dimen name="glimpse_tool_navigator_h">30dp</dimen>
+    <dimen name="glimpse_item_margin">10dp</dimen>
+    <dimen name="glimpse_view_height">20dp</dimen>
+    <dimen name="happy_glimpse_layout_heitgh">60dp</dimen>
+    <dimen name="happy_glimpse_icon_size">40dp</dimen>
+
+
+    <dimen name="room_pager_height">270dp</dimen>
+
+    <dimen name="petlayout">100dp</dimen>
+
+    <dimen name="chat_friend_wodth">70dp</dimen>
+    <dimen name="chat_friend_height">25dp</dimen>
+
+    <dimen name="my_secret_pet_top_margine">15dp</dimen>
+
+    <dimen name="pet_bottom_margin">50dp</dimen>
+
+
+    <dimen name="header_height">50dp</dimen>
+
+    <dimen name="room_icon_height">50dp</dimen>
+
+    <dimen name="room_bottom_icon_height">40dp</dimen>
+
+    <dimen name="room_button_height">45dp</dimen>
+    <dimen name="room_search_icon_height">30dp</dimen>
+
+    <dimen name="room_bottom_height">60dp</dimen>
+
+    <dimen name="creat_secret_hieght">80dp</dimen>
+
+    <dimen name="room_bottom_dot_format_layout_hegiht">55dp</dimen>
+
+
+    <dimen name="recieved_hieght">50dp</dimen>
+
+    <dimen name="heart_hug_hright">120dp</dimen>
+
+    <dimen name="secret_pager_height">220dp</dimen>
+
+
+    <integer name="keyboard_ths">100</integer>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

@@ -1,0 +1,267 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/glimpse_gray">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/moodselectlayout"
+        android:background="@color/homemain">
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/week"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:background="@drawable/orange_left_corner"
+                android:gravity="center"
+                android:text="Week"
+                android:textColor="@color/white" />
+
+
+            <TextView
+                android:layout_width="2dp"
+                android:layout_height="30dp"
+                android:background="@color/homemenu"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/month"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:background="@color/glimpse_gray"
+                android:gravity="center"
+                android:text="Month"
+                android:textColor="@color/black" />
+
+
+            <TextView
+                android:layout_width="2dp"
+                android:layout_height="30dp"
+                android:background="@color/homemenu"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/year"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:background="@drawable/grey_right_corner"
+                android:gravity="center"
+                android:text="Year"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/graph_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/mood_bottom_bar"
+        android:layout_below="@+id/moodselectlayout"
+        android:background="@color/homemenu"
+        android:visibility="gone">
+
+    </RelativeLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/mood_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/homemenu"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/search_height"
+            android:layout_weight="1.3">
+
+            <ImageView
+                android:id="@+id/mood_back"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/search_height"
+                android:scaleType="fitXY"
+                android:src="@drawable/back" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/search_height"
+            android:layout_weight="0.4">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/search_height"
+                android:background="@color/white"
+                android:gravity="center"
+                android:text="@string/mood_bottom_text"
+                android:textAppearance="@android:style/TextAppearance.Small"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/search_height"
+            android:layout_weight="1.3">
+
+            <ImageView
+                android:id="@+id/mood_export"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/search_height"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_export" />
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:background="@color/bot_bar_mood" />
+
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/secrets_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/homemenu">
+
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_launcher" />
+
+
+            <TextView
+                android:id="@+id/headert_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="Cypher"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_close_white" />
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/secrets_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/header"
+            android:background="@color/homemain"
+            android:scrollbars="none" />
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/mood_progress_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:visibility="gone" />
+
+    <include layout="@layout/caution_layout" />
+
+    <RelativeLayout
+        android:id="@+id/webview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="#555555">
+
+            <LinearLayout
+                android:id="@+id/feed_view_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/support_close_tp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/feed_view_arrow_size"
+                    android:layout_height="@dimen/feed_view_arrow_size"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_left_arrow" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="right|center"
+                    android:paddingRight="@dimen/support_close_tp"
+                    android:text="@string/back"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/feed_view_back_ts" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <WebView
+            android:id="@+id/feed_view_vb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/relativeLayout"></WebView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/mood_progress_pb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="50dp"
+        android:background="@color/glimpse_gray"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

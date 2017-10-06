@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/progress_bar_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <ListView
+
+        android:id="@+id/iFriends_listview"
+        android:visibility="gone"
+        android:divider="@color/glimpse_gray"
+        android:scrollbars="none"
+        android:dividerHeight="1dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_friends"
+            android:id="@+id/emptyfriends"
+            android:visibility="gone"
+            android:textSize="20sp"
+            android:textColor="@color/black">
+        </TextView>
+
+    </LinearLayout>
+
+<!--    <ImageView
+        android:id="@+id/ic_home"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_home" />-->
+
+    <!--<LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="@dimen/search_height">
+
+        <ImageView
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_home"
+            android:layout_weight="1"
+            android:id="@+id/ic_home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+
+        <TextView
+            android:id="@+id/notifications_get_support"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:scaleType="centerCrop"
+            android:text="get support"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:background="@color/white" />
+
+        <ImageView
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_plus1"
+            android:layout_weight="1"
+            android:id="@+id/notifications_plus_toogle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+-->
+
+</RelativeLayout>

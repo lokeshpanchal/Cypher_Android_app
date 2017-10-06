@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--<TextView
+        android:id="@+id/shareemotion"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/support_shape"
+        android:gravity="center"
+        android:text="Share your mood"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/feed_support_ts" />-->
+    <!--<LinearLayout
+        android:id="@+id/happy_glimpse_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/happy_glimpse_layout_heitgh"
+        android:background="@color/main">
+
+        <ImageView
+            android:id="@+id/main_mood"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/happy_glimpse_icon_size"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/ss_icon_mood" />
+
+        <ImageView
+            android:id="@+id/main_entertainment"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/happy_glimpse_icon_size"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/ss_icon_enmt" />
+
+        <ImageView
+            android:id="@+id/main_news"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/happy_glimpse_icon_size"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/ss_icon_news" />
+
+        <ImageView
+            android:id="@+id/main_lifestyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/happy_glimpse_icon_size"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/ss_icon_lifestyle" />
+
+        <ImageView
+            android:id="@+id/main_helped"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/happy_glimpse_icon_size"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/ss_icon_helped" />
+    </LinearLayout>-->
+</RelativeLayout>
