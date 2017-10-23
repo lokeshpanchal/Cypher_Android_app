@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
 import com.helio.silentsecret.R;
+import com.helio.silentsecret.WebserviceDTO.AddShortSentense;
 import com.helio.silentsecret.WebserviceDTO.Me2HufLikeActionDTO;
 import com.helio.silentsecret.WebserviceDTO.Me2HugLikeConditionalDTO;
 import com.helio.silentsecret.WebserviceDTO.Me2HugLikeObjectDTO;
@@ -100,7 +101,7 @@ public class MysecretSocialOperations
         return flagUsers;
     }*/
 
-    public ArrayList<String> hug(final Secret item, final MySecretFeedAdapter.ViewHolder holder) {
+    public ArrayList<String> hug(final Secret item, final MySecretFeedAdapter.ViewHolder holder , String short_sentence) {
 
 
         final ArrayList<String> hugUsers = item.getHugUsers();
@@ -129,7 +130,7 @@ public class MysecretSocialOperations
 
 
             int hug_oxygen = 10;
-            if (MainActivity.petAvtarInfoDTO != null) {
+            /*if (MainActivity.petAvtarInfoDTO != null) {
                 try {
                     String hhug_food = MainActivity.petAvtarInfoDTO.getHug_oxygen();
                     if (hhug_food != null && !hhug_food.equalsIgnoreCase("") && !hhug_food.equalsIgnoreCase("null")) {
@@ -144,13 +145,13 @@ public class MysecretSocialOperations
                 }
                 MainActivity.petAvtarInfoDTO.setHug_oxygen("" + hug_oxygen);
                 CommonFunction.oxygen_maintain();
-            }
+            }*/
 
             String sendpush = "true";
 
             String total_count = "";
             int total_scrcount = 0;
-            if (MainActivity.petAvtarInfoDTO != null) {
+            /*if (MainActivity.petAvtarInfoDTO != null) {
                 try {
                     total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
                     if (total_count != null && !total_count.equalsIgnoreCase("")) {
@@ -164,7 +165,7 @@ public class MysecretSocialOperations
                     total_scrcount = 1;
                     e.printStackTrace();
                 }
-            }
+            }*/
 
           /*  if(item.getCreatedByUser()!= null && !item.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username))
             {
@@ -172,7 +173,7 @@ public class MysecretSocialOperations
             }*/
 
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), hugUsers,
-                    hugUsers, hougcount, item.getHugs() + 1, sendpush, 0, "" + hug_oxygen, "", "", "" + total_scrcount,"");
+                    hugUsers, hougcount, item.getHugs() + 1, sendpush, 0, "" + hug_oxygen, "", "", "" + total_scrcount,short_sentence);
             holder.hug.setImageResource(R.drawable.ic_hug);
             item.setHugs(item.getHugs() + 1);
             if(item.getHugs()>0)
@@ -293,45 +294,10 @@ public class MysecretSocialOperations
 
             int hug_oxygen = 10;
 
-            if (MainActivity.petAvtarInfoDTO != null) {
-
-                try {
-                    String hhug_food = MainActivity.petAvtarInfoDTO.getHug_oxygen();
-                    if (hhug_food != null && !hhug_food.equalsIgnoreCase("") && !hhug_food.equalsIgnoreCase("null")) {
-                        hug_oxygen = Integer.parseInt(hhug_food);
-                        if (hug_oxygen >= 20)
-                            hug_oxygen = hug_oxygen - 10;
-
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                MainActivity.petAvtarInfoDTO.setHug_oxygen("" + hug_oxygen);
-
-                CommonFunction.oxygen_maintain();
-            }
 
             String total_count = "";
             int total_scrcount = 0;
-            if (MainActivity.petAvtarInfoDTO != null) {
 
-
-                try {
-                    total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
-                    if (total_count != null && !total_count.equalsIgnoreCase("")) {
-                        total_scrcount = Integer.parseInt(total_count);
-
-                    }
-
-                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
-                } catch (Exception e) {
-                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
-                    total_scrcount = 1;
-                    e.printStackTrace();
-                }
-            }
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), hugUsers,
                     hugUsers, hougcount, item.getHugs() - 1, "false", 0, "" + hug_oxygen, "", "", "" + total_scrcount,"");
 
@@ -435,7 +401,7 @@ public class MysecretSocialOperations
         return hugUsers;
     }
 
-    public ArrayList<String> heart(final Secret item, final MySecretFeedAdapter.ViewHolder holder) {
+    public ArrayList<String> heart(final Secret item, final MySecretFeedAdapter.ViewHolder holder , String short_sentence) {
 
         //username/userid/notification_status
 
@@ -466,39 +432,12 @@ public class MysecretSocialOperations
                 me2HugLikeConditionalDTO = null;
 
             int heart_food = 10;
-            if (MainActivity.petAvtarInfoDTO != null) {
-                try {
-                    String hheart_food = MainActivity.petAvtarInfoDTO.getHeart_food();
-                    if (hheart_food != null && !hheart_food.equalsIgnoreCase("") && !hheart_food.equalsIgnoreCase("null")) {
-                        heart_food = Integer.parseInt(hheart_food);
-                        if (heart_food <= 90)
-                            heart_food = heart_food + 10;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                MainActivity.petAvtarInfoDTO.setHeart_food("" + heart_food);
-                CommonFunction.food_maintain();
-            }
 
             String sendpush = "true";
             String total_count = "";
 
             int total_scrcount = 0;
-            if (MainActivity.petAvtarInfoDTO != null) {
-                try {
-                    total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
-                    if (total_count != null && !total_count.equalsIgnoreCase(""))
-                    {
-                        total_scrcount = Integer.parseInt(total_count);
-                    }
-                    MainActivity.petAvtarInfoDTO.setTotal_scratch_count("" + total_scrcount);
-                } catch (Exception e) {
-                      MainActivity.petAvtarInfoDTO.setTotal_scratch_count("1");
-                    total_scrcount = 1;
-                    e.printStackTrace();
-                }
-            }
+
 
 
            /* if(item.getCreatedByUser()!= null && !item.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username))
@@ -507,7 +446,7 @@ public class MysecretSocialOperations
             }*/
 
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), heartsUsers,
-                    heartsUsers, heartgcount, item.getHearts() + 1, sendpush, 0, "", "" + heart_food, "", "" + total_scrcount,"");
+                    heartsUsers, heartgcount, item.getHearts() + 1, sendpush, 0, "", "" + heart_food, "", "" + total_scrcount,short_sentence);
             holder.heart.setImageResource(R.drawable.ic_hearted);
             item.setHearts(item.getHearts() + 1);
 
@@ -764,7 +703,7 @@ public class MysecretSocialOperations
         return heartsUsers;
     }
 
-    public ArrayList<String> me2(final Secret item, final MySecretFeedAdapter.ViewHolder holder) {
+    public ArrayList<String> me2(final Secret item, final MySecretFeedAdapter.ViewHolder holder , String short_sentence) {
         final ArrayList<String> me2Users = item.getMe2Users();
 
         try {
@@ -829,7 +768,7 @@ public class MysecretSocialOperations
                 sendpush = "true";
             }*/
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), me2Users,
-                    me2Users, me2gcount, item.getMe2s() + 1, sendpush, vertual_commnet_cont, "", "", "", "" + total_scrcount,"");
+                    me2Users, me2gcount, item.getMe2s() + 1, sendpush, vertual_commnet_cont, "", "", "", "" + total_scrcount,short_sentence);
             holder.me2.setImageResource(R.drawable.ic_me);
             item.setMe2s(item.getMe2s() + 1);
 
@@ -1589,9 +1528,54 @@ public class MysecretSocialOperations
     }
 
 
+    AddShortSentense addShortSentense = null;
+
+    public void addShortSenetense(final Secret item, String short_sentense, String type) {
+        if (addShortSentense != null) {
+            addShortSentense = null;
+        }
+
+        addShortSentense = new AddShortSentense(MainActivity.enc_username, item.getObjectId(), short_sentense, type);
+        new AddShortsent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
 
 
 
+    private class AddShortsent extends AsyncTask<String, String, Bitmap> {
 
+        android.app.ProgressDialog pDialog;
+        String response = "";
+        Bitmap bitmap;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(mContext);
+
+
+                CommonRequestTypeDTO commonRequestTypeDTO = new CommonRequestTypeDTO(addShortSentense, "Addshortsentence");
+                FinalObjectDTO finalObjectDTO = new FinalObjectDTO(commonRequestTypeDTO);
+                response = http.AcceptAppointment(finalObjectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            if (response != null) {
+
+            }
+        }
+    }
 
 }

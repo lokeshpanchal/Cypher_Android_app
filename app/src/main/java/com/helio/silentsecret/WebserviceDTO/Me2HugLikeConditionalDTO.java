@@ -23,7 +23,7 @@ public class Me2HugLikeConditionalDTO {
 
     int count_secrets ;
 String is_send_push = "";
-String short_sentence = "";
+String short_sentense = "";
     public Me2HugLikeConditionalDTO(String username , String secret_id, String clcbuser01, ArrayList<String> users_users,
                                     ArrayList<String> users_secrets, int count_users, int count_secrets, String is_send_push,
                                     int virtual_comments_count, String ug_oxygen,String heart_food,String scratch_count, String total_scratch_count , String short_sentence)
@@ -44,7 +44,7 @@ String short_sentence = "";
         this.heart_food = heart_food;
         this.scratch_count = scratch_count;
         this.total_scratch_count = total_scratch_count;
-        this.short_sentence = short_sentence;
+        this.short_sentense = short_sentence;
 
     }
 }

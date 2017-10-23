@@ -19,13 +19,30 @@ public class OwnPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return this.isPagingEnabled && super.onTouchEvent(event);
+
+
+        try {
+            return this.isPagingEnabled && super.onTouchEvent(event);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        return this.isPagingEnabled && super.onInterceptTouchEvent(event);
+        try {
+            return this.isPagingEnabled && super.onInterceptTouchEvent(event);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+      return true;
     }
+
 
     public void setPagingEnabled(boolean b) {
         this.isPagingEnabled = b;

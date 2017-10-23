@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Cypher_Android_App.iml" filepath="$PROJECT_DIR$/Cypher_Android_App.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Cypher_Android_app.iml" filepath="$PROJECT_DIR$/Cypher_Android_app.iml" />
       <module fileurl="file://$PROJECT_DIR$/LeonidsLib/LeonidsLib.iml" filepath="$PROJECT_DIR$/LeonidsLib/LeonidsLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/slide_menu_library/slide_menu_library.iml" filepath="$PROJECT_DIR$/slide_menu_library/slide_menu_library.iml" />

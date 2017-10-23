@@ -126,7 +126,7 @@ public class IfriendRequest {
 
 
     //String MainServer = "https://cypherproduction-v3.eu-gb.mybluemix.net/api/service";
-    //String RecoveryServer = "https://cypherrecovery-v3.eu-gb.mybluemix.net/api/service";
+   // String RecoveryServer = "https://cypherrecovery-v3.eu-gb.mybluemix.net/api/service";
 
 
    /*   String MainServer = "https://cypherproduction.eu-gb.mybluemix.net/api/service";
@@ -1823,6 +1823,26 @@ public class IfriendRequest {
             }
         }
         return ParseRooms(json);
+    }
+
+    public String Gethughearme2(String contact) {
+        //  String jsonData = new Gson().toJson(contact);
+        if (Constants.primary_server) {
+            json = makeConnection(MainServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = false;
+                json = makeConnection(RecoveryServer, contact);
+            }
+        } else {
+            json = makeConnection(RecoveryServer, contact);
+
+            if (json == null || json.equalsIgnoreCase("") || json.contains(failer_response)) {
+                Constants.primary_server = true;
+                json = makeConnection(MainServer, contact);
+            }
+        }
+        return json;
     }
 
 

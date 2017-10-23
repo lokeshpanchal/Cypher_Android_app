@@ -243,6 +243,7 @@ public class Constants {
     public final static int STATE_ME2S_SECRETS = 3;
 
     public final static String ACCESS_MY_SECRETS = "mine_access";
+    public final static String ACCESS_MEDIATOR = "access_mediator";
     public final static String ACCESS_MY_SECRETS_BACKEND = "mine_access_backend";
     public final static String ACCESS_CLEAR_SECRET = "clear_access";
     public final static String ACCESS_COMMENTS_SECRET = "comment_access";

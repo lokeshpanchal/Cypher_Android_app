@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="E:\NewCypher\NewCypher\Cypher_Android_App\LeonidsLib\src\main\assets"/><source path="E:\NewCypher\NewCypher\Cypher_Android_App\LeonidsLib\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="E:\NewCypher\NewCypher\Cypher_Android_App\LeonidsLib\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="E:\github\cypher\Cypher_Android_app\LeonidsLib\src\main\assets"/><source path="E:\github\cypher\Cypher_Android_app\LeonidsLib\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="E:\github\cypher\Cypher_Android_app\LeonidsLib\src\debug\assets"/></dataSet></merger>

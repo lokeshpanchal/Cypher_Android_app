@@ -27,7 +27,7 @@ import com.helio.silentsecret.models.OfflineSecretObjectDTO;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.Constants;
-import com.nirhart.parallaxscroll.views.ParallaxListView;
+import com.helio.silentsecret.views.ScrollDisabledListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.List;
 public class HappyFragment extends Fragment implements UpdateCallback {
 
     private View mView;
-    private ParallaxListView mListView;
+    private ScrollDisabledListView mListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FeedAdapter adapter;
     private List<Secret> mDataList;
@@ -50,7 +50,7 @@ public class HappyFragment extends Fragment implements UpdateCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_happy_paralax_feed, null);
 
-        mListView = (ParallaxListView) mView.findViewById(R.id.feed_list_view);
+        mListView = (ScrollDisabledListView) mView.findViewById(R.id.feed_list_view);
 
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.activity_main_swipe_refresh_layout);
@@ -74,7 +74,7 @@ public class HappyFragment extends Fragment implements UpdateCallback {
 
 
         mDataList = new ArrayList<>();
-        adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity(), true);
+        adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity(), true , mListView);
         //  ((MainActivity) getActivity()).setupHappyCallback(this);
 
        /* mView.findViewById(R.id.shareemotion).setOnClickListener(new View.OnClickListener() {

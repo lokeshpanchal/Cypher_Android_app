@@ -22,8 +22,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.location.gps" />
@@ -193,6 +194,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/ChatFriendsTheme" />
         <activity
+            android:name=".activities.MediatorActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.Mediator_meeting"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
             android:name=".activities.LiveCounselling"
             android:label="@string/title_activity_counseller_booking"
             android:screenOrientation="portrait"
@@ -223,6 +234,12 @@
             android:theme="@style/ChatFriendsTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
+
+        <activity android:name=".activities.PrepareMeeting"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
 
         <!--
         <receiver android:name="com.parse.ParseBroadcastReceiver">
@@ -294,10 +311,17 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.SignUpDialogActivity"
+        <activity
+            android:name=".activities.SignUpDialogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.LikeDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
     </application>
 
 </manifest>

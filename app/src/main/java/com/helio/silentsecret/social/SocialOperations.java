@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
 import com.helio.silentsecret.R;
+import com.helio.silentsecret.WebserviceDTO.AddShortSentense;
 import com.helio.silentsecret.WebserviceDTO.Me2HufLikeActionDTO;
 import com.helio.silentsecret.WebserviceDTO.Me2HugLikeConditionalDTO;
 import com.helio.silentsecret.WebserviceDTO.Me2HugLikeObjectDTO;
@@ -25,8 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class SocialOperations
-{
+public class SocialOperations {
 
     private Context mContext;
 
@@ -71,35 +71,45 @@ public class SocialOperations
         return flagUsers;
     }*/
 
-/*    public ArrayList<String> unFlag(final Secret item, final FeedAdapter.ViewHolder holder)
-    {
-        final ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
-        biteObject.setObjectId(item.getObjectId());
-        biteObject.put(Constants.SECRET_FLAGS, item.getFlags() - 1);
-        final ArrayList<String> flagUsers = item.getFlagUsers();
-        flagUsers.remove(Preference.getUserName());
-        biteObject.put(Constants.SECRET_FLAG_USERS, flagUsers);
-        ParseACL acl = new ParseACL();
-        acl.setPublicReadAccess(true);
-        acl.setPublicWriteAccess(true);
-        biteObject.setACL(acl);
+    /*    public ArrayList<String> unFlag(final Secret item, final FeedAdapter.ViewHolder holder)
+        {
+            final ParseObject biteObject = new ParseObject(Constants.SECRET_CLASS);
+            biteObject.setObjectId(item.getObjectId());
+            biteObject.put(Constants.SECRET_FLAGS, item.getFlags() - 1);
+            final ArrayList<String> flagUsers = item.getFlagUsers();
+            flagUsers.remove(Preference.getUserName());
+            biteObject.put(Constants.SECRET_FLAG_USERS, flagUsers);
+            ParseACL acl = new ParseACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            biteObject.setACL(acl);
 
-        ((MainActivity) mContext).showProgress();
-        biteObject.saveInBackground(new SaveCallback() {
+            ((MainActivity) mContext).showProgress();
+            biteObject.saveInBackground(new SaveCallback() {
 
-            @Override
-            public void done(ParseException e) {
-                ((MainActivity) mContext).stopProgress();
-                if (e == null) {
-                    holder.flag.setImageResource(R.drawable.ic_flag);
+                @Override
+                public void done(ParseException e) {
+                    ((MainActivity) mContext).stopProgress();
+                    if (e == null) {
+                        holder.flag.setImageResource(R.drawable.ic_flag);
+                    }
                 }
-            }
-        });
+            });
 
-        return flagUsers;
-    }*/
+            return flagUsers;
+        }*/
+    AddShortSentense addShortSentense = null;
 
-    public ArrayList<String> hug(final Secret item, final FeedAdapter.ViewHolder holder) {
+    public void addShortSenetense(final Secret item, String short_sentense, String type) {
+        if (addShortSentense != null) {
+            addShortSentense = null;
+        }
+
+        addShortSentense = new AddShortSentense(MainActivity.enc_username, item.getObjectId(), short_sentense, type);
+        new AddShortsent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public ArrayList<String> hug(final Secret item, final FeedAdapter.ViewHolder holder, String short_senetece) {
 
 
         final ArrayList<String> hugUsers = item.getHugUsers();
@@ -147,7 +157,7 @@ public class SocialOperations
 
             String sendpush = "true";
 
-          //  String total_count = "";
+            //  String total_count = "";
             int total_scrcount = 0;
 //            if (MainActivity.petAvtarInfoDTO != null) {
 //                try {
@@ -171,23 +181,21 @@ public class SocialOperations
             }*/
 
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), hugUsers,
-                    hugUsers, hougcount, item.getHugs() + 1, sendpush, 0, "" + hug_oxygen, "", "", "" + total_scrcount,"wow");
+                    hugUsers, hougcount, item.getHugs() + 1, sendpush, 0, "" + hug_oxygen, "", "", "" + total_scrcount, short_senetece);
             holder.hug.setImageResource(R.drawable.ic_hug);
             item.setHugs(item.getHugs() + 1);
 
 
-            if(item.getHugs()>0)
+            if (item.getHugs() > 0)
                 holder.hugs.setText(String.valueOf(item.getHugs()));
             else
                 holder.hugs.setText(String.valueOf("1"));
 
 
-
             new HugAction().execute();
 
             String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-            if (userna != null && !userna.equalsIgnoreCase(""))
-            {
+            if (userna != null && !userna.equalsIgnoreCase("")) {
                 ((MainActivity) mContext).updateActivity();
             }
         } catch (Exception e) {
@@ -336,7 +344,7 @@ public class SocialOperations
                 }
             }*/
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), hugUsers,
-                    hugUsers, hougcount, item.getHugs() - 1, "false", 0, "" + hug_oxygen, "", "", "" + total_scrcount,"");
+                    hugUsers, hougcount, item.getHugs() - 1, "false", 0, "" + hug_oxygen, "", "", "" + total_scrcount, "");
 
             try {
                 int kk = item.getHugs();
@@ -355,8 +363,7 @@ public class SocialOperations
             new HugAction().execute();
 
             String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-            if (userna != null && !userna.equalsIgnoreCase(""))
-            {
+            if (userna != null && !userna.equalsIgnoreCase("")) {
                 ((MainActivity) mContext).updateActivity();
             }
 
@@ -438,7 +445,7 @@ public class SocialOperations
         return hugUsers;
     }
 
-    public ArrayList<String> heart(final Secret item, final FeedAdapter.ViewHolder holder) {
+    public ArrayList<String> heart(final Secret item, final FeedAdapter.ViewHolder holder, String short_sentence) {
 
         //username/userid/notification_status
 
@@ -510,24 +517,21 @@ public class SocialOperations
             }*/
 
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), heartsUsers,
-                    heartsUsers, heartgcount, item.getHearts() + 1, sendpush, 0, "", "" + heart_food, "", "" + total_scrcount,"");
+                    heartsUsers, heartgcount, item.getHearts() + 1, sendpush, 0, "", "" + heart_food, "", "" + total_scrcount, short_sentence);
             holder.heart.setImageResource(R.drawable.ic_hearted);
             item.setHearts(item.getHearts() + 1);
 
 
-            if(item.getHearts()>0)
+            if (item.getHearts() > 0)
                 holder.hearts.setText(String.valueOf(item.getHearts()));
             else
                 holder.hearts.setText(String.valueOf("1"));
 
 
-
-
             new HeartsAction().execute();
 
             String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-            if (userna != null && !userna.equalsIgnoreCase(""))
-            {
+            if (userna != null && !userna.equalsIgnoreCase("")) {
                 ((MainActivity) mContext).updateActivity();
             }
 
@@ -656,7 +660,7 @@ public class SocialOperations
 
 
             int total_scrcount = 0;
-          //  String total_count = "";
+            //  String total_count = "";
 //            if (MainActivity.petAvtarInfoDTO != null) {
 //                try {
 //                    total_count = MainActivity.petAvtarInfoDTO.getTotal_scratch_count();
@@ -674,7 +678,7 @@ public class SocialOperations
 //            }
 
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), heartsUsers,
-                    heartsUsers, heartgcount, item.getHearts() - 1, "false", 0, "", "" + heart_food, "", total_scrcount + "","");
+                    heartsUsers, heartgcount, item.getHearts() - 1, "false", 0, "", "" + heart_food, "", total_scrcount + "", "");
             holder.heart.setImageResource(R.drawable.ic_heart);
 
             try {
@@ -694,8 +698,7 @@ public class SocialOperations
             new HeartsAction().execute();
 
             String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-            if (userna != null && !userna.equalsIgnoreCase(""))
-            {
+            if (userna != null && !userna.equalsIgnoreCase("")) {
                 ((MainActivity) mContext).updateActivity();
             }
         } catch (Exception e) {
@@ -769,7 +772,7 @@ public class SocialOperations
         return heartsUsers;
     }
 
-    public ArrayList<String> me2(final Secret item, final FeedAdapter.ViewHolder holder) {
+    public ArrayList<String> me2(final Secret item, final FeedAdapter.ViewHolder holder, String short_sentence) {
         final ArrayList<String> me2Users = item.getMe2Users();
 
         try {
@@ -834,13 +837,12 @@ public class SocialOperations
                 sendpush = "true";
             }*/
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), me2Users,
-                    me2Users, me2gcount, item.getMe2s() + 1, sendpush, vertual_commnet_cont, "", "", "", "" + total_scrcount,"");
+                    me2Users, me2gcount, item.getMe2s() + 1, sendpush, vertual_commnet_cont, "", "", "", "" + total_scrcount, short_sentence);
             holder.me2.setImageResource(R.drawable.ic_me);
             item.setMe2s(item.getMe2s() + 1);
 
 
-
-            if(item.getMe2s()>0)
+            if (item.getMe2s() > 0)
                 holder.me2s.setText(String.valueOf(item.getMe2s()));
             else
                 holder.me2s.setText(String.valueOf("1"));
@@ -848,8 +850,7 @@ public class SocialOperations
             new Me2Action().execute();
 
             String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-            if (userna != null && !userna.equalsIgnoreCase(""))
-            {
+            if (userna != null && !userna.equalsIgnoreCase("")) {
                 ((MainActivity) mContext).updateActivity();
             }
         } catch (Exception e) {
@@ -973,7 +974,7 @@ public class SocialOperations
             }*/
 
 
-        //    int total_scrcount = 0;
+            //    int total_scrcount = 0;
             String total_count = "";
             /*String total_count = "";
             if (MainActivity.petAvtarInfoDTO != null) {
@@ -1014,7 +1015,7 @@ public class SocialOperations
                 me2HugLikeConditionalDTO = null;
 
             me2HugLikeConditionalDTO = new Me2HugLikeConditionalDTO(MainActivity.enc_username, item.getObjectId(), item.getCreatedByUser(), me2Users,
-                    me2Users, me2gcount, item.getMe2s() - 1, "false", vertual_commnet_cont, "", "", "", "" + total_count,"");
+                    me2Users, me2gcount, item.getMe2s() - 1, "false", vertual_commnet_cont, "", "", "", "" + total_count, "");
             holder.me2.setImageResource(R.drawable.ic_me_off);
 
             try {
@@ -1033,8 +1034,7 @@ public class SocialOperations
 
             new Me2Action().execute();
             String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-            if (userna != null && !userna.equalsIgnoreCase(""))
-            {
+            if (userna != null && !userna.equalsIgnoreCase("")) {
                 ((MainActivity) mContext).updateActivity();
             }
         } catch (Exception e) {
@@ -1277,54 +1277,45 @@ public class SocialOperations
     }
 
 
-
-
     public List<String> unme2Room(final RoomsInfoDTO item, final RoomListAdapter.ViewHolder holder) {
 
 
-    final List<String> me2_users = item.getMe2_users();
+        final List<String> me2_users = item.getMe2_users();
 
-
-    try {
-
-
-        me2_users.remove(MainActivity.enc_username);
-
-
-
-
-        if (me2HugLikeRoomDTO != null)
-            me2HugLikeRoomDTO = null;
-
-
-
-
-
-
-        me2HugLikeRoomDTO = new Me2HugLikeRoomDTO(MainActivity.enc_username, item.getRoom_id(), "me2s", "true");
 
         try {
-           // item.setMe2_count(me2_users.size());
-            holder.me2_count.setText(""+me2_users.size());
 
-        } catch (Exception e2) {
-            e2.printStackTrace();
+
+            me2_users.remove(MainActivity.enc_username);
+
+
+            if (me2HugLikeRoomDTO != null)
+                me2HugLikeRoomDTO = null;
+
+
+            me2HugLikeRoomDTO = new Me2HugLikeRoomDTO(MainActivity.enc_username, item.getRoom_id(), "me2s", "true");
+
+            try {
+                // item.setMe2_count(me2_users.size());
+                holder.me2_count.setText("" + me2_users.size());
+
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+
+            holder.me2.setImageResource(R.drawable.ic_me_off);
+
+            // holder.hugs.setText(String.valueOf(item.getHugs()));
+            new Hughearme2RoomAction().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        holder.me2.setImageResource(R.drawable.ic_me_off);
 
-        // holder.hugs.setText(String.valueOf(item.getHugs()));
-        new Hughearme2RoomAction().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        return me2_users;
     }
-
-
-
-    return me2_users;
-}
 
 
     public List<String> me2Room(final RoomsInfoDTO item, final RoomListAdapter.ViewHolder holder) {
@@ -1339,21 +1330,15 @@ public class SocialOperations
             me2_users.add(MainActivity.enc_username);
 
 
-
-
             if (me2HugLikeRoomDTO != null)
                 me2HugLikeRoomDTO = null;
-
-
-
-
 
 
             me2HugLikeRoomDTO = new Me2HugLikeRoomDTO(MainActivity.enc_username, item.getRoom_id(), "me2s", "false");
 
             try {
-             //   item.setMe2_count(me2_users.size());
-                holder.me2_count.setText(""+me2_users.size());
+                //   item.setMe2_count(me2_users.size());
+                holder.me2_count.setText("" + me2_users.size());
 
             } catch (Exception e2) {
                 e2.printStackTrace();
@@ -1368,7 +1353,6 @@ public class SocialOperations
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
         return me2_users;
@@ -1387,21 +1371,15 @@ public class SocialOperations
             heartUsers.remove(MainActivity.enc_username);
 
 
-
-
             if (me2HugLikeRoomDTO != null)
                 me2HugLikeRoomDTO = null;
-
-
-
-
 
 
             me2HugLikeRoomDTO = new Me2HugLikeRoomDTO(MainActivity.enc_username, item.getRoom_id(), "heart", "true");
 
             try {
-               // item.setHeart_count(heartUsers.size());
-                holder.heart_count.setText(""+heartUsers.size());
+                // item.setHeart_count(heartUsers.size());
+                holder.heart_count.setText("" + heartUsers.size());
 
             } catch (Exception e2) {
                 e2.printStackTrace();
@@ -1416,7 +1394,6 @@ public class SocialOperations
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
         return heartUsers;
@@ -1435,8 +1412,6 @@ public class SocialOperations
             heartUsers.add(MainActivity.enc_username);
 
 
-
-
             if (me2HugLikeRoomDTO != null)
                 me2HugLikeRoomDTO = null;
 
@@ -1444,7 +1419,7 @@ public class SocialOperations
 
             try {
 
-                holder.heart_count.setText(""+heartUsers.size());
+                holder.heart_count.setText("" + heartUsers.size());
 
             } catch (Exception e2) {
                 e2.printStackTrace();
@@ -1459,7 +1434,6 @@ public class SocialOperations
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
         return heartUsers;
@@ -1477,35 +1451,28 @@ public class SocialOperations
             hugUsers.remove(MainActivity.enc_username);
 
 
-
-
             if (me2HugLikeRoomDTO != null)
                 me2HugLikeRoomDTO = null;
-
-
-
-
 
 
             me2HugLikeRoomDTO = new Me2HugLikeRoomDTO(MainActivity.enc_username, item.getRoom_id(), "hug", "true");
 
             try {
                 //    item.setHug_count(hugUsers.size());
-                holder.hug_count.setText(""+hugUsers.size());
+                holder.hug_count.setText("" + hugUsers.size());
 
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
             holder.hug.setImageResource(R.drawable.ic_not_hug);
 
-           // holder.hugs.setText(String.valueOf(item.getHugs()));
+            // holder.hugs.setText(String.valueOf(item.getHugs()));
             new Hughearme2RoomAction().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
         return hugUsers;
@@ -1524,17 +1491,14 @@ public class SocialOperations
             hugUsers.add(MainActivity.enc_username);
 
 
-
-
             if (me2HugLikeRoomDTO != null)
                 me2HugLikeRoomDTO = null;
 
 
             me2HugLikeRoomDTO = new Me2HugLikeRoomDTO(MainActivity.enc_username, item.getRoom_id(), "hug", "false");
 
-            try
-            {
-                holder.hug_count.setText(""+hugUsers.size());
+            try {
+                holder.hug_count.setText("" + hugUsers.size());
 
             } catch (Exception e2) {
                 e2.printStackTrace();
@@ -1550,14 +1514,8 @@ public class SocialOperations
         }
 
 
-
         return hugUsers;
     }
-
-
-
-
-
 
 
     private class Hughearme2RoomAction extends AsyncTask<String, String, Bitmap> {
@@ -1580,7 +1538,7 @@ public class SocialOperations
                 IfriendRequest http = new IfriendRequest(mContext);
 
 
-                CommonRequestTypeDTO commonRequestTypeDTO = new CommonRequestTypeDTO(me2HugLikeRoomDTO , "roomAction");
+                CommonRequestTypeDTO commonRequestTypeDTO = new CommonRequestTypeDTO(me2HugLikeRoomDTO, "roomAction");
                 FinalObjectDTO finalObjectDTO = new FinalObjectDTO(commonRequestTypeDTO);
                 http.AcceptAppointment(finalObjectDTO);
 
@@ -1596,9 +1554,42 @@ public class SocialOperations
     }
 
 
+    private class AddShortsent extends AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String response = "";
+        Bitmap bitmap;
 
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(mContext);
+
+
+                CommonRequestTypeDTO commonRequestTypeDTO = new CommonRequestTypeDTO(addShortSentense, "Addshortsentence");
+                FinalObjectDTO finalObjectDTO = new FinalObjectDTO(commonRequestTypeDTO);
+                response = http.AcceptAppointment(finalObjectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            if (response != null) {
+
+            }
+        }
+    }
 
 
 }

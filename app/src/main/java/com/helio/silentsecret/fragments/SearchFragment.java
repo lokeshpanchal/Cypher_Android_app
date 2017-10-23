@@ -1,14 +1,17 @@
 package com.helio.silentsecret.fragments;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.helio.silentsecret.R;
 import com.helio.silentsecret.WebserviceDTO.GetSecretbyIdDataDTO;
@@ -24,42 +27,92 @@ import com.helio.silentsecret.callbacks.SearchUpdateCallback;
 import com.helio.silentsecret.connection.IfriendRequest;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.utils.AppSession;
+import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
+import com.helio.silentsecret.views.ScrollDisabledListView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static com.helio.silentsecret.activities.MainActivity.ct;
 
 public class SearchFragment extends Fragment implements SearchUpdateCallback {
 
     private View mView;
-    private ListView mListView;
+    private ScrollDisabledListView mListView;
     private FeedAdapter adapter;
     private List<Secret> mDataList;
     private int SKIP = 0;
     private int preLast;
     public static String secret_id = "";
     public static String secret_text = "";
-
+    int width =0 , height =0;
+List<String> shor_sent_list = new ArrayList<>();
     ProgressBar progress_bar = null;
+    RelativeLayout main_layout;
+
+    String[] short_sentence = {"this was hilarious",
+            "don't give up",
+            "wow",
+            "you inspired me",
+            "powerful",
+            "LMAO",
+            "keep going",
+            "you got a friend in me",
+            "we love you",
+            "keep your head up",
+            "keep smiling",
+            "been there",
+            "FML",
+            "you're not alone"
+    };
+
+    int [] short_sent_drawable = {R.drawable.hilarious,R.drawable.dont_giveup,R.drawable.wow,R.drawable.you_inspired_me,
+            R.drawable.powerful,
+            R.drawable.lamo,R.drawable.keep_going,R.drawable.you_got_afriend,R.drawable.we_love_you,R.drawable.keep_you_headup,
+            R.drawable.keep_smiling,R.drawable.been_there,R.drawable.fml_short,R.drawable.you_are_not_alone,};
+
+    List<String> all_short_sent_list = new ArrayList<>();
+
+
+    int x1, y1 = 0;
+    int minusValue = -140;
+
+    int speed = 90000, duration = 10;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.search_feed, null);
 
-        mListView = (ListView) mView.findViewById(R.id.search_list_view);
+        mListView = (ScrollDisabledListView) mView.findViewById(R.id.search_list_view);
+        main_layout = (RelativeLayout) mView.findViewById(R.id.main_layout);
 
         progress_bar = (ProgressBar) mView.findViewById(R.id.progress_bar);
 
     /*    if (MainActivity.is_from_commNotif == false)
             progress_bar.setVisibility(View.VISIBLE);*/
-
-        if(secret_id!= null && !secret_id.equalsIgnoreCase(""))
+        width = CommonFunction.getScreenWidth();
+        height = CommonFunction.getScreenHeight();
+    for(String sentence : short_sentence)
+    {
+        all_short_sent_list.add(sentence);
+    }
+        if(secret_id!= null && !secret_id.equalsIgnoreCase("")) {
             new GetSecretByID().execute();
+            new Gethugheart().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
         else
             new Searchsecret().execute();
 
         mDataList = new ArrayList<>();
-        adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity());
+        adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity() , mListView);
         //((MainActivity) getActivity()).setupSearchCallback(this);
 
         mListView.setAdapter(adapter);
@@ -254,7 +307,7 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
                         MainActivity.is_from_commNotif = false;
                     }
 
-                    adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity());
+                    adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity() , mListView);
 
                     mListView.setAdapter(adapter);
 
@@ -361,7 +414,7 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
                     MainActivity.is_from_commNotif = false;
                 }
 
-                adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity());
+                adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity()  , mListView);
 
                 mListView.setAdapter(adapter);
 
@@ -390,13 +443,243 @@ public class SearchFragment extends Fragment implements SearchUpdateCallback {
                     }
                 }
 
-                secret_id = "";
+
 
             }
 
         }
     }
 
+    private class Gethugheart extends AsyncTask<String, String, Bitmap> {
 
+        android.app.ProgressDialog pDialog;
+        String data = "0";
+        Bitmap bitmap;
+
+
+        String response = "";
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress_bar.setVisibility(View.VISIBLE);
+
+        }
+
+        protected Bitmap doInBackground(String... args)
+        {
+            try {
+                IfriendRequest httpRequest = new IfriendRequest(ct);
+                JSONObject mJsonObjectSub = new JSONObject();
+                JSONObject requestdata = new JSONObject();
+                JSONObject main_object = new JSONObject();
+
+                mJsonObjectSub.put("clun01", MainActivity.enc_username);
+                mJsonObjectSub.put("secret_id", secret_id);
+                mJsonObjectSub.put("type", "All");
+
+                requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
+                requestdata.put("data", mJsonObjectSub);
+                requestdata.put("requestType", "getShortSentense");
+
+                main_object.put("requestData", requestdata);
+                try {
+                    response =  httpRequest.Gethughearme2(main_object.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            try {
+                progress_bar.setVisibility(View.GONE);
+                shor_sent_list.clear();
+                if(response!= null)
+                {
+
+
+                    try {
+                        String status = "" , short_sentense = "";
+                        Object object = new JSONTokener(response).nextValue();
+                        if (object instanceof JSONObject) {
+                            JSONObject jsonObject = new JSONObject(response);
+
+                            if (jsonObject.has("status"))
+                                status = jsonObject.getString("status");
+
+                            if (status != null && status.equalsIgnoreCase("true"))
+                            {
+
+                                JSONArray json_array = null;
+                                if (jsonObject.has("data"))
+                                    json_array = jsonObject.getJSONArray("data");
+
+                                for (int i = 0; i < json_array.length(); i++)
+                                {
+
+                                    JSONObject UserInfoobj = new JSONObject(json_array.getString(i));
+
+                                    if (UserInfoobj.has("short_sentense"))
+                                        short_sentense = UserInfoobj.getString("short_sentense");
+
+                                  if(short_sentense!= null && !short_sentense.equalsIgnoreCase(""))
+                                      shor_sent_list.add(short_sentense);
+
+                                }
+                            }
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            secret_id = "";
+            if(shor_sent_list != null && shor_sent_list.size() >0)
+            {
+                showBubble();
+            }
+
+        }
+    }
+
+
+
+
+    private void showBubble() {
+
+
+        try
+        {
+            for (int i = 0; i < shor_sent_list.size(); i++)
+            {
+
+                int index = all_short_sent_list.indexOf(shor_sent_list.get(i));
+                final TextView bubble = new TextView(ct);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width /8, width / 8);
+                bubble.setLayoutParams(lp);
+                bubble.setBackgroundResource(short_sent_drawable[index]);
+
+                main_layout.addView(bubble);
+
+                int min1 = 4;
+                int max1 = 12;
+                Random xpos = new Random();
+                int yposition = xpos.nextInt(max1 - min1 + 1) + min1;
+                int min12 = 1;
+                int max12 = 3;
+                Random Xpos = new Random();
+                int Xposition = Xpos.nextInt(max12 - min12 + 1) + min12;
+                rotationnew(bubble, yposition, Xposition);
+
+
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void rotationnew(final TextView music1, final int speed1, final int xspeed) {
+
+        int min = 12;
+        int max = 20;
+        Random r = new Random();
+        int i1 = r.nextInt(max - min + 1) + min;
+        music1.setId(speed1);
+        int min1 = 1;
+        int max1 = 5;
+        Random xpos = new Random();
+        final int xposition = xpos.nextInt(max1 - min1 + 1) + min1;
+
+        int xposxx = 0;
+        minusValue = width / 8;
+        if (xposition == 8)
+            xposxx = 0;
+        else if (xposition == 1)
+            xposxx = (width / xposition) - minusValue;
+        else
+            xposxx = (width / xposition);
+
+
+        final int x1 = xposxx;
+
+        y1 = height + (i1 * 70);
+        music1.setTag(y1 + "#" + speed1 + "#" + x1 );
+
+        CountDownTimer timer = new CountDownTimer(speed, duration) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                try {
+                    int speed;
+
+
+                    int ypos = 0;
+                    int xxxpos = 0;
+
+
+                    String text = (String) music1.getTag();
+                    String ara[] = text.split("#");
+                    int bubbleheight = Integer.parseInt(ara[0]);
+                    speed = Integer.parseInt(ara[1]);
+
+
+
+                    int xvalue = Integer.parseInt(ara[2]);
+
+
+
+
+                    ypos = bubbleheight - speed;
+                    xxxpos = xvalue ;
+                    music1.setX(xxxpos);
+
+                    music1.setY(ypos);
+
+                    if(ypos < -width/8)
+                    {
+
+                        cancel();
+                    }
+                    /*if (ypos < height - minusValue * 2 && !is_from_minus)
+                    {
+                        music1.setY(ypos);
+                    } else if (ypos > 0) {
+                        if (speed > 0)
+                            speed = -speed;
+                        music1.setY(ypos);
+                    } else {
+                        if (speed < 0)
+                            speed = -speed;
+                        music1.setY(ypos);
+                    }*/
+                    music1.setTag(ypos + "#" + speed + "#" + xxxpos );
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFinish() {
+                this.start();
+            }
+        };
+
+
+        timer.start();
+    }
 
 }

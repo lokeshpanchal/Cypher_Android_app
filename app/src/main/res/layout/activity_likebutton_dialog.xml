@@ -8,57 +8,309 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/cancel_button"
-        android:background="#99333333"
+
         />
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+ android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:orientation="vertical">
+
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sign_up_dialog_height"
-      android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/sign_up_dialog_margin"
-        android:layout_marginRight="@dimen/sign_up_dialog_margin"
-        android:orientation="vertical"
+        android:id="@+id/filter_layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
         android:clickable="true"
-        android:background="@drawable/signup_popup">
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        >
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/signup_button"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/recieved_border"
-            android:paddingBottom="7dp"
-            android:paddingLeft="35dp"
-            android:layout_gravity="center"
-            android:paddingRight="35dp"
-            android:paddingTop="7dp"
-            android:text="Sign Up"
-            android:textColor="@color/add_as_ifreind_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/see_all_filter1"
+                android:layout_width="@dimen/home_top_bar_icon"
+                android:layout_height="@dimen/home_top_bar_icon"
+                android:background="@drawable/create_lol"
+                android:visibility="invisible"
+                android:gravity="center" />
 
 
-        <TextView
+            <ImageView
+                android:id="@+id/selected_see_all"
+                android:layout_width="@dimen/selected_like_size"
+                android:layout_height="@dimen/selected_like_size"
+                android:scaleType="fitXY"
+                android:background="@drawable/seeall_icon"
+                android:visibility="gone"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                android:layout_gravity="center"
+                android:textSize="11sp"
+                android:text="See all"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/signin_button"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/recieved_border"
-            android:paddingBottom="7dp"
-            android:paddingLeft="35dp"
-            android:paddingRight="35dp"
-            android:layout_gravity="center"
-            android:paddingTop="7dp"
-            android:text="Sign-In"
-            android:textColor="@color/add_as_ifreind_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/light_filter1"
+                android:layout_width="@dimen/home_top_bar_icon"
+                android:layout_height="@dimen/home_top_bar_icon"
+                android:background="@drawable/create_anxious"
+                android:visibility="invisible"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/selected_light_filter"
+                android:layout_width="@dimen/selected_like_size"
+                android:layout_height="@dimen/selected_like_size"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                android:gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar"
+                android:visibility="invisible"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textSize="11sp"
+                android:text="Light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/home_icon_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tense_filter1"
+                android:layout_width="@dimen/home_top_bar_icon"
+                android:layout_height="@dimen/home_top_bar_icon"
+                android:background="@drawable/create_fml"
+                android:visibility="invisible"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/selected_tense_filter"
+                android:layout_width="@dimen/selected_like_size"
+                android:layout_height="@dimen/selected_like_size"
+                android:scaleType="fitXY"
+
+                android:visibility="gone"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textSize="11sp"
+                android:visibility="invisible"
+                android:text="Tense"/>
+        </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/home_icon_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/deep_filter1"
+                android:layout_width="@dimen/home_top_bar_icon"
+                android:layout_height="@dimen/home_top_bar_icon"
+                android:background="@drawable/create_fml"
+                android:visibility="invisible"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/selected_deep_filter"
+                android:layout_width="@dimen/selected_like_size"
+                android:layout_height="@dimen/selected_like_size"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                android:gravity="center" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                android:textSize="11sp"
+                android:text="Deep"/>
+
+        </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/filter_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+    android:layout_gravity="right"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/recieved_border"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:visibility="visible"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/see_all_filter"
+                android:layout_width="@dimen/home_top_bar_icon"
+                android:layout_height="@dimen/home_top_bar_icon"
+                android:background="@drawable/create_lol"
+                android:gravity="center" />
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textSize="11sp"
+                android:text="See all"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/home_icon_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/light_filter"
+                android:layout_width="@dimen/home_top_bar_icon"
+                android:layout_height="@dimen/home_top_bar_icon"
+                android:background="@drawable/create_anxious"
+                android:gravity="center" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textSize="11sp"
+                android:text="Light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/home_icon_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tense_filter"
+                android:layout_width="@dimen/home_top_bar_icon"
+                android:layout_height="@dimen/home_top_bar_icon"
+                android:background="@drawable/create_fml"
+                android:gravity="center" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textSize="11sp"
+                android:text="Tense"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/home_icon_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/deep_filter"
+                android:layout_width="@dimen/home_top_bar_icon"
+                android:layout_height="@dimen/home_top_bar_icon"
+                android:background="@drawable/create_frustated"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textSize="11sp"
+                android:text="Deep"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
+
+
+
+
+
+
 
 
 </RelativeLayout>

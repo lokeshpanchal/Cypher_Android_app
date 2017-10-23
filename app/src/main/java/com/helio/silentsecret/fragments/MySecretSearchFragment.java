@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.helio.silentsecret.R;
 import com.helio.silentsecret.WebserviceDTO.SearchSecretConditionDTO;
@@ -22,6 +22,7 @@ import com.helio.silentsecret.connection.IfriendRequest;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.Constants;
+import com.helio.silentsecret.views.ScrollDisabledListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,30 +30,31 @@ import java.util.List;
 public class MySecretSearchFragment extends Fragment implements SearchUpdateCallback {
 
     private View mView;
-    private ListView mListView;
+    private ScrollDisabledListView mListView;
     private MySecretFeedAdapter adapter;
     private List<Secret> mDataList;
     private int SKIP = 0;
     private int preLast;
     public static String secret_id = "";
     public static String secret_text = "";
-
+RelativeLayout top_baar = null;
     ProgressBar progress_bar = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.search_feed, null);
 
-        mListView = (ListView) mView.findViewById(R.id.search_list_view);
+        mListView = (ScrollDisabledListView) mView.findViewById(R.id.search_list_view);
 
         progress_bar = (ProgressBar) mView.findViewById(R.id.progress_bar);
+        top_baar = (RelativeLayout) mView.findViewById(R.id.top_baar);
 
             new Searchsecret().execute();
 
         mDataList = new ArrayList<>();
-        adapter = new MySecretFeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity());
+        adapter = new MySecretFeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity() , mListView);
         //((MainActivity) getActivity()).setupSearchCallback(this);
-
+        top_baar.setVisibility(View.GONE);
         mListView.setAdapter(adapter);
 
         if (secret_id == null || secret_id.equalsIgnoreCase(""))
@@ -239,7 +241,7 @@ public class MySecretSearchFragment extends Fragment implements SearchUpdateCall
                         MainActivity.is_from_commNotif = false;
                     }
 
-                    adapter = new MySecretFeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity());
+                    adapter = new MySecretFeedAdapter(LayoutInflater.from(getActivity()), mDataList, getActivity(), mListView);
 
                     mListView.setAdapter(adapter);
 

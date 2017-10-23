@@ -5,12 +5,12 @@
     android:background="@color/glimpse_gray"
     android:layout_height="wrap_content">
 
-    <ListView
+    <com.helio.silentsecret.views.ScrollDisabledListView
         android:listSelector="@android:color/transparent"
         android:divider="@android:color/transparent"
         android:scrollbars="none"
         android:id="@+id/feed_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"></com.helio.silentsecret.views.ScrollDisabledListView>
 
 </android.support.v4.widget.SwipeRefreshLayout>

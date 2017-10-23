@@ -45,7 +45,7 @@ public class AccessDialog extends Fragment implements View.OnClickListener {
     private TextView mDone;
     private TextView mCancel;
     private TextView mForgotPin;
-LoginConditionDTO loginConditionDTO = null;
+    LoginConditionDTO loginConditionDTO = null;
     private TextView mHeader;
     private TextView mMessage;
     private EditText mInput;
@@ -111,15 +111,13 @@ LoginConditionDTO loginConditionDTO = null;
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 try {
-                if(mInput.getText().toString()!= null && !mInput.getText().toString().equalsIgnoreCase(""))
-                {
-                    if (AppSession.getValue(getActivity(),Constants.USER_PIN).equals(mInput.getText().toString()))
-                    {
-                            if(current_state != STATE_AGAIN)
-                            open();
+                    if (mInput.getText().toString() != null && !mInput.getText().toString().equalsIgnoreCase("")) {
+                        if (AppSession.getValue(getActivity(), Constants.USER_PIN).equals(mInput.getText().toString())) {
+                            if (current_state != STATE_AGAIN)
+                                open();
 
+                        }
                     }
-                }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -150,20 +148,12 @@ LoginConditionDTO loginConditionDTO = null;
     }
 
 
-
-
-
-
-
-
-
     private void setupState(int state) {
         KeyboardUtil.hideKeyBoard(mInput, getActivity());
         current_state = state;
         switch (state) {
             case STATE_ENTER:
-                try
-                {
+                try {
                     mMessage.setVisibility(View.INVISIBLE);
                     mCancel.setVisibility(View.VISIBLE);
                     mCancel.setText(getString(R.string.cancel));
@@ -192,9 +182,7 @@ LoginConditionDTO loginConditionDTO = null;
                             return false;
                         }
                     });
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -202,8 +190,7 @@ LoginConditionDTO loginConditionDTO = null;
                 break;
             case STATE_RESET:
 
-                try
-                {
+                try {
                     mMessage.setVisibility(View.INVISIBLE);
                     mCancel.setVisibility(View.VISIBLE);
                     mCancel.setText(getString(R.string.cancel));
@@ -215,8 +202,8 @@ LoginConditionDTO loginConditionDTO = null;
                     mDone.setText(getString(R.string.done));
                     mDone.setOnClickListener(mDoneAnswer);
 
-                    if (AppSession.getValue(getActivity(),Constants.USER_SECURITY_QUESTION) != null)
-                        mHeader.setText(AppSession.getValue(getActivity(),Constants.USER_SECURITY_QUESTION));
+                    if (AppSession.getValue(getActivity(), Constants.USER_SECURITY_QUESTION) != null)
+                        mHeader.setText(AppSession.getValue(getActivity(), Constants.USER_SECURITY_QUESTION));
 
                     YoYo.with(Techniques.FadeInUp).duration(500).playOn(mHeader);
 
@@ -236,16 +223,13 @@ LoginConditionDTO loginConditionDTO = null;
                             return false;
                         }
                     });
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 break;
             case STATE_YOUR_PIN:
-                try
-                {
+                try {
                     mMessage.setVisibility(View.INVISIBLE);
                     mCancel.setVisibility(View.VISIBLE);
                     mCancel.setText(getString(R.string.reset_pin));
@@ -258,10 +242,10 @@ LoginConditionDTO loginConditionDTO = null;
                     mDone.setOnClickListener(mContinueListener);
                     mHeader.setText(getString(R.string.your_pin_is));
                     YoYo.with(Techniques.FadeInUp).duration(500).playOn(mHeader);
-                    if (AppSession.getValue(getActivity(),Constants.USER_PIN) != null) {
+                    if (AppSession.getValue(getActivity(), Constants.USER_PIN) != null) {
                         mMessage.setVisibility(View.VISIBLE);
                         YoYo.with(Techniques.FadeInUp).playOn(mMessage);
-                        mMessage.setText(AppSession.getValue(getActivity(),Constants.USER_PIN));
+                        mMessage.setText(AppSession.getValue(getActivity(), Constants.USER_PIN));
                     }
 
                     mInput.setVisibility(View.GONE);
@@ -275,9 +259,7 @@ LoginConditionDTO loginConditionDTO = null;
                             return false;
                         }
                     });
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -285,8 +267,7 @@ LoginConditionDTO loginConditionDTO = null;
                 break;
             case STATE_AGAIN:
 
-                try
-                {
+                try {
                     if (!ConnectionDetector.isNetworkAvailable(getActivity()))
                         return;
 
@@ -324,9 +305,7 @@ LoginConditionDTO loginConditionDTO = null;
                             return false;
                         }
                     });
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -336,30 +315,22 @@ LoginConditionDTO loginConditionDTO = null;
     }
 
 
-
-
-
-
-
-
-
     private void doneClick() {
 
-        try
-        {
-           // ParseUser user = ParseUser.getCurrentUser();
+        try {
+            // ParseUser user = ParseUser.getCurrentUser();
 
            /* if (user == null) {
                 getActivity().finish();
             }*/
 
-            if (AppSession.getValue(getActivity(),Constants.USER_PIN) == null) {
+            if (AppSession.getValue(getActivity(), Constants.USER_PIN) == null) {
                 getActivity().finish();
                 return;
             }
 
 
-            if (AppSession.getValue(getActivity(),Constants.USER_PIN).equals(mInput.getText().toString())) {
+            if (AppSession.getValue(getActivity(), Constants.USER_PIN).equals(mInput.getText().toString())) {
                 try {
                     open();
                 } catch (Exception e) {
@@ -368,9 +339,7 @@ LoginConditionDTO loginConditionDTO = null;
             } else {
                 showMessage(getString(R.string.wrong_pin));
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -382,9 +351,10 @@ LoginConditionDTO loginConditionDTO = null;
         try {
             if (getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MOOD)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_VERIFY)
-            || (getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_ROOM))
+                    || (getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_ROOM))
                     || getArguments().getString(Constants.ACCESS_UNVERIFY_ME).equals(Constants.ACCESS_UNVERIFY_ME)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MY_SECRETS)
+                    || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MEDIATOR)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_STATS)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_CLEAR_SECRET)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_NOTIFICATIONS)
@@ -392,11 +362,10 @@ LoginConditionDTO loginConditionDTO = null;
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_YEAR_COMMENTS)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_IFRIEND)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_QR_READER)
-                    ||  getArguments().getString(Constants.DIALOG_KEY).equals(Constants.LIVE_SCREEN)
-                    ||  getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_PENDING_RATING)
+                    || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.LIVE_SCREEN)
+                    || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_PENDING_RATING)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_BOOK_APPONTMENT)
-                    )
-            {
+                    ) {
 
                 try {
                     ((MainActivity) getActivity()).hideSearchBar();
@@ -421,6 +390,7 @@ LoginConditionDTO loginConditionDTO = null;
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_ROOM)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_UNVERIFY_ME)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MY_SECRETS)
+                    || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_MEDIATOR)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_STATS)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_CLEAR_SECRET)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_NOTIFICATIONS)
@@ -430,12 +400,11 @@ LoginConditionDTO loginConditionDTO = null;
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_QR_READER)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.LIVE_SCREEN)
                     || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_PENDING_RATING)
-                    || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_BOOK_APPONTMENT))
-                     {
+                    || getArguments().getString(Constants.DIALOG_KEY).equals(Constants.ACCESS_BOOK_APPONTMENT)) {
 
-                try{
+                try {
                     ((MainActivity) getActivity()).showSearchBar();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -484,15 +453,12 @@ LoginConditionDTO loginConditionDTO = null;
     View.OnClickListener mDoneNewPin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            try
-            {
+            try {
                 if (mInput.getText().toString().isEmpty()) {
                     showMessage(getString(R.string._type_new));
                     return;
-                } else
-                {
-                    if (mInput.getText().toString().length() < 4)
-                    {
+                } else {
+                    if (mInput.getText().toString().length() < 4) {
                         new ToastUtil(getActivity(), getString(R.string.your_pin_is_too_small));
                         return;
                     }
@@ -500,9 +466,7 @@ LoginConditionDTO loginConditionDTO = null;
                     loginConditionDTO = new LoginConditionDTO(MainActivity.enc_username, CryptLib.encrypt(mInput.getText().toString()));
                     new LoginUser().execute();
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
 
             }
@@ -545,13 +509,13 @@ LoginConditionDTO loginConditionDTO = null;
                 getActivity().finish();
             }*/
 
-            if (AppSession.getValue(getActivity(),Constants.USER_PIN) == null) {
+            if (AppSession.getValue(getActivity(), Constants.USER_PIN) == null) {
                 getActivity().finish();
                 return;
             }
 
 
-            if (AppSession.getValue(getActivity(),Constants.USER_PIN).equals(mInput.getText().toString())) {
+            if (AppSession.getValue(getActivity(), Constants.USER_PIN).equals(mInput.getText().toString())) {
                 try {
                     open();
                 } catch (Exception e) {
@@ -566,12 +530,11 @@ LoginConditionDTO loginConditionDTO = null;
 
     View.OnClickListener mDoneAnswer = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
-            if (AppSession.getValue(getActivity(),Constants.USER_SECURITY_ANSWER) == null)
+        public void onClick(View v) {
+            if (AppSession.getValue(getActivity(), Constants.USER_SECURITY_ANSWER) == null)
                 return;
 
-            if (AppSession.getValue(getActivity(),Constants.USER_SECURITY_ANSWER).equals(mInput.getText().toString())) {
+            if (AppSession.getValue(getActivity(), Constants.USER_SECURITY_ANSWER).equals(mInput.getText().toString())) {
                 setupState(STATE_YOUR_PIN);
             } else {
                 showMessage(getString(R.string.wrong_answer));
@@ -592,67 +555,45 @@ LoginConditionDTO loginConditionDTO = null;
     private void open() throws Exception {
         String type = getArguments().getString(Constants.DIALOG_KEY);
 
-        if (type.equals(Constants.ACCESS_MY_SECRETS))
-        {
+        if (type.equals(Constants.ACCESS_MY_SECRETS)) {
             ((MainActivity) getActivity()).runMineSecrets(true);
-        }
-        else if (type.equals(Constants.ACCESS_QR_READER))
-        {
+        } else if (type.equals(Constants.ACCESS_QR_READER)) {
             ((MainActivity) getActivity()).runqreader(false);
-        }
-        else if (type.equals(Constants.LIVE_SCREEN))
-        {
+        } else if (type.equals(Constants.LIVE_SCREEN)) {
             ((MainActivity) getActivity()).Golivescreen(false);
-        }
-        else if (type.equals(Constants.ACCESS_BOOK_APPONTMENT))
-        {
+        } else if (type.equals(Constants.ACCESS_BOOK_APPONTMENT)) {
             ((MainActivity) getActivity()).runbookappointment(false);
-        }
-        else if(type.equals(Constants.ACCESS_PENDING_RATING))
-        {
+        } else if (type.equals(Constants.ACCESS_PENDING_RATING)) {
             ((MainActivity) getActivity()).showratingpopup(false);
 
-        }
-        else if (type.equals(Constants.ACCESS_CLEAR_SECRET))
-        {
+        } else if (type.equals(Constants.ACCESS_CLEAR_SECRET)) {
             ((SettingsActivity) getActivity()).runMineSecrets(false);
-        } else if (type.equals(Constants.ACTION_SECRETS_ACCESS))
-        {
+        } else if (type.equals(Constants.ACTION_SECRETS_ACCESS)) {
             //((ActionSecretActivity) getActivity()).loadData();
-        }
-        else if (type.equals(Constants.ACTION_SECRETS_ACCESS))
-        {
+        } else if (type.equals(Constants.ACTION_SECRETS_ACCESS)) {
             //((ActionSecretActivity) getActivity()).loadData();
-        }else if (type.equals(Constants.ACCESS_IFRIEND))
-        {
+        } else if (type.equals(Constants.ACCESS_IFRIEND)) {
             ((MainActivity) getActivity()).runIFriend();
-        } else if (type.equals(Constants.ACCESS_MY_SECRETS_BACKEND))
-        {
+        } else if (type.equals(Constants.ACCESS_MY_SECRETS_BACKEND)) {
             ((MySecretsActivity) getActivity()).loadAccessData();
         } else if (type.equals(Constants.ACCESS_NOTIFICATIONS)) {
             ((MainActivity) getActivity()).runNotifications();
         } else if (type.equals(Constants.ACCESS_STATS)) {
             ((MainActivity) getActivity()).runStats();
-        }
-        else if (type.equals(Constants.ACCESS_UNVERIFY_ME))
-        {
+        } else if (type.equals(Constants.ACCESS_UNVERIFY_ME)) {
             ((SettingsActivity) getActivity()).unverifyUser();
 
-        }
+        } else if (type.equals(Constants.ACCESS_MEDIATOR)) {
+            ((MainActivity) getActivity()).runMediator();
 
-        else if (type.equals(Constants.ACCESS_VERIFY))
-        {
+        } else if (type.equals(Constants.ACCESS_VERIFY)) {
             ((MainActivity) getActivity()).unverifyUser();
 
-        } else if (type.equals(Constants.ACCESS_MOOD))
-        {
+        } else if (type.equals(Constants.ACCESS_MOOD)) {
             ((MainActivity) getActivity()).runMood();
-        }
-        else if (type.equals(Constants.ACCESS_ROOM))
-        {
+        } else if (type.equals(Constants.ACCESS_ROOM)) {
             ((MainActivity) getActivity()).runRoom();
-        }
-        else if (type.equals(Constants.ACCESS_HIGHTLIGHTS)) {
+        } else if (type.equals(Constants.ACCESS_HIGHTLIGHTS)) {
             ((MainActivity) getActivity()).runHighLights();
         } else if (type.equals(Constants.ACCESS_YEAR_COMMENTS)) {
             ((MainActivity) getActivity()).runYearComments();
@@ -679,10 +620,10 @@ LoginConditionDTO loginConditionDTO = null;
 
                 IfriendRequest http = new IfriendRequest(getActivity());
 
-                CommonRequestTypeDTO commonRequestTypeDTO = new CommonRequestTypeDTO(loginConditionDTO,"resetPassword");
+                CommonRequestTypeDTO commonRequestTypeDTO = new CommonRequestTypeDTO(loginConditionDTO, "resetPassword");
                 FinalObjectDTO loginbjectDTO = new FinalObjectDTO(commonRequestTypeDTO);
 
-                status =  http.ResetPassword(loginbjectDTO);
+                status = http.ResetPassword(loginbjectDTO);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -690,24 +631,17 @@ LoginConditionDTO loginConditionDTO = null;
             return null;
         }
 
-        protected void onPostExecute(Bitmap image)
-        {
-            try
-            {
+        protected void onPostExecute(Bitmap image) {
+            try {
 
-                if(status!= null && status.contains("true"))
-                {
-                    AppSession.save(getActivity(),Constants.USER_PIN,mInput.getText().toString());
+                if (status != null && status.contains("true")) {
+                    AppSession.save(getActivity(), Constants.USER_PIN, mInput.getText().toString());
                     open();
 
+                } else {
+                    Toast.makeText(getActivity(), status, Toast.LENGTH_SHORT).show();
                 }
-                else
-                {
-                    Toast.makeText(getActivity(), status ,Toast.LENGTH_SHORT).show();
-                }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

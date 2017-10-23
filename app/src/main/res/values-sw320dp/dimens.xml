@@ -147,14 +147,21 @@
     <!-- SEARCH !-->
     <dimen name="search_not_found_ts">18sp</dimen>
     <dimen name="glimpse_button_height">100dp</dimen>
+
+    <dimen name="mediator_button_height">80dp</dimen>
+
     <dimen name="quotoes_icon">45dp</dimen>
     <dimen name="home_top_header">45dp</dimen>
+    <dimen name="add_note_width">100dp</dimen>
 
+    <dimen name="add_note_height">40dp</dimen>
     <dimen name="home_fliter_header_height">50dp</dimen>
-
-    <dimen name="home_top_bar_icon">30dp</dimen>
+    <dimen name="selected_like_size">75dp</dimen>
+    <dimen name="home_top_bar_icon">25dp</dimen>
     <dimen name="home_icon_margin">8dp</dimen>
     <dimen name="secret_imogy">45dp</dimen>
+    <dimen name="hug_anim_right_margin">15dp</dimen>
+    <dimen name="like_anim_top_margin">80dp</dimen>
 
     <dimen name="skin_height">450dp</dimen>
 

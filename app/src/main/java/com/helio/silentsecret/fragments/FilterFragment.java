@@ -29,8 +29,7 @@ import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.Preference;
 import com.helio.silentsecret.utils.TimeUtil;
-import com.nirhart.parallaxscroll.views.ParallaxListView;
-
+import com.helio.silentsecret.views.ScrollDisabledListView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +40,7 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback
 {
 
     private View mView;
-    private ParallaxListView mListView;
+    private ScrollDisabledListView mListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FeedAdapter adapter;
     private List<Secret> mDataList;
@@ -63,9 +62,6 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback
 
     private List<Secret> list = null;
 
-    private Date mSecretsDate;
-    private Date mCurrentMonth;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +74,7 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_paralax_feed, null);
 
-        mListView = (ParallaxListView) mView.findViewById(R.id.feed_list_view);
+        mListView = (ScrollDisabledListView) mView.findViewById(R.id.feed_list_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.activity_main_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -99,9 +95,26 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback
 
         mDataList = new ArrayList<>();
 
-        adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getString(R.string.latest_overlay_text), getString(R.string.latest_last_item_text), getActivity());
+        adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getString(R.string.latest_overlay_text), getString(R.string.latest_last_item_text), getActivity(),mListView);
         ((MainActivity) getActivity()).setupFilterCallback(this);
         setupAdapter();
+
+
+       /* mListView.setScrollContainer(false);
+
+
+
+        mListView.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    return true; // Indicates that this has been handled by you and will not be forwarded further.
+                }
+                return false;
+            }
+        });*/
+
+
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -397,6 +410,9 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback
             }
         }
     }
+
+
+
 
 
     @Override

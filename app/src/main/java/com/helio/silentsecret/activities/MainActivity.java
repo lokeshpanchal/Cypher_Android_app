@@ -206,7 +206,7 @@ TextView deep_filter = null , seeall_filter ,tense_filter ,light_filter ;
     public OnReplace mMoodRunner;
 
 
-    private static OwnPager mMainPager;
+    public static OwnPager mMainPager;
     private ViewPagerMainAdapter adapter;
 
 
@@ -1415,6 +1415,8 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                 mMainPager = null;
             mMainPager = (OwnPager) this.findViewById(R.id.pager);
 
+
+
             adapter = new ViewPagerMainAdapter(getSupportFragmentManager());
             mMainPager.setOffscreenPageLimit(3);
             mMainPager.setAdapter(adapter);
@@ -1499,6 +1501,14 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         setVerifyFlagConditionDTO = new SetVerifyFlagConditionDTO(enc_username, "verified", "false");
         new UpdateVeryfiFlag().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         AppSession.save(ct, Constants.USER_VERIFIED, "false");
+
+    }
+
+
+    public void runMediator() {
+
+        Intent intent = new Intent(this,MediatorActivity.class);
+        startActivity(intent);
 
     }
 
@@ -2143,6 +2153,11 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
     public void AccessMysecret() {
         replaceDialog(Constants.ACCESS_MY_SECRETS);
+    }
+
+
+    public void AccessMediator() {
+        replaceDialog(Constants.ACCESS_MEDIATOR);
     }
 
     public void QRAccess() {

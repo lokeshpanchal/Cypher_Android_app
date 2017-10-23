@@ -78,6 +78,21 @@ public class GlimpseFragment extends Fragment implements MainActivity.OnReplace,
 
 
                 break;
+            case R.id.glimpse_mediator:
+
+                if (userna == null || userna.equalsIgnoreCase(""))
+                {
+                    Intent intent = new Intent(getActivity(), SignUpDialogActivity.class);
+                    startActivity(intent);
+                }
+                else {
+
+                    ((MainActivity) getActivity()).AccessMediator();
+                }
+
+
+
+                break;
             case R.id.glimpse_rooms:
 
                 if (userna == null || userna.equalsIgnoreCase(""))
@@ -90,6 +105,8 @@ public class GlimpseFragment extends Fragment implements MainActivity.OnReplace,
                     startActivity(intent);
                    // Controller.runGlimpse(Controller.ROOM, getActivity(), true);
                 }
+
+
 
 
 
@@ -150,6 +167,7 @@ public class GlimpseFragment extends Fragment implements MainActivity.OnReplace,
         mView.findViewById(R.id.glimpse_counsell_clickable).setOnClickListener(this);
         mView.findViewById(R.id.glimpse_rooms).setOnClickListener(this);
         mView.findViewById(R.id.glimpse_mysecret_clickable).setOnClickListener(this);
+        mView.findViewById(R.id.glimpse_mediator).setOnClickListener(this);
 
 
     }

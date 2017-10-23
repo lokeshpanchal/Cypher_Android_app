@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.helio.silentsecret.R;
@@ -26,7 +25,7 @@ import com.helio.silentsecret.models.OfflineSecretObjectDTO;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.Constants;
-
+import com.helio.silentsecret.views.ScrollDisabledListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ import java.util.List;
 public class TrendingFragment extends Fragment implements UpdateCallback {
 
     private View mView;
-    private ListView mListView;
+    private ScrollDisabledListView mListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FeedAdapter adapter;
     private List<Secret> mDataList;
@@ -52,7 +51,7 @@ public class TrendingFragment extends Fragment implements UpdateCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_feed, null);
 
-        mListView = (ListView) mView.findViewById(R.id.feed_list_view);
+        mListView = (ScrollDisabledListView) mView.findViewById(R.id.feed_list_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.activity_main_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -69,7 +68,7 @@ public class TrendingFragment extends Fragment implements UpdateCallback {
 
 
         mDataList = new ArrayList<>();
-        adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getString(R.string.trending_overlay_text), getString(R.string.trending_last_item_text), getActivity());
+        adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getString(R.string.trending_overlay_text), getString(R.string.trending_last_item_text), getActivity() ,mListView);
        // ((MainActivity) getActivity()).setupTrendingCallback(this);
 
         mListView.setAdapter(adapter);

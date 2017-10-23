@@ -171,6 +171,8 @@
     <string name="male">Male</string>
     <string name="back">Back</string>
     <string name="entertainment">Entertainment</string>
+    <string name="mediator_text">Capture your views and emotions and send it to the people that need to hear from you.</string>
+    <string name="invite_code_text">You need an invite code to use this feature.</string>
     <string name="news">News</string>
     <string name="lifestyle">Lifestyle</string>
     <string name="search_for_inspiration">Search for inspiration</string>

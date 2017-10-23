@@ -7,13 +7,14 @@
     <dimen name="petlayout">220dp</dimen>
 
     <dimen name="glimpse_button_height">150dp</dimen>
+    <dimen name="mediator_button_height">110dp</dimen>
 
     <dimen name="quotoes_icon">60dp</dimen>
     <dimen name="home_top_header">70dp</dimen>
     <dimen name="home_top_bar_icon">50dp</dimen>
-
+    <dimen name="selected_like_size">120dp</dimen>
     <dimen name="home_fliter_header_height">80dp</dimen>
-
+    <dimen name="like_anim_top_margin">120dp</dimen>
     <dimen name="home_icon_margin">20dp</dimen>
 
     <dimen name="secret_imogy">60dp</dimen>
@@ -51,6 +52,7 @@
     <dimen name="continue_button_quotes">55dp</dimen>
 
     <dimen name="alma_width">60dp</dimen>
+    <dimen name="hug_anim_right_margin">80dp</dimen>
     <dimen name="alma_height">40dp</dimen>
 
     <dimen name="chat_friend_wodth">120dp</dimen>
@@ -66,8 +68,10 @@
 
     <dimen name="room_pager_height">450dp</dimen>
 
-
+    <dimen name="add_note_width">140dp</dimen>
     <dimen name="header_height">70dp</dimen>
+
+    <dimen name="add_note_height">55dp</dimen>
 
     <dimen name="room_icon_height">70dp</dimen>
 

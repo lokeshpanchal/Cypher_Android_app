@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/glimpse_gray"
+    tools:context="com.helio.silentsecret.activities.Mediator_meeting">
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
+        android:background="@color/ifriend_top_bar">
+
+        <TextView
+            android:id="@+id/back_iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/back"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_centerInParent="true"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:text="Workshop"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_margin="10dp"
+           android:orientation="vertical">
+           <LinearLayout
+               android:id="@+id/pre_meeting"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:layout_marginTop="10dp"
+
+               android:orientation="horizontal">
+
+               <ImageView
+                   android:layout_width="0dp"
+                   android:layout_height="@dimen/glimpse_button_height"
+                   android:layout_gravity="center_vertical"
+                   android:layout_weight="3"
+                   android:background="@drawable/white_left_corner"
+                   android:gravity="center"
+                   android:padding="10dp"
+                   android:src="@drawable/pre_meeting" />
+
+               <TextView
+                   android:layout_width="0dp"
+                   android:layout_height="match_parent"
+                   android:layout_weight="9"
+                   android:paddingLeft="30dp"
+                   android:paddingRight="30dp"
+                   android:background="@drawable/glimpse_button"
+                   android:gravity="center"
+                   android:text="previous meeting/workshop preparation"
+                   android:textColor="@color/white"
+                   android:textSize="20sp" />
+           </LinearLayout>
+
+           <LinearLayout
+               android:id="@+id/new_meeting"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:layout_marginTop="10dp"
+
+               android:orientation="horizontal">
+
+               <ImageView
+                   android:layout_width="0dp"
+                   android:layout_height="@dimen/glimpse_button_height"
+                   android:layout_gravity="center_vertical"
+
+                   android:layout_weight="3"
+                   android:background="@drawable/white_left_corner"
+                   android:gravity="center"
+                   android:padding="10dp"
+                   android:src="@drawable/new_meeting" />
+
+               <TextView
+                   android:layout_width="0dp"
+                   android:layout_height="match_parent"
+                   android:layout_weight="9"
+                   android:background="@drawable/glimpse_button"
+                   android:gravity="center"
+                   android:paddingLeft="30dp"
+                   android:paddingRight="30dp"
+                   android:text="new meeting/workshop preparation"
+                   android:textColor="@color/white"
+                   android:textSize="20sp" />
+           </LinearLayout>
+       </LinearLayout>
+
+    </ScrollView>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/prev_meet_layout"
+        android:visibility="gone"
+        android:background="@color/glimpse_gray">
+
+
+        <RelativeLayout
+            android:id="@+id/prev_meet_back"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/header_height"
+            android:background="@color/ifriend_top_bar">
+
+            <TextView
+                android:id="@+id/prev_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/back"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="15dp"
+                android:gravity="center"
+                android:text="Previous meetings"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_below="@+id/prev_meet_back"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+
+                android:id="@+id/prev_main_layout"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -20,7 +20,7 @@
     <color name="purple_light">#7e6c86</color>
     <color name="purple_dark">#4a3056</color>
     <color name="purple_sweet">#cfc1c8</color>
-    <color name="glimpse_gray">#E2E6DC</color>
+    <color name="glimpse_gray">#F1F1F1</color>
     <color name="light_white">#fcfcfc</color>
 
     <color name="secret_text_bg_circle">#f6f6f6</color>
@@ -43,7 +43,9 @@
 
     <color name="homemain">#3BCCC5</color>
     <color name="homemenu">#32B1A0</color>
-    <color name="top_bar">#63c5c7</color>
+    <color name="top_bar">#3daaa4</color>
+    <color name="top_bar1">#63c5c7</color>
+    <color name="darakgreen">#228880</color>
     <color name="old_top_bar">#36c2b7</color>
 
     <color name="ifriend_top_bar">#62c9c8</color>

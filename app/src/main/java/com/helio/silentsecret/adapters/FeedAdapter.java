@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,21 +19,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -77,6 +70,7 @@ import com.helio.silentsecret.utils.ImageLoaderUtil;
 import com.helio.silentsecret.utils.Preference;
 import com.helio.silentsecret.utils.ToastUtil;
 import com.helio.silentsecret.utils.Utils;
+import com.helio.silentsecret.views.ScrollDisabledListView;
 import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 import com.nineoldandroids.animation.Animator;
@@ -84,20 +78,23 @@ import com.nineoldandroids.animation.Animator;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 //import com.google.android.gms.location.LocationListener;
 
-public class FeedAdapter extends BaseAdapter {
+public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
     private static final int MUTUAL_POSITION = 2;
-
+    private   ScrollDisabledListView mListView = null;
     private LayoutInflater inflater;
     List<Secret> mDataList;
     private List<Secret> mMe2sList = new ArrayList<>();
     private Context mContext;
     private ImageLoaderUtil mLoader;
+
+    int selected_position = 100;
 
     static ViewHolder ifholder = null;
     IfriendSendRequesttDataDTO ifriendSendRequesttDataDTO = null;
@@ -121,6 +118,7 @@ public class FeedAdapter extends BaseAdapter {
 
 
     boolean is_from_long_tab = false;
+    boolean still_press = false;
     private SocialOperations mOperations;
 
     private ViewPagerMutualAdapter mutualAdapter;
@@ -166,29 +164,32 @@ public class FeedAdapter extends BaseAdapter {
     };
 
 
-    public FeedAdapter(LayoutInflater inflater, List<Secret> list, Context context)
-    {
+    public FeedAdapter(LayoutInflater inflater, List<Secret> list, Context context, ScrollDisabledListView scrollDisabledListView) {
 
-        loadData(inflater, list, context);
+        loadData(inflater, list, context , scrollDisabledListView);
+
     }
 
-    public FeedAdapter(LayoutInflater inflater, List<Secret> list, Context context, boolean canShare) {
-        loadData(inflater, list, context);
+    public FeedAdapter(LayoutInflater inflater, List<Secret> list, Context context, boolean canShare, ScrollDisabledListView scrollDisabledListView) {
+        loadData(inflater, list, context , scrollDisabledListView);
         this.canShare = canShare;
+
     }
 
-    public FeedAdapter(LayoutInflater inflater, List<Secret> list, String title, String lastText, Context context) {
-        loadData(inflater, list, context);
+    public FeedAdapter(LayoutInflater inflater, List<Secret> list, String title, String lastText, Context context, ScrollDisabledListView scrollDisabledListView) {
+        loadData(inflater, list, context , scrollDisabledListView);
         this.scrollTitle = title;
-        mMutualFeedAdapter = new FeedAdapter(LayoutInflater.from(mContext), mMe2sList, mContext);
+
+
+        mMutualFeedAdapter = new FeedAdapter(LayoutInflater.from(mContext), mMe2sList, mContext, scrollDisabledListView);
         mutualAdapter = new ViewPagerMutualAdapter(mMutualFeedAdapter, mContext, lastText);
     }
 
 
-    private void loadData(LayoutInflater inflater, List<Secret> list, Context context) {
+    private void loadData(LayoutInflater inflater, List<Secret> list, Context context , ScrollDisabledListView scrollDisabledListView) {
         try {
-            this.inflater = inflater;
 
+            this.inflater = inflater;
 
 
             if (list != null && list.size() > 0) {
@@ -210,6 +211,9 @@ public class FeedAdapter extends BaseAdapter {
                 }
             }
 
+
+            mListView = scrollDisabledListView;
+
             this.mContext = context;
             this.mLoader = new ImageLoaderUtil(context);
             this.mOperations = new SocialOperations(context);
@@ -223,16 +227,13 @@ public class FeedAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
-        try
-        {
-            if(for_delay != null)
+        try {
+            if (for_delay != null)
                 for_delay = null;
 
 
             for_delay = new TextView(context);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -277,23 +278,6 @@ public class FeedAdapter extends BaseAdapter {
         return position;
     }
 
-    /*private void saveInstallation() {
-        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-        installation.put(Constants.USER, ParseUser.getCurrentUser());
-
-
-        installation.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-
-                } else {
-
-                }
-            }
-        });
-    }*/
-
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -317,10 +301,54 @@ public class FeedAdapter extends BaseAdapter {
             holder.me2 = (ImageView) convertView.findViewById(R.id.feed_me2);
             holder.flag = (ImageView) convertView.findViewById(R.id.feed_flag);
             holder.verify = convertView.findViewById(R.id.feed_verify);
-            holder.flliper = (ViewFlipper) convertView.findViewById(R.id.flliper);
-            holder.short_sentence_layout = (RelativeLayout) convertView.findViewById(R.id.short_sentence_layout);
+
             holder.mIFriend = (TextView) convertView.findViewById(R.id.iFriend_icon);
 
+            holder.hug_touch_listner = (RelativeLayout) convertView.findViewById(R.id.hug_touch_listner);
+            holder.heart_touch_listner = (RelativeLayout) convertView.findViewById(R.id.heart_touch_listner);
+            holder.me2_touch_listner = (RelativeLayout) convertView.findViewById(R.id.me2_touch_listner);
+            holder.hug_anim_layout = (RelativeLayout) convertView.findViewById(R.id.hug_anim_layout);
+            holder.heart_anim_layout = (RelativeLayout) convertView.findViewById(R.id.heart_anim_layout);
+            holder.me2_anim_layout = (RelativeLayout) convertView.findViewById(R.id.me2_anim_layout);
+
+
+            holder.selected_hilarious = (ImageView) convertView.findViewById(R.id.selected_hilarious);
+            holder.selected_wow = (ImageView) convertView.findViewById(R.id.selected_wow);
+            holder.selected_dont_giveup = (ImageView) convertView.findViewById(R.id.selected_dont_giveup);
+            holder.selected_you_inspired_me = (ImageView) convertView.findViewById(R.id.selected_you_inspired_me);
+            holder.selected_powerful = (ImageView) convertView.findViewById(R.id.selected_powerful);
+            holder.selected_lamo = (ImageView) convertView.findViewById(R.id.selected_lamo);
+
+
+            holder.selected_been_there = (ImageView) convertView.findViewById(R.id.selected_been_there);
+            holder.selected_fml_short = (ImageView) convertView.findViewById(R.id.selected_fml_short);
+            holder.selected_you_are_not_alone = (ImageView) convertView.findViewById(R.id.selected_you_are_not_alone);
+
+
+            holder.selected_keep_going = (ImageView) convertView.findViewById(R.id.selected_keep_going);
+            holder.selected_you_got_afriend = (ImageView) convertView.findViewById(R.id.selected_you_got_afriend);
+            holder.selected_keep_smiling = (ImageView) convertView.findViewById(R.id.selected_keep_smiling);
+            holder.selected_we_love_you = (ImageView) convertView.findViewById(R.id.selected_we_love_you);
+            holder.selected_keep_you_headup = (ImageView) convertView.findViewById(R.id.selected_keep_you_headup);
+
+            holder.been_there = (TextView) convertView.findViewById(R.id.been_there);
+            holder.fml_short = (TextView) convertView.findViewById(R.id.fml_short);
+            holder.you_are_not_alone = (TextView) convertView.findViewById(R.id.you_are_not_alone);
+
+
+            holder.hilarious = (TextView) convertView.findViewById(R.id.hilarious);
+            holder.lamo = (TextView) convertView.findViewById(R.id.lamo);
+            holder.powerful = (TextView) convertView.findViewById(R.id.powerful);
+            holder.you_inspired_me = (TextView) convertView.findViewById(R.id.you_inspired_me);
+            holder.wow = (TextView) convertView.findViewById(R.id.wow);
+            holder.dont_giveup = (TextView) convertView.findViewById(R.id.dont_giveup);
+
+
+            holder.keep_going = (TextView) convertView.findViewById(R.id.keep_going);
+            holder.you_got_afriend = (TextView) convertView.findViewById(R.id.you_got_afriend);
+            holder.we_love_you = (TextView) convertView.findViewById(R.id.we_love_you);
+            holder.keep_you_headup = (TextView) convertView.findViewById(R.id.keep_you_headup);
+            holder.keep_smiling = (TextView) convertView.findViewById(R.id.keep_smiling);
 
 
             holder.supportView = convertView.findViewById(R.id.support_tutorial_view);
@@ -359,12 +387,6 @@ public class FeedAdapter extends BaseAdapter {
         }
 
 
-        holder.short_sentence_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         holder.feedMutualPager.setVisibility(View.GONE);
         holder.feedMutualPerformance.setVisibility(View.GONE);
         holder.feedMutualPerformance.setAdapter(null);
@@ -372,7 +394,7 @@ public class FeedAdapter extends BaseAdapter {
 
         secret = getItem(position);
 
-        if(position ==0)
+        if (position == 0)
             holder.top_bar.setVisibility(View.VISIBLE);
         else
             holder.top_bar.setVisibility(View.GONE);
@@ -386,31 +408,6 @@ public class FeedAdapter extends BaseAdapter {
             holder.feedMutualPerformance.setVisibility(View.GONE);
         }
 
-
-        /*if(secret.getSkin_pattern()!= null && !secret.getSkin_pattern().equalsIgnoreCase(""))
-        {
-            for(int i=0; i <skin_bg_name.length; i++)
-            {
-                if(skin_bg_name[i].equalsIgnoreCase(secret.getSkin_pattern()))
-                {
-                    holder.text_skin.setBackgroundResource(skin_array[i]);
-
-                    break;
-                }
-            }
-
-        }
-        else
-        {
-            holder.text_skin.setBackgroundResource(R.drawable.white_border_feed_text);
-        }*/
-       /* holder.
-       .setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.short_sentence_layout.setVisibility(View.GONE);
-            }
-        });*/
 
         if (secret.getDoowapplink() != null && !secret.getDoowapplink().equalsIgnoreCase("")) {
             newText = secret.getText();
@@ -470,10 +467,9 @@ public class FeedAdapter extends BaseAdapter {
         } else {
             newText = secret.getText();
 
-          //  newText = newText.replace("\n", "");
+            //  newText = newText.replace("\n", "");
             try {
-                if (secret.getText() != null && secret.getText().contains("iFriend"))
-                {
+                if (secret.getText() != null && secret.getText().contains("iFriend")) {
 
 
                     for (int j = 1; j <= 20; j++) {
@@ -543,67 +539,6 @@ public class FeedAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
-       /* int comments_scratch = 0;
-        try {
-            MainActivity.comments_count = Integer.parseInt(MainActivity.petAvtarInfoDTO.getComments_count());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-
-        /*if (MainActivity.comments_count > 0)
-            comments_scratch = MainActivity.comments_count;*/
-
-
-        /*int scratch_count = 0;
-
-        try {
-            scratch_count = Integer.parseInt(MainActivity.petAvtarInfoDTO.getScratch_count());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-       /* String pet_name = AppSession.getValue(mContext, Constants.USER_PET_NAME);
-        if (pet_name != null && !pet_name.equalsIgnoreCase("") && !pet_name.equalsIgnoreCase("null")) {
-
-            if (secret.getShowCoupon() == 0 && scratch_count < 5 + comments_scratch) {
-                try {
-                    holder.foodcoupon.setVisibility(View.VISIBLE);
-
-                    if (MainActivity.scratchscretid != null && MainActivity.scratchscretid.size() > 0) {
-                        for (int j = 0; j < MainActivity.scratchscretid.size(); j++) {
-                            if (secret.getObjectId().equalsIgnoreCase(MainActivity.scratchscretid.get(j))) {
-                                holder.foodcoupon.setVisibility(View.GONE);
-                                break;
-                            }
-                        }
-                    }
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                }
-
-
-            } else
-                holder.foodcoupon.setVisibility(View.GONE);
-        } else
-            holder.foodcoupon.setVisibility(View.GONE);
-
-        holder.foodcoupon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // mDataList.get(position).setShowCoupon(2);
-
-                holder.foodcoupon.setVisibility(View.GONE);
-
-                MainActivity.showscratchview(mDataList.get(position).getObjectId());
-
-            }
-        });
-*/
 
         holder.flag.setTag(0);
         holder.flag.setVisibility(View.INVISIBLE);
@@ -617,19 +552,15 @@ public class FeedAdapter extends BaseAdapter {
         holder.actionsView.setVisibility(View.INVISIBLE);
 
 
-       // holder.root.setBackgroundResource(R.drawable.bg0);
-       // holder.root.setImageResource(R.drawable.bg0);
+        // holder.root.setBackgroundResource(R.drawable.bg0);
+        // holder.root.setImageResource(R.drawable.bg0);
 
         final String img_url = secret.getFlicker_image();
-        if (img_url != null && !img_url.isEmpty())
-        {
+        if (img_url != null && !img_url.isEmpty()) {
             boolean is_download = false;
-            if (flickerImagloads.size() > 0)
-            {
-                for (int i = 0; i < flickerImagloads.size(); i++)
-                {
-                    if (img_url.equalsIgnoreCase(flickerImagloads.get(i).getFliker_image_url()))
-                    {
+            if (flickerImagloads.size() > 0) {
+                for (int i = 0; i < flickerImagloads.size(); i++) {
+                    if (img_url.equalsIgnoreCase(flickerImagloads.get(i).getFliker_image_url())) {
                         is_download = true;
                         //holder.root.setImageBitmap(flickerImagloads.get(i).getFliker_image_bitmap());
 
@@ -646,53 +577,34 @@ public class FeedAdapter extends BaseAdapter {
                 }
             }
 
-            if (!is_download)
-            {
+            if (!is_download) {
                 Glide.with(mContext)
                         .load(secret.getFlicker_image()).asBitmap()
                         //.placeholder(R.drawable.bg0)
-                        .into(new SimpleTarget<Bitmap>(300, 300)
-                {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
-                    {
-                        Drawable drawable = new BitmapDrawable(resource);
-                        flickerImagloads.add(new FlickerImagload(img_url, resource));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                        {
-                            holder.root.setBackgroundDrawable(drawable);
-                        }
-                    }
-                });
+                        .into(new SimpleTarget<Bitmap>(300, 300) {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                Drawable drawable = new BitmapDrawable(resource);
+                                flickerImagloads.add(new FlickerImagload(img_url, resource));
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                    holder.root.setBackgroundDrawable(drawable);
+                                }
+                            }
+                        });
             }
 
-    /*        Glide.with(mContext)
-                    .load(secret.getFlicker_image())
-                    .placeholder(R.drawable.ic_default_bg)
-                    .into(holder.root);*/
 
+        } else if (secret.getBgImageName() != null) {
+            try {
 
-        } else if (secret.getBgImageName() != null)
-        {
-            try
-            {
-           /* String url = mLoader.getBackground(secret.getBgImageName());
-                holder.root.setScaleType(ImageView.ScaleType.FIT_XY);
-                  Glide.with(mContext)
-                        .load(url)
-                        .into(holder.root);
-*/
                 String url = mLoader.getBackground(secret.getBgImageName());
 
-                Glide.with(mContext).load(url).asBitmap().into(new SimpleTarget<Bitmap>(300, 300)
-                {
+                Glide.with(mContext).load(url).asBitmap().into(new SimpleTarget<Bitmap>(300, 300) {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
-                    {
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         Drawable drawable = new BitmapDrawable(resource);
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                        {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             holder.root.setBackgroundDrawable(drawable);
                         }
                     }
@@ -704,61 +616,13 @@ public class FeedAdapter extends BaseAdapter {
                 });
 
 
-               // holder.root.setScaleType(ImageView.ScaleType.FIT_XY);
-                /*Glide.with(mContext).load(url).asBitmap().into(new SimpleTarget<Bitmap>(200, 200)
-                {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
-                    {
-                        Drawable drawable = new BitmapDrawable(resource);
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                        {
-                            holder.root.setBackground(drawable);
-                        }
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                    }
-                });*/
-
-                //mLoader.loadSimpleDraw(secret.getBgImageName(), holder.root);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         try {
             holder.text.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/ubuntu.ttf"));
 
-           // holder.text.setTextAppearance(mContext, R.style.BlackShadowText);
-            /*if (secret.getFont() != 2)
-            {
-                String bgImageName = secret.getBgImageName();
-                bgImageName = bgImageName.replaceAll("[^\\d]", "");
-                if (bgImageName != null && bgImageName.equalsIgnoreCase("26"))
-                {
-                    holder.text.setTextAppearance(mContext, R.style.BlackShadowText);
-                } else {
-                    if (Utils.checkBackgroundImage(secret.getBgImageName())) {
-                        holder.text.setTextAppearance(mContext, R.style.ShadowText);
-                    } else {
-                        holder.text.setTextAppearance(mContext, R.style.ShadowText);
-                    }
-                }
-            } else {
-                String bgImageName = secret.getBgImageName();
-                bgImageName = bgImageName.replaceAll("[^\\d]", "");
-                if (bgImageName != null && bgImageName.equalsIgnoreCase("26")) {
-                    holder.text.setTextAppearance(mContext, R.style.BlackShadowText);
-                } else {
-                    holder.text.setTextAppearance(mContext, R.style.ShadowText);
-                    holder.text.setTypeface(mSecond);
-                }
-            }*/
 
             if (secret.getFlagUsers() != null)
                 if (secret.getFlagUsers().contains(MainActivity.enc_username)) {
@@ -793,9 +657,6 @@ public class FeedAdapter extends BaseAdapter {
             }
 
 
-
-
-
             if (!secret.getCreatedByUser().equalsIgnoreCase(MainActivity.enc_username)) {
 
                 holder.mIFriend.setVisibility(View.VISIBLE);
@@ -822,105 +683,99 @@ public class FeedAdapter extends BaseAdapter {
             public void onClick(View v) {
 
 
-
-
                 String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-                if (userna == null || userna.equalsIgnoreCase(""))
-                {
+                if (userna == null || userna.equalsIgnoreCase("")) {
                     Intent intent = new Intent(mContext, SignUpDialogActivity.class);
                     mContext.startActivity(intent);
-                }
-                else {
+                } else {
 
 
+                    friendicon = (TextView) v;
+                    friendicon.setVisibility(View.GONE);
 
-
-                friendicon = (TextView) v;
-                friendicon.setVisibility(View.GONE);
-
-                try {
-                    ((MainActivity) mContext).showProgress();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-
-
-                try {
-                    boolean age_verify = false;
-                    secret = getItem(position);
-
-                    String age = AppSession.getValue(mContext, Constants.USER_AGE);
-                    int myAge = Integer.parseInt(age);
-
-                    String secretAgesec = secret.getAge();
-                    int secretAge = Integer.parseInt(secretAgesec);
-
-
-                    if (myAge != 0 && myAge < 18) {
-
-                        if (myAge <= (secretAge + 2) && myAge >= (secretAge - 2)) {
-                            age_verify = true;
-                        }
-                    } else if (myAge == 18) {
-                        if ((secretAge >= 18) && (secretAge <= 21)) {
-                            age_verify = true;
-                        }
-                    } else if (myAge == 19) {
-                        if ((secretAge >= 18) && (secretAge <= 21)) {
-                            age_verify = true;
-                        }
-                    } else if (myAge >= 20 && myAge <= 24) {
-                        if ((secretAge >= 18) && (secretAge <= 25)) {
-                            age_verify = true;
-                        }
-                    } else if (myAge >= 25) {
-                        if (secretAge >= 25) {
-                            age_verify = true;
-                        }
+                    try {
+                        ((MainActivity) mContext).showProgress();
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
                     }
 
 
-                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                        friendicon.setVisibility(View.VISIBLE);
-                        try {
-                            ((MainActivity) mContext).stopProgress();
-                        } catch (Exception e2) {
-                            e2.printStackTrace();
-                        }
+                    try {
+                        boolean age_verify = false;
+                        secret = getItem(position);
 
-                        new ToastUtil(mContext, "Please check your internet connection.");
-                    } else if (!age_verify) {
-                        is_click = false;
-                        new ToastUtil(mContext, "This user is not available for ifriend");
-                        try {
-                            ((MainActivity) mContext).stopProgress();
-                        } catch (Exception e2) {
-                            e2.printStackTrace();
-                        }
-                    } else {
-                        if (!is_click) {
+                        String age = AppSession.getValue(mContext, Constants.USER_AGE);
+                        int myAge = Integer.parseInt(age);
 
-                            is_click = true;
+                        String secretAgesec = secret.getAge();
+                        int secretAge = Integer.parseInt(secretAgesec);
 
-                            ifholder = holder;
 
-                            if (MainActivity.userListNamesOnlyWaiting != null && MainActivity.userListNamesOnlyWaiting.size() > 0) {
+                        if (myAge != 0 && myAge < 18) {
 
-                                if (MainActivity.userListNamesOnlyWaiting.contains(MainActivity.enc_username) &&
-                                        MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser()) || MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser())) {
-                                    is_click = false;
-                                    ifholder.mIFriend.setVisibility(View.INVISIBLE);
-                                    Alreadyfriend();
-                                } else
-                                    new CheckVerifiedforIfriend().execute();
-                            } else {
-                                new CheckVerifiedforIfriend().execute();
+                            if (myAge <= (secretAge + 2) && myAge >= (secretAge - 2)) {
+                                age_verify = true;
+                            }
+                        } else if (myAge == 18) {
+                            if ((secretAge >= 18) && (secretAge <= 21)) {
+                                age_verify = true;
+                            }
+                        } else if (myAge == 19) {
+                            if ((secretAge >= 18) && (secretAge <= 21)) {
+                                age_verify = true;
+                            }
+                        } else if (myAge >= 20 && myAge <= 24) {
+                            if ((secretAge >= 18) && (secretAge <= 25)) {
+                                age_verify = true;
+                            }
+                        } else if (myAge >= 25) {
+                            if (secretAge >= 25) {
+                                age_verify = true;
                             }
                         }
+
+
+                        if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                            friendicon.setVisibility(View.VISIBLE);
+                            try {
+                                ((MainActivity) mContext).stopProgress();
+                            } catch (Exception e2) {
+                                e2.printStackTrace();
+                            }
+
+                            new ToastUtil(mContext, "Please check your internet connection.");
+                        } else if (!age_verify) {
+                            is_click = false;
+                            new ToastUtil(mContext, "This user is not available for ifriend");
+                            try {
+                                ((MainActivity) mContext).stopProgress();
+                            } catch (Exception e2) {
+                                e2.printStackTrace();
+                            }
+                        } else {
+                            if (!is_click) {
+
+                                is_click = true;
+
+                                ifholder = holder;
+
+                                if (MainActivity.userListNamesOnlyWaiting != null && MainActivity.userListNamesOnlyWaiting.size() > 0) {
+
+                                    if (MainActivity.userListNamesOnlyWaiting.contains(MainActivity.enc_username) &&
+                                            MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser()) || MainActivity.userListNamesOnlyWaiting.contains(secret.getCreatedByUser())) {
+                                        is_click = false;
+                                        ifholder.mIFriend.setVisibility(View.INVISIBLE);
+                                        Alreadyfriend();
+                                    } else
+                                        new CheckVerifiedforIfriend().execute();
+                                } else {
+                                    new CheckVerifiedforIfriend().execute();
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 }
 
             }
@@ -937,19 +792,15 @@ public class FeedAdapter extends BaseAdapter {
 
 
                 String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-                if (userna == null || userna.equalsIgnoreCase(""))
-                {
+                if (userna == null || userna.equalsIgnoreCase("")) {
                     Intent intent = new Intent(mContext, SignUpDialogActivity.class);
                     mContext.startActivity(intent);
-                }
-                else {
+                } else {
                     secret = getItem(position);
 
 
-
-                    try
-                    {
-                        if(for_delay != null) {
+                    try {
+                        if (for_delay != null) {
                             for_delay.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -961,9 +812,7 @@ public class FeedAdapter extends BaseAdapter {
                                 }
                             }, 2000);
                         }
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -975,198 +824,626 @@ public class FeedAdapter extends BaseAdapter {
         });
 
 
-        holder.hug.setOnTouchListener(new View.OnTouchListener() {
+        holder.hug_touch_listner.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    holder.short_sentence_layout.setVisibility(View.GONE);
-                    holder.flliper.stopFlipping();
-                    is_from_long_tab = false;
-                    if (is_from_long_tab) {
-                        holder.flliper.getDisplayedChild();
-                    } else {
-                        try {
-                            if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                new ToastUtil(mContext, "Please check your internet connection.");
-                                return false;
+
+                try {
+                    switch (event.getActionMasked()) {
+                        case MotionEvent.ACTION_DOWN:
+                            try {
+
+                                dX = v.getX() - event.getRawX();
+                                dY = v.getY() - event.getRawY();
+                                still_press = true;
+                                start_dX = v.getX();
+                                start_dY = v.getY();
+                                selected_position = 100;
+                                holder.selected_keep_going.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (is_from_long_tab || still_press) {
+                                            is_from_long_tab = false;
+                                            still_press = false;
+                                            holder.hug_anim_layout.setVisibility(View.VISIBLE);
+
+                                            holder.selected_keep_going.setVisibility(View.GONE);
+                                            holder.selected_you_got_afriend.setVisibility(View.GONE);
+                                            holder.selected_keep_smiling.setVisibility(View.GONE);
+                                            holder.selected_we_love_you.setVisibility(View.GONE);
+                                            holder.selected_keep_you_headup.setVisibility(View.GONE);
+
+
+                                            holder.keep_going.setVisibility(View.VISIBLE);
+                                            holder.you_got_afriend.setVisibility(View.VISIBLE);
+                                            holder.we_love_you.setVisibility(View.VISIBLE);
+                                            holder.keep_you_headup.setVisibility(View.VISIBLE);
+                                            holder.keep_smiling.setVisibility(View.VISIBLE);
+
+                                        }
+
+                                    }
+                                }, 300);
+
+
+                                downtime = Calendar.getInstance().getTimeInMillis();
+
+                                MainActivity.mMainPager.setPagingEnabled(false);
+                                mListView.setScrollEnabled(false);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            secret = getItem(position);
-                            if (secret.getHugUsers() != null)
-                                if (secret.getHugUsers().contains(MainActivity.enc_username)) {
-                                    mDataList.get(position).setHugUsers(mOperations.unHug(secret, holder));
-                                    startTracking(mContext.getString(R.string.analytics_Unhug));
-                                } else {
-                                    mDataList.get(position).setHugUsers(mOperations.hug(secret, holder));
-                                    startTracking(mContext.getString(R.string.analytics_hug));
+                            break;
 
+                        case MotionEvent.ACTION_MOVE:
 
-                                    AnimationUtils.playHugAnim(Constants.ANIM_STATE_HUG, ((MainActivity) mContext));
+                            try {
+                                v.setY(event.getRawY() + dY);
+                                v.setX(event.getRawX() + dX);
+                                float y = event.getRawY() + dY;
+                                float x = event.getRawX() + dX;
+                                x_pos_change = x;
+                                y_pos_change = y;
+
+                                point_dx = point_dx + " x : " + x_pos_change + " y : " + y_pos_change;
+
+                                long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
+                                if (clickDuration >= 500) {
+                                    holder.hug_anim_layout.setVisibility(View.VISIBLE);
+
+                                    holder.selected_you_got_afriend.setVisibility(View.GONE);
+                                    holder.selected_keep_smiling.setVisibility(View.GONE);
+                                    holder.selected_we_love_you.setVisibility(View.GONE);
+                                    holder.selected_keep_you_headup.setVisibility(View.GONE);
+                                    holder.selected_keep_going.setVisibility(View.GONE);
+
+                                    holder.you_got_afriend.setVisibility(View.VISIBLE);
+                                    holder.we_love_you.setVisibility(View.VISIBLE);
+                                    holder.keep_you_headup.setVisibility(View.VISIBLE);
+                                    holder.keep_smiling.setVisibility(View.VISIBLE);
+                                    holder.keep_going.setVisibility(View.VISIBLE);
+
+                                    int width = CommonFunction.getScreenWidth();
+                                    if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
+                                        if (x_pos_change > 0 && x_pos_change < width / 12) {
+                                            selected_position = 0;
+                                            holder.selected_keep_going.setVisibility(View.VISIBLE);
+                                            holder.keep_going.setVisibility(View.INVISIBLE);
+                                        } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                            selected_position = 1;
+                                            holder.selected_you_got_afriend.setVisibility(View.VISIBLE);
+                                            holder.you_got_afriend.setVisibility(View.INVISIBLE);
+
+                                        } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
+                                            selected_position = 2;
+                                            holder.selected_we_love_you.setVisibility(View.VISIBLE);
+                                            holder.we_love_you.setVisibility(View.INVISIBLE);
+
+                                        } else if (x_pos_change > width / 5 && x_pos_change < width / 4) {
+                                            selected_position = 3;
+                                            holder.selected_keep_you_headup.setVisibility(View.VISIBLE);
+                                            holder.keep_you_headup.setVisibility(View.INVISIBLE);
+                                        } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                            selected_position = 4;
+                                            holder.selected_keep_smiling.setVisibility(View.VISIBLE);
+                                            holder.keep_smiling.setVisibility(View.INVISIBLE);
+                                        } else {
+                                            selected_position = 100;
+                                        }
+                                    } else
+                                        selected_position = 100;
                                 }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-
-                }
-                return false;
-            }
-        });
-
-        holder.hug.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                is_from_long_tab = false;
-
-
-            }
-        });
-
-
-        /*holder.hug.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                is_from_long_tab = true;
-
-                drawshortsent(holder, "hug");
-                return false;
-            }
-        });*/
-
-
-        holder.me2.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-
-                if (event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    holder.short_sentence_layout.setVisibility(View.GONE);
-                    holder.flliper.stopFlipping();
-
-                    if (is_from_long_tab)
-                    {
-
-                    } else {
-
-
-                        try {
-                            if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                new ToastUtil(mContext, "Please check your internet connection.");
-                                return false;
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
-                            secret = getItem(position);
-                            if (secret.getMe2Users() != null)
-                                if (secret.getMe2Users().contains(MainActivity.enc_username)) {
-                                    mDataList.get(position).setMe2Users(mOperations.unMe2(secret, holder));
-                                    startTracking(mContext.getString(R.string.analytics_Unme2));
+
+                            break;
+                        case MotionEvent.ACTION_POINTER_UP:
+                        case MotionEvent.ACTION_OUTSIDE:
+                        case MotionEvent.ACTION_CANCEL:
+
+                            try {
+
+                                still_press = false;
+                                holder.hug_anim_layout.setVisibility(View.GONE);
+                                holder.selected_keep_going.setVisibility(View.GONE);
+                                selected_position = 100;
+                                uptime = System.currentTimeMillis();
+                                MainActivity.mMainPager.setPagingEnabled(true);
+
+                                v.setY(start_dY);
+                                v.setX(start_dX);
+                                mListView.setScrollEnabled(true);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+
+                            try {
+                                still_press = false;
+                                holder.hug_anim_layout.setVisibility(View.GONE);
+                                holder.selected_keep_going.setVisibility(View.GONE);
+                                uptime = System.currentTimeMillis();
+                                MainActivity.mMainPager.setPagingEnabled(true);
+
+
+                                v.setY(start_dY);
+                                v.setX(start_dX);
+
+
+                                long diff = uptime - downtime;
+                                if (diff < 500) {
+                                    try {
+                                        if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                            new ToastUtil(mContext, "Please check your internet connection.");
+                                            return false;
+                                        }
+                                        secret = getItem(position);
+                                        if (secret.getHugUsers() != null)
+                                            if (secret.getHugUsers().contains(MainActivity.enc_username)) {
+                                                mDataList.get(position).setHugUsers(mOperations.unHug(secret, holder));
+                                                startTracking(mContext.getString(R.string.analytics_Unhug));
+                                            } else {
+                                                mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, ""));
+                                                startTracking(mContext.getString(R.string.analytics_hug));
+
+
+                                                AnimationUtils.playHugAnim(Constants.ANIM_STATE_HUG, ((MainActivity) mContext));
+                                            }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
-                                    startTracking(mContext.getString(R.string.analytics_me2));
-                                    mDataList.get(position).setMe2Users(mOperations.me2(secret, holder));
+                                    if (selected_position < 10) {
+
+                                        try {
+                                            if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                                new ToastUtil(mContext, "Please check your internet connection.");
+                                                return false;
+                                            }
+                                            secret = getItem(position);
+                                            if (secret.getHugUsers() != null)
+                                                if (secret.getHugUsers().contains(MainActivity.enc_username)) {
+
+                                                    //  mDataList.get(position).setHugUsers(mOperations.hug(secret, holder , hug_short_sentence[selected_position] ));
+                                                    mOperations.addShortSenetense(secret, hug_short_sentence[selected_position], "hug");
+                                                } else {
+                                                    mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, hug_short_sentence[selected_position]));
+                                                    mOperations.addShortSenetense(secret, hug_short_sentence[selected_position], "hug");
+                                                    startTracking(mContext.getString(R.string.analytics_hug));
+
+                                                }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
 
-                                    AnimationUtils.playHugAnim(Constants.ANIM_STATE_ME2, ((MainActivity) mContext));
+                                    }
                                 }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+
+                                is_from_long_tab = false;
+                                mListView.setScrollEnabled(true);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            break;
+
+                        default:
+                            return false;
                     }
-
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                return false;
-            }
-        });
-
-
-
-
-        holder.me2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                is_from_long_tab = false;
+                return true;
 
 
             }
         });
 
 
-        holder.me2.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view)
-            {
-                is_from_long_tab = true;
-
-             //   drawshortsent(holder, "me2");
-                return false;
-            }
-        });
-
-
-        holder.heart.setOnTouchListener(new View.OnTouchListener() {
+        holder.heart_touch_listner.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    holder.short_sentence_layout.setVisibility(View.GONE);
-                    holder.flliper.stopFlipping();
-                    is_from_long_tab = false;
-                    if (is_from_long_tab) {
 
-                    } else {
+                try {
+                    switch (event.getActionMasked()) {
+                        case MotionEvent.ACTION_DOWN:
+                            MainActivity.mMainPager.setPagingEnabled(false);
+                            dX = v.getX() - event.getRawX();
+                            dY = v.getY() - event.getRawY();
+                            start_dX = v.getX();
+                            start_dY = v.getY();
+                            still_press = true;
+                            mListView.setScrollEnabled(false);
+                            selected_position = 100;
+                            holder.selected_hilarious.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (still_press) {
+
+                                        still_press = false;
+                                        holder.heart_anim_layout.setVisibility(View.VISIBLE);
+
+                                        holder.selected_hilarious.setVisibility(View.GONE);
+                                        holder.selected_dont_giveup.setVisibility(View.GONE);
+                                        holder.selected_wow.setVisibility(View.GONE);
+                                        holder.selected_you_inspired_me.setVisibility(View.GONE);
+                                        holder.selected_powerful.setVisibility(View.GONE);
+                                        holder.selected_lamo.setVisibility(View.GONE);
 
 
-                        try {
-                            if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                new ToastUtil(mContext, "Please check your internet connection.");
-                                return false;
-                            }
-                            secret = getItem(position);
-                            if (secret.getHeartUsers() != null)
-                                if (secret.getHeartUsers().contains(MainActivity.enc_username)) {
-                                    mDataList.get(position).setHeartUsers(mOperations.unHeart(secret, holder));
-                                    startTracking(mContext.getString(R.string.analytics_Unlike));
-                                } else {
-                                    mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder));
-                                    startTracking(mContext.getString(R.string.analytics_like));
+                                        holder.hilarious.setVisibility(View.VISIBLE);
+                                        holder.dont_giveup.setVisibility(View.VISIBLE);
+                                        holder.wow.setVisibility(View.VISIBLE);
+                                        holder.you_inspired_me.setVisibility(View.VISIBLE);
+                                        holder.powerful.setVisibility(View.VISIBLE);
+                                        holder.lamo.setVisibility(View.VISIBLE);
 
+                                    }
 
-                                    AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
                                 }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                            }, 300);
+
+
+                            downtime = System.currentTimeMillis();
+
+                            break;
+
+                        case MotionEvent.ACTION_MOVE:
+
+                            v.setY(event.getRawY() + dY);
+                            v.setX(event.getRawX() + dX);
+
+
+                            float y = event.getRawY() + dY;
+                            float x = event.getRawX() + dX;
+                            x_pos_change = x;
+                            y_pos_change = y;
+
+
+                            long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
+                            if (clickDuration >= 500) {
+                                holder.heart_anim_layout.setVisibility(View.VISIBLE);
+
+
+                                holder.selected_hilarious.setVisibility(View.GONE);
+                                holder.selected_you_got_afriend.setVisibility(View.GONE);
+                                holder.selected_dont_giveup.setVisibility(View.GONE);
+                                holder.selected_wow.setVisibility(View.GONE);
+                                holder.selected_you_inspired_me.setVisibility(View.GONE);
+                                holder.selected_powerful.setVisibility(View.GONE);
+                                holder.selected_lamo.setVisibility(View.GONE);
+
+
+                                holder.dont_giveup.setVisibility(View.VISIBLE);
+                                holder.wow.setVisibility(View.VISIBLE);
+                                holder.you_inspired_me.setVisibility(View.VISIBLE);
+                                holder.powerful.setVisibility(View.VISIBLE);
+                                holder.hilarious.setVisibility(View.VISIBLE);
+                                holder.lamo.setVisibility(View.VISIBLE);
+
+                                int width = CommonFunction.getScreenWidth();
+                                if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
+                                    if (x_pos_change > 0 && x_pos_change < width / 12) {
+                                        selected_position = 0;
+                                        holder.selected_hilarious.setVisibility(View.VISIBLE);
+                                        holder.hilarious.setVisibility(View.INVISIBLE);
+                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                        selected_position = 1;
+                                        holder.selected_dont_giveup.setVisibility(View.VISIBLE);
+                                        holder.dont_giveup.setVisibility(View.INVISIBLE);
+
+                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
+                                        selected_position = 2;
+                                        holder.selected_wow.setVisibility(View.VISIBLE);
+                                        holder.wow.setVisibility(View.INVISIBLE);
+
+                                    } else if (x_pos_change > width / 5 && x_pos_change < width / 4) {
+                                        selected_position = 3;
+                                        holder.selected_you_inspired_me.setVisibility(View.VISIBLE);
+                                        holder.you_inspired_me.setVisibility(View.INVISIBLE);
+                                    } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                        selected_position = 4;
+                                        holder.selected_powerful.setVisibility(View.VISIBLE);
+                                        holder.powerful.setVisibility(View.INVISIBLE);
+                                    } else if (x_pos_change > width / 3 && x_pos_change < width / 3 + width / 20) {
+                                        selected_position = 5;
+                                        holder.selected_lamo.setVisibility(View.VISIBLE);
+                                        holder.lamo.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        selected_position = 100;
+                                    }
+                                } else
+                                    selected_position = 100;
+                            }
+                            break;
+                        case MotionEvent.ACTION_POINTER_UP:
+                        case MotionEvent.ACTION_OUTSIDE:
+                        case MotionEvent.ACTION_CANCEL:
+                            selected_position = 100;
+                            still_press = false;
+                            holder.heart_anim_layout.setVisibility(View.GONE);
+                            holder.selected_hilarious.setVisibility(View.GONE);
+
+                            uptime = System.currentTimeMillis();
+                            MainActivity.mMainPager.setPagingEnabled(true);
+                            v.setY(start_dY);
+                            v.setX(start_dX);
+
+                            mListView.setScrollEnabled(true);
+
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+                            uptime = System.currentTimeMillis();
+                            MainActivity.mMainPager.setPagingEnabled(true);
+                            mListView.setScrollEnabled(true);
+                            v.setY(start_dY);
+                            v.setX(start_dX);
+
+                            still_press = false;
+                            holder.heart_anim_layout.setVisibility(View.GONE);
+                            holder.selected_hilarious.setVisibility(View.GONE);
+
+                            long diff = uptime - downtime;
+                            if (diff < 500) {
+
+                                try {
+                                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                        new ToastUtil(mContext, "Please check your internet connection.");
+                                        return false;
+                                    }
+                                    secret = getItem(position);
+                                    if (secret.getHeartUsers() != null)
+                                        if (secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                            mDataList.get(position).setHeartUsers(mOperations.unHeart(secret, holder));
+                                            startTracking(mContext.getString(R.string.analytics_Unlike));
+                                        } else {
+                                            mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder, ""));
+                                            startTracking(mContext.getString(R.string.analytics_like));
+
+
+                                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
+                                        }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+
+                                if (selected_position < 10) {
+
+                                    try {
+                                        if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                            new ToastUtil(mContext, "Please check your internet connection.");
+                                            return false;
+                                        }
+                                        secret = getItem(position);
+                                        if (secret.getHeartUsers() != null)
+                                            if (secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                                mOperations.addShortSenetense(secret, heart_short_sentence[selected_position], "heart");
+                                                //  mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder , heart_short_sentence[selected_position]));
+                                            } else {
+                                                mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder, heart_short_sentence[selected_position]));
+                                                mOperations.addShortSenetense(secret, heart_short_sentence[selected_position], "heart");
+                                                startTracking(mContext.getString(R.string.analytics_like));
+
+
+                                                // AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
+                                            }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+                            }
+
+                            is_from_long_tab = false;
+                            break;
+
+                        default:
+                            return false;
                     }
-
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                return false;
+                return true;
+
+
             }
         });
 
-        holder.heart.setOnClickListener(new View.OnClickListener() {
+
+        holder.me2_touch_listner.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onTouch(View v, MotionEvent event) {
 
-                is_from_long_tab = false;
+                try {
+                    switch (event.getActionMasked()) {
+                        case MotionEvent.ACTION_DOWN:
+                            MainActivity.mMainPager.setPagingEnabled(false);
+                            mListView.setScrollEnabled(false);
+                            dX = v.getX() - event.getRawX();
+                            dY = v.getY() - event.getRawY();
+                            start_dX = v.getX();
+                            start_dY = v.getY();
+                            still_press = true;
+                            selected_position = 100;
+                            downtime = System.currentTimeMillis();
+                            holder.selected_been_there.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (is_from_long_tab || still_press) {
+                                        is_from_long_tab = false;
+                                        still_press = false;
+                                        holder.me2_anim_layout.setVisibility(View.VISIBLE);
+
+                                        holder.selected_been_there.setVisibility(View.GONE);
+                                        holder.selected_fml_short.setVisibility(View.GONE);
+                                        holder.selected_you_are_not_alone.setVisibility(View.GONE);
+
+
+                                        holder.been_there.setVisibility(View.VISIBLE);
+                                        holder.fml_short.setVisibility(View.VISIBLE);
+                                        holder.you_are_not_alone.setVisibility(View.VISIBLE);
+
+
+                                    }
+
+                                }
+                            }, 300);
+                            break;
+
+                        case MotionEvent.ACTION_MOVE:
+
+                            v.setY(event.getRawY() + dY);
+                            v.setX(event.getRawX() + dX);
+
+
+                            float y = event.getRawY() + dY;
+                            float x = event.getRawX() + dX;
+                            x_pos_change = x;
+                            y_pos_change = y;
+
+
+                            long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
+                            if (clickDuration >= 500) {
+                                holder.me2_anim_layout.setVisibility(View.VISIBLE);
+
+
+                                holder.selected_been_there.setVisibility(View.GONE);
+                                holder.selected_fml_short.setVisibility(View.GONE);
+                                holder.selected_you_are_not_alone.setVisibility(View.GONE);
+
+
+                                holder.been_there.setVisibility(View.VISIBLE);
+                                holder.fml_short.setVisibility(View.VISIBLE);
+                                holder.you_are_not_alone.setVisibility(View.VISIBLE);
+
+                                int width = CommonFunction.getScreenWidth();
+                                if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
+                                    if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                        selected_position = 0;
+                                        holder.selected_been_there.setVisibility(View.VISIBLE);
+                                        holder.been_there.setVisibility(View.INVISIBLE);
+
+                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 4) {
+                                        selected_position = 1;
+                                        holder.selected_fml_short.setVisibility(View.VISIBLE);
+                                        holder.fml_short.setVisibility(View.INVISIBLE);
+                                    } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                        selected_position = 2;
+                                        holder.selected_you_are_not_alone.setVisibility(View.VISIBLE);
+                                        holder.you_are_not_alone.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        selected_position = 100;
+                                    }
+                                } else
+                                    selected_position = 100;
+                            }
+                            break;
+                        case MotionEvent.ACTION_POINTER_UP:
+                        case MotionEvent.ACTION_OUTSIDE:
+                        case MotionEvent.ACTION_CANCEL:
+
+                            still_press = false;
+                            holder.me2_anim_layout.setVisibility(View.GONE);
+
+                            selected_position = 100;
+                            uptime = System.currentTimeMillis();
+                            MainActivity.mMainPager.setPagingEnabled(true);
+                            mListView.setScrollEnabled(true);
+                            v.setY(start_dY);
+                            v.setX(start_dX);
+
+                            break;
+                        case MotionEvent.ACTION_UP:
+
+                            still_press = false;
+                            holder.me2_anim_layout.setVisibility(View.GONE);
+
+                            uptime = System.currentTimeMillis();
+                            MainActivity.mMainPager.setPagingEnabled(true);
+                            mListView.setScrollEnabled(true);
+                            v.setY(start_dY);
+                            v.setX(start_dX);
+
+                            long diff = uptime - downtime;
+                            if (diff < 500) {
+
+                                try {
+                                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                        new ToastUtil(mContext, "Please check your internet connection.");
+                                        return false;
+                                    }
+
+                                    secret = getItem(position);
+                                    if (secret.getMe2Users() != null)
+                                        if (secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                            mDataList.get(position).setMe2Users(mOperations.unMe2(secret, holder));
+                                            startTracking(mContext.getString(R.string.analytics_Unme2));
+                                        } else {
+                                            startTracking(mContext.getString(R.string.analytics_me2));
+                                            mDataList.get(position).setMe2Users(mOperations.me2(secret, holder, ""));
+
+
+                                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_ME2, ((MainActivity) mContext));
+                                        }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                if (selected_position < 10) {
+
+                                    try {
+                                        if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                            new ToastUtil(mContext, "Please check your internet connection.");
+                                            return false;
+                                        }
+
+                                        secret = getItem(position);
+                                        if (secret.getMe2Users() != null)
+                                            if (secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                                mOperations.addShortSenetense(secret, me2_short_sentence[selected_position], "me2s");
+                                                // mDataList.get(position).setMe2Users(mOperations.me2(secret, holder , me2_short_sentence[selected_position]));
+
+                                            } else {
+                                                startTracking(mContext.getString(R.string.analytics_me2));
+                                                mDataList.get(position).setMe2Users(mOperations.me2(secret, holder, me2_short_sentence[selected_position]));
+
+                                                mOperations.addShortSenetense(secret, me2_short_sentence[selected_position], "me2s");
+
+
+                                            }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+                            }
+
+                            is_from_long_tab = false;
+                            break;
+
+                        default:
+                            return false;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return true;
 
 
             }
         });
 
-
-        /*holder.heart.setOnLongCdlickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                is_from_long_tab = true;
-
-                drawshortsent(holder, "heart");
-                return false;
-            }
-        });
-*/
 
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1175,8 +1452,7 @@ public class FeedAdapter extends BaseAdapter {
 
 
                 try {
-                    if ((Integer) holder.flag.getTag() == 0)
-                    {
+                    if ((Integer) holder.flag.getTag() == 0) {
 
                         if (findsecretuserDTO != null)
                             findsecretuserDTO = null;
@@ -1214,37 +1490,34 @@ public class FeedAdapter extends BaseAdapter {
 
 
                     String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-                    if (userna == null || userna.equalsIgnoreCase(""))
-                    {
+                    if (userna == null || userna.equalsIgnoreCase("")) {
                         Intent intent = new Intent(mContext, SignUpDialogActivity.class);
                         mContext.startActivity(intent);
-                    }
-                    else
-                    {
-                    secret = getItem(position);
+                    } else {
+                        secret = getItem(position);
 
-                    if (!secret.getCreatedByUser().equals(MainActivity.enc_username) && secret.getFlagUsers() != null && secret.getCreatedByUser() != null) {
-                        if (secret.getFlagUsers().contains(MainActivity.enc_username)) {
-                            final ArrayList<String> flagUsers = secret.getFlagUsers();
-                            flagUsers.remove(MainActivity.enc_username);
-                            mDataList.get(position).setFlagUsers(flagUsers);
-                            holder.flag.setImageResource(R.drawable.ic_flag);
+                        if (!secret.getCreatedByUser().equals(MainActivity.enc_username) && secret.getFlagUsers() != null && secret.getCreatedByUser() != null) {
+                            if (secret.getFlagUsers().contains(MainActivity.enc_username)) {
+                                final ArrayList<String> flagUsers = secret.getFlagUsers();
+                                flagUsers.remove(MainActivity.enc_username);
+                                mDataList.get(position).setFlagUsers(flagUsers);
+                                holder.flag.setImageResource(R.drawable.ic_flag);
 
-                            if (setFlagUnFlagSecretDataDTO != null)
-                                setFlagUnFlagSecretDataDTO = null;
+                                if (setFlagUnFlagSecretDataDTO != null)
+                                    setFlagUnFlagSecretDataDTO = null;
 
-                            setFlagUnFlagSecretDataDTO = new SetFlagUnFlagSecretDataDTO(MainActivity.enc_username, "false", secret.getObjectId());
+                                setFlagUnFlagSecretDataDTO = new SetFlagUnFlagSecretDataDTO(MainActivity.enc_username, "false", secret.getObjectId());
 
-                        } else {
-                            final ArrayList<String> flagUsers = secret.getFlagUsers();
-                            flagUsers.add(MainActivity.enc_username);
-                            mDataList.get(position).setFlagUsers(flagUsers);
-                            holder.flag.setImageResource(R.drawable.ic_flagged);
-                            setFlagUnFlagSecretDataDTO = new SetFlagUnFlagSecretDataDTO(MainActivity.enc_username, "true", secret.getObjectId());
+                            } else {
+                                final ArrayList<String> flagUsers = secret.getFlagUsers();
+                                flagUsers.add(MainActivity.enc_username);
+                                mDataList.get(position).setFlagUsers(flagUsers);
+                                holder.flag.setImageResource(R.drawable.ic_flagged);
+                                setFlagUnFlagSecretDataDTO = new SetFlagUnFlagSecretDataDTO(MainActivity.enc_username, "true", secret.getObjectId());
+                            }
+
+                            new SetFlagUnflagSecret().execute();
                         }
-
-                        new SetFlagUnflagSecret().execute();
-                    }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1278,12 +1551,10 @@ public class FeedAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-                if (userna == null || userna.equalsIgnoreCase(""))
-                {
+                if (userna == null || userna.equalsIgnoreCase("")) {
                     Intent intent = new Intent(mContext, SignUpDialogActivity.class);
                     mContext.startActivity(intent);
-                }
-                else {
+                } else {
                     hideSecretDataDTO = new HideSecretDataDTO(MainActivity.enc_username, mDataList.get(position).getObjectId());
                     new SetHideSecret().execute();
                     mDataList.remove(position);
@@ -1307,12 +1578,10 @@ public class FeedAdapter extends BaseAdapter {
 
 
                 String userna = AppSession.getValue(mContext, Constants.USER_NAME);
-                if (userna == null || userna.equalsIgnoreCase(""))
-                {
+                if (userna == null || userna.equalsIgnoreCase("")) {
                     Intent intent = new Intent(mContext, SignUpDialogActivity.class);
                     mContext.startActivity(intent);
-                }
-                else {
+                } else {
                     runShare = true;
                     secret = getItem(position);
                     boolean check = true;
@@ -1330,6 +1599,13 @@ public class FeedAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
+
 
     private void Alreadyfriend() {
 
@@ -1654,8 +1930,7 @@ public class FeedAdapter extends BaseAdapter {
                         }
 
                         holder.verify.setVisibility(View.INVISIBLE);
-                        Utils.shareDataOfSecret(holder.blurView, mContext, 3f, new MoodActivity.ShareCallback()
-                        {
+                        Utils.shareDataOfSecret(holder.blurView, mContext, 3f, new MoodActivity.ShareCallback() {
                             @Override
                             public void onShare() {
                                 holder.verify.setVisibility(View.VISIBLE);
@@ -1683,6 +1958,16 @@ public class FeedAdapter extends BaseAdapter {
         }).duration(300).playOn(holder.flag);
         holder.flag.setTag(0);
     }
+
+    float dX;
+    float dY;
+    float start_dX;
+    float start_dY;
+    float x_pos_change = 0;
+    float y_pos_change = 0;
+    String point_dx = "";
+    long downtime = 0, uptime = 0;
+
 
     public static class ViewHolder {
         public ImageView root;
@@ -1727,11 +2012,55 @@ public class FeedAdapter extends BaseAdapter {
 
         public TextView mIFriend;
 
-        public ViewFlipper flliper;
+
+        public ImageView selected_hilarious;
+        public ImageView selected_you_inspired_me;
+        public ImageView selected_dont_giveup;
+        public ImageView selected_wow;
+        public ImageView selected_powerful;
+        public ImageView selected_lamo;
 
 
-        public RelativeLayout short_sentence_layout ;
-        public RelativeLayout top_bar ;
+        public ImageView selected_keep_going;
+        public ImageView selected_we_love_you;
+        public ImageView selected_keep_you_headup;
+
+
+        public ImageView selected_you_got_afriend;
+        public ImageView selected_keep_smiling;
+
+        public TextView been_there;
+        public TextView fml_short;
+        public TextView you_are_not_alone;
+
+        public ImageView selected_been_there;
+        public ImageView selected_fml_short;
+        public ImageView selected_you_are_not_alone;
+
+
+        public TextView hilarious;
+        public TextView lamo;
+        public TextView powerful;
+        public TextView you_inspired_me;
+        public TextView wow;
+        public TextView dont_giveup;
+
+
+        public TextView keep_going;
+        public TextView you_got_afriend;
+        public TextView we_love_you;
+        public TextView keep_you_headup;
+        public TextView keep_smiling;
+
+
+        RelativeLayout hug_touch_listner = null;
+        RelativeLayout heart_touch_listner = null;
+        RelativeLayout me2_touch_listner = null;
+        RelativeLayout hug_anim_layout = null;
+        RelativeLayout me2_anim_layout = null;
+        RelativeLayout heart_anim_layout = null;
+
+        public RelativeLayout top_bar;
         // public TextView cancel_short_sentence;
 
     }
@@ -2100,8 +2429,7 @@ public class FeedAdapter extends BaseAdapter {
                 if (result != null && !result.equalsIgnoreCase("true")) {
                     String isverifiedornot = AppSession.getValue(mContext, Constants.USER_VERIFIED);
 
-                    if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true"))
-                    {
+                    if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true")) {
 
                         MainActivity.isIAMVerified = true;
 
@@ -2139,8 +2467,7 @@ public class FeedAdapter extends BaseAdapter {
         protected void onPostExecute(Bitmap image) {
             try {
 
-                if (MainActivity.is_running)
-                {
+                if (MainActivity.is_running) {
                     if (status != null && status.equalsIgnoreCase("flag")) {
                         try {
                             Toast.makeText(mContext, "You are not permitted to comment.", Toast.LENGTH_SHORT).show();
@@ -2165,27 +2492,22 @@ public class FeedAdapter extends BaseAdapter {
                         new ToastUtil(mContext, mContext.getString(R.string.sorry_this_user));
                     }
                 }
-                try
-                {
+                try {
                     ((MainActivity) mContext).stopProgress();
-
 
 
                 } catch (Exception e2) {
                     e2.printStackTrace();
                 }
 
-                try
-                {
+                try {
                     for_delay.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             ((MainActivity) mContext).stopProgress();
                         }
-                    },1000);
-                }
-                catch (Exception e)
-                {
+                    }, 1000);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } catch (Exception e) {
@@ -2218,8 +2540,7 @@ public class FeedAdapter extends BaseAdapter {
                 FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
                 http.Getflagverified(findbynameObjectDTO);
                 String isverifiedornot = AppSession.getValue(mContext, Constants.USER_VERIFIED);
-                if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true"))
-                {
+                if (isverifiedornot != null && isverifiedornot.equalsIgnoreCase("true")) {
                     MainActivity.isIAMVerified = true;
 
                     JSONObject mJsonObjectSub = new JSONObject();
@@ -2260,8 +2581,7 @@ public class FeedAdapter extends BaseAdapter {
                 e.printStackTrace();
             }
 
-            try
-            {
+            try {
                 if (status != null && status.equalsIgnoreCase("user")) {
                     is_click = false;
                     new ToastUtil(mContext,
@@ -2274,9 +2594,7 @@ public class FeedAdapter extends BaseAdapter {
                     new ToastUtil(mContext, mContext.getString(R.string.sorry_this_user));
                 }
 
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
 
             }
         }
@@ -2403,138 +2721,6 @@ public class FeedAdapter extends BaseAdapter {
     }
 
 
-    private void drawshortsent(final ViewHolder holder, String type) {
-        holder.short_sentence_layout.setVisibility(View.VISIBLE);
-        holder.flliper.removeAllViews();
-
-        String[] shortsent = null;
-
-        if (type.equalsIgnoreCase("me2"))
-            shortsent = me2_short_sentence;
-
-        if (type.equalsIgnoreCase("hug"))
-            shortsent = hug_short_sentence;
-
-        if (type.equalsIgnoreCase("heart"))
-            shortsent = heart_short_sentence;
-
-        for (int i = 0; i < shortsent.length; i++) {
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, CommonFunction.getScreenWidth() / 10);
-
-
-            TextView shor_text = new TextView(mContext);
-            shor_text.setLayoutParams(lp);
-            shor_text.setText(shortsent[i]);
-            shor_text.setTextColor(Color.parseColor("#000000"));
-            shor_text.setBackgroundColor(Color.parseColor("#ffffff"));
-            shor_text.setGravity(Gravity.CENTER);
-            holder.flliper.addView(shor_text);
-
-
-        }
-
-
-        holder.flliper.startFlipping();
-        holder.flliper.setFlipInterval(3000);
-        holder.flliper.setAutoStart(true);
-
-        holder.flliper.setInAnimation(inFromRightAnimation());
-        holder.flliper.setOutAnimation(outToLeftAnimation());
-
-
-    }
-
-
-    private Animation inFromRightAnimation() {
-
-        Animation inFromRight = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, +1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f);
-        inFromRight.setDuration(1000);
-        inFromRight.setInterpolator(new AccelerateInterpolator());
-        return inFromRight;
-    }
-
-    private Animation outToLeftAnimation() {
-        Animation outtoLeft = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, -1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f);
-        outtoLeft.setDuration(1000);
-        outtoLeft.setInterpolator(new AccelerateInterpolator());
-        return outtoLeft;
-    }
-
-    private Animation inFromLeftAnimation() {
-        Animation inFromLeft = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, -1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f);
-        inFromLeft.setDuration(1000);
-        inFromLeft.setInterpolator(new AccelerateInterpolator());
-        return inFromLeft;
-    }
-
-    private Animation outToRightAnimation() {
-        Animation outtoRight = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, +1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f);
-        outtoRight.setDuration(1000);
-        outtoRight.setInterpolator(new AccelerateInterpolator());
-        return outtoRight;
-    }
-
-
-/*private void drawshortsent(final ViewHolder holder , String type)
-{
-    holder.short_sentence_layout.setVisibility(View.VISIBLE);
-    holder.sentenct_ayout.removeAllViews();
-
-    String [] shortsent = null;
-
-    if(type.equalsIgnoreCase("me2"))
-        shortsent = me2_short_sentence;
-
-    if(type.equalsIgnoreCase("hug"))
-        shortsent = hug_short_sentence;
-
-    if(type.equalsIgnoreCase("heart"))
-        shortsent = heart_short_sentence;
-
-    for(int i=0; i < shortsent.length; i++)
-    {
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, CommonFunction.getScreenWidth()/10);
-
-
-        TextView shor_text = new TextView(mContext);
-        shor_text.setLayoutParams(lp);
-        shor_text.setText(shortsent[i]);
-        shor_text.setTextColor(Color.parseColor("#000000"));
-        shor_text.setBackgroundColor(Color.parseColor("#ffffff"));
-        shor_text.setGravity(Gravity.CENTER);
-        holder.sentenct_ayout.addView(shor_text);
-
-        shor_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.short_sentence_layout.setVisibility(View.GONE);
-            }
-        });
-
-        lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, CommonFunction.getScreenWidth()/300);
-        TextView line = new TextView(mContext);
-        line.setLayoutParams(lp);
-        line.setBackgroundColor(Color.parseColor("#999999"));
-        holder.sentenct_ayout.addView(line);
-
-    }
-}*/
 }
 
 
