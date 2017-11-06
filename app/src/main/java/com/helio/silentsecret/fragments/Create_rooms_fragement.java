@@ -59,14 +59,12 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class Create_rooms_fragement extends Fragment implements View.OnClickListener {
 
-
     private View mView;
     TextView topic_image_picker, bullet_view = null, add_bullet = null;
     int index_counter = 0;
     RelativeLayout room_title_layout = null;
     LinearLayout layout_format_layout = null, dot_list, number_list, plus_list, topic_desc_linear_format = null, main_bullet_layout = null;
     TextView edt_room_topic_name = null;
-
     ViewPager pic_image, topic_pic_image;
     ScrollView room_topic_layout = null, room_topic_fromat_layout = null;
     int STATE = 0;
@@ -231,13 +229,11 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                 } else {
 
 
-                    if (room_topic != null && !room_topic.equalsIgnoreCase(""))
-                    {
+                    if (room_topic != null && !room_topic.equalsIgnoreCase("")) {
 
                         String banned_word = CommonFunction.checkBannedword(room_topic);
 
-                        if (banned_word == null || banned_word.equalsIgnoreCase(""))
-                        {
+                        if (banned_word == null || banned_word.equalsIgnoreCase("")) {
                             for (int i = 0; i < format_edit_text_list.size(); i++) {
                                 String text = format_edit_text_list.get(i).getText().toString();
                                 if (remove_indexes.size() > 0 && remove_indexes.contains(i)) {
@@ -404,7 +400,8 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                     e.printStackTrace();
                 }
 
-            } else if (STATE == 2) {
+            } else if (STATE == 2)
+            {
                 done_buton.setText("Done");
                 flicker_topic_image = "";
                 room_topic = edt_room_topic.getText().toString().trim();
@@ -432,10 +429,8 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
 
                         String banned_word = CommonFunction.checkBannedword(room_topic);
 
-                        if (banned_word == null || banned_word.equalsIgnoreCase(""))
-                        {
-                            for (int i = 0; i < format_edit_text_list.size(); i++)
-                            {
+                        if (banned_word == null || banned_word.equalsIgnoreCase("")) {
+                            for (int i = 0; i < format_edit_text_list.size(); i++) {
                                 String text = format_edit_text_list.get(i).getText().toString();
                                 if (remove_indexes.size() > 0 && remove_indexes.contains(i)) {
                                     continue;
@@ -453,36 +448,35 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                             }
 
                             String[] data = room_title.split(" ");
-                            String phone = null;
-                            for (String item : data)
-                            {
-                               // if (item.length() > 5)
+
+                            for (String item : data) {
                                 {
-                                    phone = item;
                                     item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
-                                    if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}"))
+                                    if (item.length() > 1)
                                     {
-                                       is_flagged = true;
-                                        KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
-                                        image_title.setVisibility(View.GONE);
-                                        new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                        int unm_len = item.length();
+                                        int numnber = Integer.parseInt(item);
 
-                                        return;
-                                    }
-                                }
-                            }
+                                        String dev_num_str = "1";
+                                        for (int kk = 1; kk < unm_len; kk++) {
+                                            dev_num_str = dev_num_str + "0";
+                                        }
+                                        int dev_num = Integer.parseInt(dev_num_str);
+                                        int remind = numnber % dev_num;
 
+                                        if (remind == 0)
+                                        {
 
-                       data = room_topic.split(" ");
-                             phone = null;
-                            for (String item : data)
-                            {
-                               // if (item.length() > 5)
-                                {
-                                    phone = item;
-                                    item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
-                                    if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}"))
-                                    {
+                                        }
+                                        else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                            is_flagged = true;
+                                            KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
+                                            image_title.setVisibility(View.GONE);
+                                            new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                            return;
+                                        }
+                                    } else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
                                         is_flagged = true;
                                         KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
                                         image_title.setVisibility(View.GONE);
@@ -493,26 +487,123 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                                 }
                             }
 
+                            /*String phone = null;
+                            for (String item : data)
+                            {
+                                // if (item.length() > 5)
+                                {
+                                    phone = item;
+                                    item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                                    if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                        is_flagged = true;
+                                        KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
+                                        image_title.setVisibility(View.GONE);
+                                        new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+                                        return;
+                                    }
+                                }
+                            }*/
+
+                            String[] datawith_has = room_topic.split("#");
+                            for (String item1 : datawith_has)
+                            {
+                                data = item1.split(" ");
+                                for (String item : data) {
+                                    {
+                                        item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                                        if (item.length() > 1) {
+                                            int unm_len = item.length();
+                                            int numnber = Integer.parseInt(item);
+
+                                            String dev_num_str = "1";
+                                            for (int kk = 1; kk < unm_len; kk++) {
+                                                dev_num_str = dev_num_str + "0";
+                                            }
+                                            int dev_num = Integer.parseInt(dev_num_str);
+                                            int remind = numnber % dev_num;
+
+                                            if (remind == 0) {
+
+                                            } else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                                is_flagged = true;
+                                                KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
+                                                image_title.setVisibility(View.GONE);
+                                                new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                                return;
+                                            }
+                                        } else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                            is_flagged = true;
+                                            KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
+                                            image_title.setVisibility(View.GONE);
+                                            new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                            return;
+                                        }
+                                    }
+                                }
+
+                            }
                             new KeywordsChecker(new KeywordCheckerCallback() {
                                 @Override
                                 public void onDone(boolean result, String riskword) {
 
                                     if (!result)
                                     {
-                                        is_flagged = true;
-                                        try {
-                                            uploadToParse();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+                                        String key_name = riskword;
+                                        key_name = key_name.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                                        if (key_name.length() > 0)
+                                        {
+                                            is_flagged = false;
+                                            new KeywordsChecker(new KeywordCheckerCallback() {
+                                                @Override
+                                                public void onDone(boolean result, String riskword) {
+
+                                                    if (!result)
+                                                    {
+                                                        String key_name = riskword;
+                                                        key_name = key_name.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                                                        if (key_name.length() > 0)
+                                                            is_flagged = false;
+                                                        else
+                                                            is_flagged = true;
+                                                    }
+
+
+                                                    try {
+
+                                                        uploadToParse();
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                }
+                                            }).execute(keyWords, room_topic);
                                         }
+                                        else {
+                                            is_flagged = true;
+                                            try {
+                                                uploadToParse();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+
                                     } else {
                                         new KeywordsChecker(new KeywordCheckerCallback() {
                                             @Override
                                             public void onDone(boolean result, String riskword) {
 
                                                 if (!result)
-                                                    is_flagged = true;
+                                                {
+                                                    String key_name = riskword;
+                                                    key_name = key_name.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                                                    if (key_name.length() > 0)
+                                                        is_flagged = false;
+                                                    else
+                                                        is_flagged = true;
+                                                }
 
 
                                                 try {
@@ -540,16 +631,49 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
             } else {
 
 
-                String[] data = room_title.split(" ");
-                String phone = null;
-                for (String item : data)
-                {
+                    String[] data = room_title.split(" ");
+                    for (String item : data) {
+                        {
+                            item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                            if (item.length() > 1) {
+                                int unm_len = item.length();
+                                int numnber = Integer.parseInt(item);
+
+                                String dev_num_str = "1";
+                                for (int kk = 1; kk < unm_len; kk++) {
+                                    dev_num_str = dev_num_str + "0";
+                                }
+                                int dev_num = Integer.parseInt(dev_num_str);
+                                int remind = numnber % dev_num;
+
+                                if (remind == 0) {
+
+                                } else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                    is_flagged = true;
+                                    KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
+                                    image_title.setVisibility(View.GONE);
+                                    new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                    return;
+                                }
+                            } else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                is_flagged = true;
+                                KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
+                                image_title.setVisibility(View.GONE);
+                                new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                return;
+                            }
+                        }
+                    }
+
+                /*String phone = null;
+                for (String item : data) {
                     //if (item.length() > 5)
                     {
                         phone = item;
                         item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
-                        if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}"))
-                        {
+                        if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
                             is_flagged = true;
                             KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
                             image_title.setVisibility(View.GONE);
@@ -558,19 +682,58 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                             return;
                         }
                     }
+                }*/
+
+                String[] datawith_has = room_topic.split("#");
+                for (String item1 : datawith_has)
+                {
+                    data = item1.split(" ");
+                    for (String item : data)
+                    {
+                        {
+                            item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                            if (item.length() > 1)
+                            {
+                                int unm_len = item.length();
+                                int numnber = Integer.parseInt(item);
+
+                                String dev_num_str = "1";
+                                for (int kk = 1; kk < unm_len; kk++) {
+                                    dev_num_str = dev_num_str + "0";
+                                }
+                                int dev_num = Integer.parseInt(dev_num_str);
+                                int remind = numnber % dev_num;
+
+                                if (remind == 0)
+                                {
+
+                                }
+                                else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                    is_flagged = true;
+                                    KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
+                                    image_title.setVisibility(View.GONE);
+                                    new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                    return;
+                                }
+                            } else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                is_flagged = true;
+                                KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
+                                image_title.setVisibility(View.GONE);
+                                new CreateRoomAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                return;
+                            }
+                        }
+                    }
                 }
 
-
-                data = room_topic.split(" ");
-                phone = null;
-                for (String item : data)
-                {
+                /*for (String item : data) {
                     //if (item.length() > 5)
                     {
-                        phone = item;
+
                         item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
-                        if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}"))
-                        {
+                        if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
                             is_flagged = true;
                             KeyboardUtil.hideKeyBoard(edt_room_title, getActivity());
                             image_title.setVisibility(View.GONE);
@@ -579,30 +742,63 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                             return;
                         }
                     }
-                }
+                }*/
 
 
-                new KeywordsChecker(new KeywordCheckerCallback()
-                {
+                new KeywordsChecker(new KeywordCheckerCallback() {
                     @Override
-                    public void onDone(boolean result, String riskword)
-                    {
+                    public void onDone(boolean result, String riskword) {
 
                         if (!result)
                         {
-                            is_flagged = true;
 
 
-                            uploadToParse();
+                            String key_name = riskword;
+                            key_name = key_name.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                            if (key_name.length() > 0) {
+                                is_flagged = false;
+
+                                new KeywordsChecker(new KeywordCheckerCallback() {
+                                    @Override
+                                    public void onDone(boolean result, String riskword) {
+
+                                        if (!result)
+                                        {
+                                            String key_name = riskword;
+                                            key_name = key_name.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                                            if (key_name.length() > 0)
+                                                is_flagged = false;
+                                            else
+                                                is_flagged = true;
+                                        }
+
+                                        uploadToParse();
+
+
+                                    }
+                                }).execute(keyWords, room_topic);
+                            }
+                            else {
+                                is_flagged = true;
+                                uploadToParse();
+                            }
+
 
                         } else {
                             new KeywordsChecker(new KeywordCheckerCallback() {
                                 @Override
-                                public void onDone(boolean result, String riskword)
-                                {
+                                public void onDone(boolean result, String riskword) {
 
                                     if (!result)
-                                        is_flagged = true;
+                                    {
+                                        String key_name = riskword;
+                                        key_name = key_name.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                                        if (key_name.length() > 0)
+                                            is_flagged = false;
+                                        else
+                                            is_flagged = true;
+                                    }
+
                                     uploadToParse();
 
 
@@ -621,10 +817,8 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
     }
 
 
-    private void uploadToParse()
-    {
-        new AsyncTask<Void, Void, Boolean>()
-        {
+    private void uploadToParse() {
+        new AsyncTask<Void, Void, Boolean>() {
 
             @Override
             protected Boolean doInBackground(Void... voids) {
@@ -633,8 +827,7 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
             }
 
             @Override
-            protected void onPostExecute(final Boolean result)
-            {
+            protected void onPostExecute(final Boolean result) {
                 super.onPostExecute(result);
 
                 done_buton.setText("Done");
@@ -647,7 +840,6 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
-
 
 
     private void ShowFormateLayout() {
@@ -833,7 +1025,7 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                 mJsonObjectSub.put("cltopicimage01", flicker_topic_image);
                 mJsonObjectSub.put("join_users", join_se);
 
-                mJsonObjectSub.put("is_flagged", ""+is_flagged);
+                mJsonObjectSub.put("is_flagged", "" + is_flagged);
 
                 mJsonObjectSub.put("clun01", MainActivity.enc_username);
                 mJsonObjectSub.put("user_firstname", "");
@@ -908,9 +1100,9 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
     private static final String COLUMN_PHOTO = "images";
     private static final long CACHE_SIZE_IN_MB = 10 * 1024 * 1024;
     private static String CACHE_PATH = "";
-    private List<PhotoModel> search() throws IOException, JSONException
-    {
-        String url = "https://api.gettyimages.com/v3/search/images?phrase="+search_string;
+
+    private List<PhotoModel> search() throws IOException, JSONException {
+        String url = "https://api.gettyimages.com/v3/search/images?phrase=" + search_string;
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("api-key", API_KEY)
@@ -958,11 +1150,11 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
             try {
 
 
-             //   String reply_text_local = "";
-                if(search_string.contains(" "))
+                //   String reply_text_local = "";
+                if (search_string.contains(" "))
                     search_string = search_string.replace(" ", "%20");
 
-              //  Models = search();
+                //  Models = search();
                 Models = CommonFunction.search(search_string, page, getActivity());
 
             } catch (Exception e) {
@@ -976,8 +1168,7 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
             super.onPostExecute(bitmap);
             progress_bar.setVisibility(View.GONE);
 
-            if (page == 1)
-            {
+            if (page == 1) {
                /* if (Models != null && Models.size() > 1)
                 {
                     Models.remove(0);
@@ -998,8 +1189,7 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                 room_title_layout.setVisibility(View.GONE);
 
 
-                if (page == 1)
-                {
+                if (page == 1) {
                     PhotoModels.clear();
                     PhotoModels.addAll(Models);
                     showViewPager();
@@ -1035,9 +1225,9 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
         protected Bitmap doInBackground(String... args) {
             try {
 
-                if(search_string.contains(" "))
+                if (search_string.contains(" "))
                     search_string = search_string.replace(" ", "%20");
-               // Models =search();
+                // Models =search();
                 Models = CommonFunction.search(search_string, page, getActivity());
 
             } catch (Exception e) {
@@ -1052,8 +1242,7 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
             progress_bar.setVisibility(View.GONE);
 
 
-            if (Models != null && Models.size() > 0)
-            {
+            if (Models != null && Models.size() > 0) {
 
                 image_title.setVisibility(View.VISIBLE);
                 image_title.setText("Select topic image");
@@ -1062,8 +1251,7 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
                 create_room_back.setVisibility(View.VISIBLE);
 
 
-                if (page == 1)
-                {
+                if (page == 1) {
                     PhotoModels.clear();
                     PhotoModels.addAll(Models);
                     showTopicViewPager();
@@ -1101,8 +1289,7 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
 
                     flicker_image = PhotoModels.get(position).getImageUrl();
 
-                    if (position == PhotoModels.size() - 1)
-                    {
+                    if (position == PhotoModels.size() - 1) {
                         int pagesize = PhotoModels.size() / 30;
                         if (pagesize == page) {
                             page++;
@@ -1228,7 +1415,7 @@ public class Create_rooms_fragement extends Fragment implements View.OnClickList
         mainlayout.addView(dot);
         format_textv_list.add(dot);
 
-        lp = new LinearLayout.LayoutParams(width / 2 + width /4 -width /100, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp = new LinearLayout.LayoutParams(width / 2 + width / 4 - width / 100, LinearLayout.LayoutParams.WRAP_CONTENT);
         EditText topic_desc = new EditText(getActivity());
 
 

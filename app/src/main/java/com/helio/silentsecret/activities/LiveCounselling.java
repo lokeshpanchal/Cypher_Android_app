@@ -1230,10 +1230,26 @@ public class LiveCounselling extends SinchBaseActivity implements SinchService.S
 
                                 MainActivity.is_booking = false;
 
-                                if (is_User_Came == false && is_counselor_Came == false) {
+                                if (is_User_Came == false && is_counselor_Came == false)
+                                {
                                     appointmentAutoCancelDTO = new AppointmentAutoCancelDTO(appointmentid, MainActivity.enc_username);
                                     new CancelAppointmentWithoutSession().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                                } else {
+                                }
+
+                                else if(is_User_Came == false)
+                                {
+                                    appointmentAutoCancelDTO = new AppointmentAutoCancelDTO(appointmentid, MainActivity.enc_username);
+                                    new CancelAppointmentWithoutSession().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                }
+                                else if (is_User_Came == true && is_counselor_Came == false)
+                                {
+                                    appointmentAutoCancelDTO = new AppointmentAutoCancelDTO(appointmentid, MainActivity.enc_username);
+                                    new DeniedAppinment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                }
+                                else
+                                {
                                     appointmentCompleteDTO = new AppointmentCompleteDTO(appointmentid, MainActivity.enc_username);
                                     new CompleteAppointment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 }

@@ -47,6 +47,9 @@ public class TrendingFragment extends Fragment implements UpdateCallback {
     private List<String> me2Users = new ArrayList<>();
 
 
+
+
+boolean is_scroll_done = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_feed, null);
@@ -66,6 +69,46 @@ public class TrendingFragment extends Fragment implements UpdateCallback {
             }
         });
 
+        mListView.setScrollEnabled(true);
+
+
+        /*mListView.post(new Runnable() {
+            @Override
+            public void run() {
+                new CountDownTimer(totalScrollTime, scrollPeriod )
+                {
+                    public void onTick(long millisUntilFinished)
+                    {
+                        int scroll = mListView.getScrollY();
+
+
+                        if(scroll == 0)
+                        {
+                            mListView.scrollBy(0, heightToScroll);
+                            *//*if(is_scroll_done)
+                            {
+                                if (!ConnectionDetector.checkInternetConnection(getActivity()))
+                                {
+                                    mSwipeRefreshLayout.setRefreshing(false);
+                                    return;
+                                }
+                                SKIP = 0;
+                                mSwipeRefreshLayout.setRefreshing(true);
+                                new FindSecret().execute();
+                            }
+                            is_scroll_done = true;*//*
+                        }
+
+
+                    }
+
+                    public void onFinish() {
+                        //you can add code for restarting timer here
+                    }
+                }.start();
+            }
+        });
+*/
 
         mDataList = new ArrayList<>();
         adapter = new FeedAdapter(LayoutInflater.from(getActivity()), mDataList, getString(R.string.trending_overlay_text), getString(R.string.trending_last_item_text), getActivity() ,mListView);

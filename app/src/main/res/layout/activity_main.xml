@@ -103,14 +103,26 @@
                 android:background="@drawable/recieved_border"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
+
                 android:paddingRight="10dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
 
                     android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:id="@+id/trending_text"
+                        android:textSize="7sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:text="Trending" />
 
                     <TextView
                         android:id="@+id/trending_tab"
@@ -127,6 +139,8 @@
 
                         android:background="@drawable/blue_circle"
                         android:visibility="invisible" />
+
+
                 </LinearLayout>
 
 
@@ -136,7 +150,15 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/home_icon_margin"
                     android:orientation="vertical">
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="7sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:id="@+id/happy_text"
+                        android:text="Happy" />
                     <TextView
                         android:id="@+id/happy_tab"
                         android:layout_width="@dimen/home_top_bar_icon"
@@ -159,7 +181,15 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/home_icon_margin"
                     android:orientation="vertical">
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="7sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:id="@+id/see_all_text"
+                        android:text="See all" />
                     <TextView
                         android:id="@+id/seeall_tab"
                         android:layout_width="@dimen/home_top_bar_icon"
@@ -184,6 +214,16 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/home_icon_margin"
                     android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="7sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:id="@+id/glimpse_text"
+                        android:text="Glimpse" />
 
                     <TextView
                         android:id="@+id/glimpse_tab"
@@ -238,10 +278,10 @@
                 android:background="@drawable/recieved_border"
                 android:clickable="true"
                 android:orientation="horizontal"
+                android:paddingBottom="2dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:paddingTop="2dp"
-                android:paddingBottom="2dp"
                 android:visibility="gone">
 
                 <LinearLayout
@@ -261,11 +301,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/top_bar"
-                        android:textStyle="bold"
                         android:layout_gravity="center"
+                        android:text="See all"
+                        android:textColor="@color/top_bar"
                         android:textSize="11sp"
-                        android:text="See all"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -283,14 +323,15 @@
                         android:layout_height="@dimen/home_top_bar_icon"
                         android:background="@drawable/light_icon"
                         android:gravity="center" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/top_bar"
-                        android:textStyle="bold"
                         android:layout_gravity="center"
+                        android:text="Light"
+                        android:textColor="@color/top_bar"
                         android:textSize="11sp"
-                        android:text="Light"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -311,11 +352,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/top_bar"
-                        android:textStyle="bold"
                         android:layout_gravity="center"
+                        android:text="Tense"
+                        android:textColor="@color/top_bar"
                         android:textSize="11sp"
-                        android:text="Tense"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
 
@@ -336,11 +377,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/top_bar"
                         android:layout_gravity="center"
-                        android:textStyle="bold"
+                        android:text="Deep"
+                        android:textColor="@color/top_bar"
                         android:textSize="11sp"
-                        android:text="Deep"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -454,14 +495,43 @@
                     android:alpha=".7"
                     android:src="@drawable/ic_plus2" />
 
-                <ImageView
+                <RelativeLayout
                     android:id="@+id/notification_button"
                     android:layout_width="@dimen/home_page_bottom_button_height"
                     android:layout_height="@dimen/home_page_bottom_button_height"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="@dimen/home_page_button_margin"
-                    android:alpha=".7"
-                    android:src="@drawable/notification_icon1" />
+                    android:alpha=".7">
+
+                    <ImageView
+
+                        android:layout_width="@dimen/home_page_bottom_button_height"
+                        android:layout_height="@dimen/home_page_bottom_button_height"
+                        android:src="@drawable/white_circle" />
+
+
+                    <ImageView
+
+                        android:layout_width="@dimen/home_page_bottom_button_height"
+                        android:layout_height="@dimen/home_page_bottom_button_height"
+                        android:padding="10dp"
+                        android:src="@drawable/ifriend_notification" />
+
+
+                    <TextView
+                        android:id="@+id/chat_count"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginRight="-10dp"
+                        android:background="@drawable/chat_count"
+                        android:gravity="center"
+                        android:text="200"
+
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
             </LinearLayout>
 
 
@@ -1060,8 +1130,6 @@
     </RelativeLayout>
 
 
-
-
     <!--<RelativeLayout
         android:id="@+id/search_layout"
         android:layout_width="match_parent"
@@ -1326,8 +1394,6 @@
     </RelativeLayout>
 
 
-
-
     <RelativeLayout
         android:id="@+id/landing_page"
         android:layout_width="match_parent"
@@ -1345,7 +1411,6 @@
             android:handle="@+id/skip1"
             android:orientation="vertical"
             android:rotation="180">
-
 
 
             <RelativeLayout
@@ -1396,18 +1461,18 @@
 
 
             <RelativeLayout
+                android:id="@+id/skip1"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:rotation="180"
-                android:id="@+id/skip1"
-                android:background="@drawable/bottom_bg">
+                android:background="@drawable/bottom_bg"
+                android:rotation="180">
 
                 <ImageView
                     android:id="@+id/skip"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:rotation="180"
                     android:layout_centerHorizontal="true"
+                    android:rotation="180"
                     android:src="@drawable/landing_bottom_arrow" />
 
             </RelativeLayout>
@@ -1470,9 +1535,9 @@
                         android:gravity="top"
                         android:hint="Enter code here"
                         android:inputType="numberDecimal"
-                        android:textColorHint="@color/buller_color"
                         android:padding="10dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textColorHint="@color/buller_color" />
 
 
                     <TextView
@@ -1493,12 +1558,12 @@
         </LinearLayout>
     </RelativeLayout>
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:visibility="gone"
-    android:id="@+id/location_detecter">
+    <RelativeLayout
+        android:id="@+id/location_detecter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-</RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

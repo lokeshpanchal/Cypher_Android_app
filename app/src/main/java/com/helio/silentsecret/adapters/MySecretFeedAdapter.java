@@ -63,7 +63,6 @@ import com.helio.silentsecret.models.IfriendSendRequesttDTO;
 import com.helio.silentsecret.models.IfriendSendRequesttDataDTO;
 import com.helio.silentsecret.models.Secret;
 import com.helio.silentsecret.social.MysecretSocialOperations;
-import com.helio.silentsecret.utils.AnimationUtils;
 import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
@@ -319,7 +318,7 @@ ScrollDisabledListView mListView = null;
             holder.hug_anim_layout = (RelativeLayout) convertView.findViewById(R.id.hug_anim_layout);
             holder.heart_anim_layout = (RelativeLayout) convertView.findViewById(R.id.heart_anim_layout);
             holder.me2_anim_layout = (RelativeLayout) convertView.findViewById(R.id.me2_anim_layout);
-
+            holder.selected_heart = (ImageView) convertView.findViewById(R.id.selected_heart);
 
             holder.selected_hilarious = (ImageView) convertView.findViewById(R.id.selected_hilarious);
             holder.selected_wow = (ImageView) convertView.findViewById(R.id.selected_wow);
@@ -328,12 +327,12 @@ ScrollDisabledListView mListView = null;
             holder.selected_powerful = (ImageView) convertView.findViewById(R.id.selected_powerful);
             holder.selected_lamo = (ImageView) convertView.findViewById(R.id.selected_lamo);
 
-
+            holder.selected_me2 = (ImageView) convertView.findViewById(R.id.selected_me2);
             holder.selected_been_there = (ImageView) convertView.findViewById(R.id.selected_been_there);
             holder.selected_fml_short = (ImageView) convertView.findViewById(R.id.selected_fml_short);
             holder.selected_you_are_not_alone = (ImageView) convertView.findViewById(R.id.selected_you_are_not_alone);
 
-
+            holder.selected_hug = (ImageView) convertView.findViewById(R.id.selected_hug);
             holder.selected_keep_going = (ImageView) convertView.findViewById(R.id.selected_keep_going);
             holder.selected_you_got_afriend = (ImageView) convertView.findViewById(R.id.selected_you_got_afriend);
             holder.selected_keep_smiling = (ImageView) convertView.findViewById(R.id.selected_keep_smiling);
@@ -342,10 +341,16 @@ ScrollDisabledListView mListView = null;
 
             holder.been_there = (TextView) convertView.findViewById(R.id.been_there);
             holder.fml_short = (TextView) convertView.findViewById(R.id.fml_short);
+            holder.ic_me2 = (TextView) convertView.findViewById(R.id.ic_me2);
             holder.you_are_not_alone = (TextView) convertView.findViewById(R.id.you_are_not_alone);
 
 
+            holder.ic_hug = (TextView) convertView.findViewById(R.id.ic_hug);
+
+
+
             holder.hilarious = (TextView) convertView.findViewById(R.id.hilarious);
+            holder.ic_heart = (TextView) convertView.findViewById(R.id.ic_heart);
             holder.lamo = (TextView) convertView.findViewById(R.id.lamo);
             holder.powerful = (TextView) convertView.findViewById(R.id.powerful);
             holder.you_inspired_me = (TextView) convertView.findViewById(R.id.you_inspired_me);
@@ -803,11 +808,12 @@ ScrollDisabledListView mListView = null;
             public boolean onTouch(View v, MotionEvent event) {
 
                 try {
+                    secret = getItem(position);
                     switch (event.getActionMasked()) {
                         case MotionEvent.ACTION_DOWN:
                             MainActivity.mMainPager.setPagingEnabled(false);
                             mListView.setScrollEnabled(false);
-
+                            setscroll();
                             dX = v.getX() - event.getRawX();
                             dY = v.getY() - event.getRawY();
                             still_press = true;
@@ -821,7 +827,7 @@ ScrollDisabledListView mListView = null;
                                         is_from_long_tab = false;
                                         still_press = false;
                                         holder.hug_anim_layout.setVisibility(View.VISIBLE);
-
+                                        holder.selected_hug.setVisibility(View.GONE);
                                         holder.selected_keep_going.setVisibility(View.GONE);
                                         holder.selected_you_got_afriend.setVisibility(View.GONE);
                                         holder.selected_keep_smiling.setVisibility(View.GONE);
@@ -834,11 +840,23 @@ ScrollDisabledListView mListView = null;
                                         holder.we_love_you.setVisibility(View.VISIBLE);
                                         holder.keep_you_headup.setVisibility(View.VISIBLE);
                                         holder.keep_smiling.setVisibility(View.VISIBLE);
+                                        holder.ic_hug.setVisibility(View.VISIBLE);
 
+                                        if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username))
+                                        {
+                                            holder.ic_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                            holder.selected_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                        } else {
+                                            //  holder.ic_hug.setBackgroundResource(R.drawable.ic_hug);
+                                            //  holder.selected_hug.setBackgroundResource(R.drawable.ic_hug);
+
+                                            holder.ic_hug.setVisibility(View.GONE);
+                                            holder.selected_hug.setVisibility(View.GONE);
+                                        }
                                     }
 
                                 }
-                            }, 300);
+                            }, 1);
 
 
                             downtime = Calendar.getInstance().getTimeInMillis();
@@ -856,8 +874,7 @@ ScrollDisabledListView mListView = null;
                             point_dx = point_dx + " x : " + x_pos_change + " y : " + y_pos_change;
 
                             long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
-
-                            if (clickDuration >= 500)
+                            if (clickDuration >= 150)
                             {
                                 holder.hug_anim_layout.setVisibility(View.VISIBLE);
 
@@ -866,42 +883,73 @@ ScrollDisabledListView mListView = null;
                                 holder.selected_we_love_you.setVisibility(View.GONE);
                                 holder.selected_keep_you_headup.setVisibility(View.GONE);
                                 holder.selected_keep_going.setVisibility(View.GONE);
+                                holder.selected_hug.setVisibility(View.GONE);
+
                                 holder.you_got_afriend.setVisibility(View.VISIBLE);
                                 holder.we_love_you.setVisibility(View.VISIBLE);
                                 holder.keep_you_headup.setVisibility(View.VISIBLE);
                                 holder.keep_smiling.setVisibility(View.VISIBLE);
                                 holder.keep_going.setVisibility(View.VISIBLE);
+                                holder.ic_hug.setVisibility(View.VISIBLE);
+
+                                if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username))
+                                {
+                                    holder.ic_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                    holder.selected_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                } else {
+                                    //  holder.ic_hug.setBackgroundResource(R.drawable.ic_hug);
+                                    //  holder.selected_hug.setBackgroundResource(R.drawable.ic_hug);
+
+                                    holder.ic_hug.setVisibility(View.GONE);
+                                    holder.selected_hug.setVisibility(View.GONE);
+                                }
 
                                 int width = CommonFunction.getScreenWidth();
-
                                 if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
-                                    if (x_pos_change > 0 && x_pos_change < width / 12) {
+                                    if (x_pos_change < 0 && x_pos_change > -width / 20) {
+                                        if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username))
+                                        {
+                                            holder.ic_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                            holder.selected_hug.setBackgroundResource(R.drawable.ic_not_hug);
+
+
+                                            selected_position = 5;
+                                            holder.selected_hug.setVisibility(View.VISIBLE);
+                                            holder.ic_hug.setVisibility(View.INVISIBLE);
+
+                                        } else {
+                                            //  holder.ic_hug.setBackgroundResource(R.drawable.ic_hug);
+                                            //  holder.selected_hug.setBackgroundResource(R.drawable.ic_hug);
+                                            selected_position = 100;
+                                            holder.ic_hug.setVisibility(View.GONE);
+                                            holder.selected_hug.setVisibility(View.GONE);
+                                        }
+                                    } else if (x_pos_change > -width / 20 && x_pos_change < width / 30) {
                                         selected_position = 0;
                                         holder.selected_keep_going.setVisibility(View.VISIBLE);
                                         holder.keep_going.setVisibility(View.INVISIBLE);
-                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                    } else if (x_pos_change > width / 30 && x_pos_change < width / 12) {
                                         selected_position = 1;
                                         holder.selected_you_got_afriend.setVisibility(View.VISIBLE);
                                         holder.you_got_afriend.setVisibility(View.INVISIBLE);
 
-                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
+                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
                                         selected_position = 2;
                                         holder.selected_we_love_you.setVisibility(View.VISIBLE);
                                         holder.we_love_you.setVisibility(View.INVISIBLE);
 
-                                    } else if (x_pos_change > width / 5 && x_pos_change < width / 4) {
+                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
                                         selected_position = 3;
                                         holder.selected_keep_you_headup.setVisibility(View.VISIBLE);
                                         holder.keep_you_headup.setVisibility(View.INVISIBLE);
-                                    } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                    } else if (x_pos_change > width / 5 && x_pos_change < width / 3) {
                                         selected_position = 4;
                                         holder.selected_keep_smiling.setVisibility(View.VISIBLE);
                                         holder.keep_smiling.setVisibility(View.INVISIBLE);
                                     } else {
                                         selected_position = 100;
                                     }
-                                }
-                                else
+                                } else
                                     selected_position = 100;
                             }
 
@@ -914,6 +962,7 @@ ScrollDisabledListView mListView = null;
                             still_press = false;
                             holder.hug_anim_layout.setVisibility(View.GONE);
                             holder.selected_keep_going.setVisibility(View.GONE);
+                            holder.selected_hug.setVisibility(View.GONE);
                             selected_position = 100;
                             uptime = System.currentTimeMillis();
                             MainActivity.mMainPager.setPagingEnabled(true);
@@ -929,60 +978,58 @@ ScrollDisabledListView mListView = null;
                             still_press = false;
                             holder.hug_anim_layout.setVisibility(View.GONE);
                             holder.selected_keep_going.setVisibility(View.GONE);
+                            holder.selected_hug.setVisibility(View.GONE);
                             uptime = System.currentTimeMillis();
                             MainActivity.mMainPager.setPagingEnabled(true);
                             mListView.setScrollEnabled(true);
                             v.setY(start_dY);
                             v.setX(start_dX);
 
-
                             long diff = uptime - downtime;
-                            if (diff < 500) {
-                                try {
-                                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                        new ToastUtil(mContext, "Please check your internet connection.");
-                                        return false;
-                                    }
-                                    secret = getItem(position);
-                                    if (secret.getHugUsers() != null)
-                                        if (secret.getHugUsers().contains(MainActivity.enc_username)) {
-                                            mDataList.get(position).setHugUsers(mOperations.unHug(secret, holder));
-                                            startTracking(mContext.getString(R.string.analytics_Unhug));
-                                        } else {
-                                            mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, ""));
-                                            startTracking(mContext.getString(R.string.analytics_hug));
+                            if (diff > 150)
+                            {
+                                if (selected_position < 10)
+                                {
 
-
-                                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_HUG, ((MainActivity) mContext));
-                                        }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                if (selected_position < 10) {
                                     try {
                                         if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                            new ToastUtil(mContext, "Please check your internet connection.");
+                                            new ToastUtil(mContext, Constants.NETWORK_FAILER);
                                             return false;
                                         }
-                                        secret = getItem(position);
-                                        if (secret.getHugUsers() != null)
-                                            if (secret.getHugUsers().contains(MainActivity.enc_username)) {
-                                                mOperations.addShortSenetense(secret , hug_short_sentence[selected_position],"hug" );
-
+                                        if (selected_position == 5)
+                                        {
+                                            if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username))
+                                            {
+                                                mDataList.get(position).setHugUsers(mOperations.unHug(secret, holder));
+                                                startTracking(mContext.getString(R.string.analytics_Unhug));
                                             } else {
-                                                mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, hug_short_sentence[selected_position]));
+                                                mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, ""));
                                                 startTracking(mContext.getString(R.string.analytics_hug));
-                                                mOperations.addShortSenetense(secret , hug_short_sentence[selected_position],"hug" );
 
+
+                                              //  AnimationUtils.playHugAnim(Constants.ANIM_STATE_HUG, ((MainActivity) mContext));
                                             }
+                                        } else if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username)) {
+
+                                            //  mDataList.get(position).setHugUsers(mOperations.hug(secret, holder , hug_short_sentence[selected_position] ));
+                                            mOperations.addShortSenetense(secret, hug_short_sentence[selected_position], "hug");
+                                        } else {
+                                            mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, hug_short_sentence[selected_position]));
+                                            mOperations.addShortSenetense(secret, hug_short_sentence[selected_position], "hug");
+                                            startTracking(mContext.getString(R.string.analytics_hug));
+
+                                        }
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
+
                                 }
                             }
 
                             is_from_long_tab = false;
+
+
+
                             break;
 
                         default:
@@ -1003,10 +1050,12 @@ ScrollDisabledListView mListView = null;
             public boolean onTouch(View v, MotionEvent event) {
 
                 try {
+                    secret = getItem(position);
                     switch (event.getActionMasked()) {
                         case MotionEvent.ACTION_DOWN:
                             MainActivity.mMainPager.setPagingEnabled(false);
                             mListView.setScrollEnabled(false);
+                            setscroll();
                             dX = v.getX() - event.getRawX();
                             dY = v.getY() - event.getRawY();
                             start_dX = v.getX();
@@ -1016,11 +1065,12 @@ ScrollDisabledListView mListView = null;
                             holder.selected_hilarious.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (still_press) {
+                                    if (still_press)
+                                    {
 
                                         still_press = false;
                                         holder.heart_anim_layout.setVisibility(View.VISIBLE);
-
+                                        holder.selected_heart.setVisibility(View.GONE);
                                         holder.selected_hilarious.setVisibility(View.GONE);
                                         holder.selected_dont_giveup.setVisibility(View.GONE);
                                         holder.selected_wow.setVisibility(View.GONE);
@@ -1028,7 +1078,7 @@ ScrollDisabledListView mListView = null;
                                         holder.selected_powerful.setVisibility(View.GONE);
                                         holder.selected_lamo.setVisibility(View.GONE);
 
-
+                                        holder.ic_heart.setVisibility(View.VISIBLE);
                                         holder.hilarious.setVisibility(View.VISIBLE);
                                         holder.dont_giveup.setVisibility(View.VISIBLE);
                                         holder.wow.setVisibility(View.VISIBLE);
@@ -1036,10 +1086,21 @@ ScrollDisabledListView mListView = null;
                                         holder.powerful.setVisibility(View.VISIBLE);
                                         holder.lamo.setVisibility(View.VISIBLE);
 
+                                        if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                            holder.ic_heart.setBackgroundResource(R.drawable.ic_heart);
+                                            holder.selected_heart.setBackgroundResource(R.drawable.ic_heart);
+                                        } else {
+                                            //   holder.ic_heart.setBackgroundResource(R.drawable.ic_hearted);
+                                            // holder.selected_heart.setBackgroundResource(R.drawable.ic_hearted);
+
+                                            holder.ic_heart.setVisibility(View.GONE);
+                                            holder.selected_heart.setVisibility(View.GONE);
+                                        }
+
                                     }
 
                                 }
-                            }, 300);
+                            }, 1);
 
 
                             downtime = System.currentTimeMillis();
@@ -1059,11 +1120,13 @@ ScrollDisabledListView mListView = null;
 
 
                             long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
-                            if (clickDuration >= 500) {
+                            if (clickDuration >= 150)
+                            {
                                 holder.heart_anim_layout.setVisibility(View.VISIBLE);
 
 
                                 holder.selected_hilarious.setVisibility(View.GONE);
+                                holder.selected_heart.setVisibility(View.GONE);
                                 holder.selected_you_got_afriend.setVisibility(View.GONE);
                                 holder.selected_dont_giveup.setVisibility(View.GONE);
                                 holder.selected_wow.setVisibility(View.GONE);
@@ -1077,29 +1140,62 @@ ScrollDisabledListView mListView = null;
                                 holder.you_inspired_me.setVisibility(View.VISIBLE);
                                 holder.powerful.setVisibility(View.VISIBLE);
                                 holder.hilarious.setVisibility(View.VISIBLE);
+                                holder.ic_heart.setVisibility(View.VISIBLE);
                                 holder.lamo.setVisibility(View.VISIBLE);
 
+
+                                if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                    holder.ic_heart.setBackgroundResource(R.drawable.ic_heart);
+                                    holder.selected_heart.setBackgroundResource(R.drawable.ic_heart);
+                                } else {
+                                    //   holder.ic_heart.setBackgroundResource(R.drawable.ic_hearted);
+                                    // holder.selected_heart.setBackgroundResource(R.drawable.ic_hearted);
+
+                                    holder.ic_heart.setVisibility(View.GONE);
+                                    holder.selected_heart.setVisibility(View.GONE);
+                                }
+
                                 int width = CommonFunction.getScreenWidth();
-                                if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
-                                    if (x_pos_change > 0 && x_pos_change < width / 12) {
+                                if (y_pos_change < width / 2 && y_pos_change > -width / 2)
+                                {
+
+                                    if (x_pos_change < 0 && x_pos_change > -width / 20) {
+                                        if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                            holder.ic_heart.setBackgroundResource(R.drawable.ic_heart);
+                                            holder.selected_heart.setBackgroundResource(R.drawable.ic_heart);
+
+                                            selected_position = 6;
+                                            holder.selected_heart.setVisibility(View.VISIBLE);
+                                            holder.ic_heart.setVisibility(View.INVISIBLE);
+
+                                        } else {
+
+                                            selected_position = 100;
+                                            //   holder.ic_heart.setBackgroundResource(R.drawable.ic_hearted);
+                                            // holder.selected_heart.setBackgroundResource(R.drawable.ic_hearted);
+
+                                            holder.ic_heart.setVisibility(View.GONE);
+                                            holder.selected_heart.setVisibility(View.GONE);
+                                        }
+                                    } else if (x_pos_change > -width / 20 && x_pos_change < width / 30) {
                                         selected_position = 0;
                                         holder.selected_hilarious.setVisibility(View.VISIBLE);
                                         holder.hilarious.setVisibility(View.INVISIBLE);
-                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                    } else if (x_pos_change > width / 30 && x_pos_change < width / 12) {
                                         selected_position = 1;
                                         holder.selected_dont_giveup.setVisibility(View.VISIBLE);
                                         holder.dont_giveup.setVisibility(View.INVISIBLE);
 
-                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
+                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
                                         selected_position = 2;
                                         holder.selected_wow.setVisibility(View.VISIBLE);
                                         holder.wow.setVisibility(View.INVISIBLE);
 
-                                    } else if (x_pos_change > width / 5 && x_pos_change < width / 4) {
+                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
                                         selected_position = 3;
                                         holder.selected_you_inspired_me.setVisibility(View.VISIBLE);
                                         holder.you_inspired_me.setVisibility(View.INVISIBLE);
-                                    } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                    } else if (x_pos_change > width / 5 && x_pos_change < width / 3) {
                                         selected_position = 4;
                                         holder.selected_powerful.setVisibility(View.VISIBLE);
                                         holder.powerful.setVisibility(View.INVISIBLE);
@@ -1110,9 +1206,9 @@ ScrollDisabledListView mListView = null;
                                     } else {
                                         selected_position = 100;
                                     }
-                                }
-                                else
+                                } else
                                     selected_position = 100;
+
 
                             }
                             break;
@@ -1142,7 +1238,43 @@ ScrollDisabledListView mListView = null;
                             holder.heart_anim_layout.setVisibility(View.GONE);
                             holder.selected_hilarious.setVisibility(View.GONE);
                             mListView.setScrollEnabled(true);
+
                             long diff = uptime - downtime;
+                            if (diff > 150)
+                            {
+                                if (selected_position < 10) {
+                                    try {
+                                        if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                            new ToastUtil(mContext, Constants.NETWORK_FAILER);
+                                            return false;
+                                        }
+                                        if (selected_position == 6) {
+                                            if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                                mDataList.get(position).setHeartUsers(mOperations.unHeart(secret, holder));
+                                                startTracking(mContext.getString(R.string.analytics_Unlike));
+                                            } else {
+                                                mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder, ""));
+                                                startTracking(mContext.getString(R.string.analytics_like));
+                                              //  AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
+                                            }
+                                        } else if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                            mOperations.addShortSenetense(secret, heart_short_sentence[selected_position], "heart");
+                                            //  mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder , heart_short_sentence[selected_position]));
+                                        } else {
+                                            mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder, heart_short_sentence[selected_position]));
+                                            mOperations.addShortSenetense(secret, heart_short_sentence[selected_position], "heart");
+                                            startTracking(mContext.getString(R.string.analytics_like));
+                                            // AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+                            }
+
+                           /* long diff = uptime - downtime;
                             if (diff < 500) {
 
                                 try {
@@ -1191,7 +1323,7 @@ ScrollDisabledListView mListView = null;
                                     }
                                 }
                             }
-
+*/
                             is_from_long_tab = false;
                             break;
 
@@ -1217,6 +1349,7 @@ ScrollDisabledListView mListView = null;
                         case MotionEvent.ACTION_DOWN:
                             MainActivity.mMainPager.setPagingEnabled(false);
                             mListView.setScrollEnabled(false);
+                            setscroll();
                             dX = v.getX() - event.getRawX();
                             dY = v.getY() - event.getRawY();
                             start_dX = v.getX();
@@ -1232,20 +1365,32 @@ ScrollDisabledListView mListView = null;
                                         still_press = false;
                                         holder.me2_anim_layout.setVisibility(View.VISIBLE);
 
+                                        holder.selected_me2.setVisibility(View.GONE);
                                         holder.selected_been_there.setVisibility(View.GONE);
                                         holder.selected_fml_short.setVisibility(View.GONE);
                                         holder.selected_you_are_not_alone.setVisibility(View.GONE);
 
 
                                         holder.been_there.setVisibility(View.VISIBLE);
+                                        holder.ic_me2.setVisibility(View.VISIBLE);
                                         holder.fml_short.setVisibility(View.VISIBLE);
                                         holder.you_are_not_alone.setVisibility(View.VISIBLE);
+
+                                        if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                            holder.ic_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                            holder.selected_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                        } else {
+
+
+                                            holder.ic_me2.setVisibility(View.GONE);
+                                            holder.selected_me2.setVisibility(View.GONE);
+                                        }
 
 
                                     }
 
                                 }
-                            }, 300);
+                            }, 1);
                             break;
 
                         case MotionEvent.ACTION_MOVE:
@@ -1261,41 +1406,67 @@ ScrollDisabledListView mListView = null;
 
 
                             long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
-                            if (clickDuration >= 500) {
+                            if (clickDuration >= 150) {
                                 holder.me2_anim_layout.setVisibility(View.VISIBLE);
 
 
                                 holder.selected_been_there.setVisibility(View.GONE);
+                                holder.selected_me2.setVisibility(View.GONE);
                                 holder.selected_fml_short.setVisibility(View.GONE);
                                 holder.selected_you_are_not_alone.setVisibility(View.GONE);
 
 
+                                holder.ic_me2.setVisibility(View.VISIBLE);
                                 holder.been_there.setVisibility(View.VISIBLE);
                                 holder.fml_short.setVisibility(View.VISIBLE);
                                 holder.you_are_not_alone.setVisibility(View.VISIBLE);
 
+                                if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                    holder.ic_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                    holder.selected_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                } else {
+
+
+                                    holder.ic_me2.setVisibility(View.GONE);
+                                    holder.selected_me2.setVisibility(View.GONE);
+                                }
+
+
                                 int width = CommonFunction.getScreenWidth();
                                 if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
-                                    if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                    if (x_pos_change > 0 && x_pos_change < width / 20) {
+                                        if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                            holder.ic_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                            holder.selected_me2.setBackgroundResource(R.drawable.ic_me_off);
+
+                                            selected_position = 3;
+                                            holder.selected_me2.setVisibility(View.VISIBLE);
+                                            holder.ic_me2.setVisibility(View.INVISIBLE);
+                                        } else {
+
+                                            selected_position = 100;
+                                            holder.ic_me2.setVisibility(View.GONE);
+                                            holder.selected_me2.setVisibility(View.GONE);
+                                        }
+
+                                    } else if (x_pos_change > width / 20 && x_pos_change < width / 12) {
                                         selected_position = 0;
                                         holder.selected_been_there.setVisibility(View.VISIBLE);
                                         holder.been_there.setVisibility(View.INVISIBLE);
 
-                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 4) {
+                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
                                         selected_position = 1;
                                         holder.selected_fml_short.setVisibility(View.VISIBLE);
                                         holder.fml_short.setVisibility(View.INVISIBLE);
-                                    } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 3) {
                                         selected_position = 2;
                                         holder.selected_you_are_not_alone.setVisibility(View.VISIBLE);
                                         holder.you_are_not_alone.setVisibility(View.INVISIBLE);
                                     } else {
                                         selected_position = 100;
                                     }
-                                }
-                                else
+                                } else
                                     selected_position = 100;
-
                             }
                             break;
                         case MotionEvent.ACTION_POINTER_UP:
@@ -1324,7 +1495,59 @@ ScrollDisabledListView mListView = null;
                             v.setY(start_dY);
                             v.setX(start_dX);
 
+
                             long diff = uptime - downtime;
+                            if (diff > 150)
+                            {
+
+
+
+                                if (selected_position < 10) {
+
+                                    try {
+                                        if (!ConnectionDetector.isNetworkAvailable(mContext)) {
+                                            new ToastUtil(mContext, Constants.NETWORK_FAILER);
+                                            return false;
+                                        }
+
+                                        // secret = getItem(position);
+                                        if (selected_position == 3) {
+
+                                            if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                                mDataList.get(position).setMe2Users(mOperations.unMe2(secret, holder));
+                                                startTracking(mContext.getString(R.string.analytics_Unme2));
+                                            } else {
+                                                startTracking(mContext.getString(R.string.analytics_me2));
+                                                mDataList.get(position).setMe2Users(mOperations.me2(secret, holder, ""));
+
+
+                                               // AnimationUtils.playHugAnim(Constants.ANIM_STATE_ME2, ((MainActivity) mContext));
+                                            }
+
+                                        } else {
+
+                                            if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                                mOperations.addShortSenetense(secret, me2_short_sentence[selected_position], "me2");
+                                                // mDataList.get(position).setMe2Users(mOperations.me2(secret, holder , me2_short_sentence[selected_position]));
+
+                                            } else {
+                                                startTracking(mContext.getString(R.string.analytics_me2));
+                                                mDataList.get(position).setMe2Users(mOperations.me2(secret, holder, me2_short_sentence[selected_position]));
+
+                                                mOperations.addShortSenetense(secret, me2_short_sentence[selected_position], "me2");
+
+
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+                            }
+
+                            /*long diff = uptime - downtime;
                             if (diff < 500) {
 
                                 try {
@@ -1372,7 +1595,7 @@ ScrollDisabledListView mListView = null;
                                         e.printStackTrace();
                                     }
                                 }
-                            }
+                            }*/
 
                             is_from_long_tab = false;
                             break;
@@ -1940,7 +2163,7 @@ ScrollDisabledListView mListView = null;
 
         public TextView mIFriend;
 
-
+        public ImageView selected_heart;
         public ImageView selected_hilarious;
         public ImageView selected_you_inspired_me;
         public ImageView selected_dont_giveup;
@@ -1952,20 +2175,22 @@ ScrollDisabledListView mListView = null;
         public ImageView selected_keep_going;
         public ImageView selected_we_love_you;
         public ImageView selected_keep_you_headup;
-
+        public ImageView selected_hug;
 
         public ImageView selected_you_got_afriend;
         public ImageView selected_keep_smiling;
 
         public TextView been_there;
         public TextView fml_short;
+        public TextView ic_me2;
         public TextView you_are_not_alone;
 
+        public ImageView selected_me2;
         public ImageView selected_been_there;
         public ImageView selected_fml_short;
         public ImageView selected_you_are_not_alone;
 
-
+        public TextView ic_heart;
         public TextView hilarious;
         public TextView lamo;
         public TextView powerful;
@@ -1975,6 +2200,7 @@ ScrollDisabledListView mListView = null;
 
 
         public TextView keep_going;
+        public TextView ic_hug;
         public TextView you_got_afriend;
         public TextView we_love_you;
         public TextView keep_you_headup;
@@ -2638,7 +2864,17 @@ ScrollDisabledListView mListView = null;
         }
     }
 
+    final int heightToScroll = CommonFunction.getScreenHeight()/200;// will be scrolled to 20 px every time. smaller values for smoother scrolling
 
+    private void setscroll()
+    {
+        int scroll = mListView.getScrollY();
+        if(scroll == 0)
+        {
+            mListView.scrollBy(0, heightToScroll);
+        }
+
+    }
 }
 
 

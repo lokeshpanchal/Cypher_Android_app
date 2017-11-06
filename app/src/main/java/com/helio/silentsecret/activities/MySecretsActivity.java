@@ -69,7 +69,7 @@ public class MySecretsActivity extends BaseActivity implements View.OnClickListe
     TextView runAnime = null ;
     ImageView search = null , settings = null ;
     ImageView petimage = null;
-    ImageView img1, img2, img3, img4, img5, img6, img7, img8;
+
     private int width = 0, height;
     private OwnPager minePager;
     private PagerTabStrip tabStrip;
@@ -188,10 +188,10 @@ TextView fragment_header = null;
 
 
                     } else {
-                        startActivity(new Intent(ct,ChatFriends.class));
+                        startActivity(new Intent(ct,NotificationActivity.class));
                     }
                 } else {
-                    new ToastUtil(ct, "Please check your internet connection.");
+                    new ToastUtil(ct, Constants.NETWORK_FAILER);
                 }
 
 
@@ -623,7 +623,9 @@ public  String searchText = "";
     }
 
     private void runSupport() {
-        startActivity(new Intent(this, NotificationActivity.class));
+       // startActivity(new Intent(this, NotificationActivity.class));
+
+        startActivity(new Intent(ct,ChatFriends.class));
     }
 
     private void runSecretCreate()

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Cypher</string>
-
+    <string name="google_maps_key">AIzaSyAbWOIKeLOg0CYb_GOKTAFf-XewrSIdxyE</string>
+    <string name="google_maps_key_vikas">AIzaSyAoxNWgPEA69T7NE5NVCPhpann40rPVacc</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="warning">Warning</string>

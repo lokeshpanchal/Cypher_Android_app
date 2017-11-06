@@ -281,8 +281,6 @@ public class SocialOperations {
 
 
         try {
-
-
             hugUsers.remove(MainActivity.enc_username);
             int hougcount = 0;
             String hug = AppSession.getValue(mContext, Constants.USER_HUGS);
@@ -292,7 +290,6 @@ public class SocialOperations {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
             if (hougcount > 0)
                 hougcount = hougcount - 1;

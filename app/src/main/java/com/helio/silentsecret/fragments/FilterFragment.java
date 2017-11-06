@@ -62,9 +62,14 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback
 
     private List<Secret> list = null;
 
+  /*  final long totalScrollTime = Long.MAX_VALUE; //total scroll time. I think that 300 000 000 years is close enouth to infinity. if not enought you can restart timer in onFinish()
+    final int scrollPeriod = 20; // every 20 ms scoll will happened. smaller values for smoother
+    final int heightToScroll = CommonFunction.getScreenHeight()/200;// will be scrolled to 20 px every time. smaller values for smoother scrolling
+*/
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         mStartOver = TimeUtil.checkDateRange();
         SKIP = 0;
@@ -89,6 +94,33 @@ public class FilterFragment extends Fragment implements FilterUpdateCallback
                 //((MainActivity) getActivity()).loadFeed(state, false);
             }
         });
+
+        mListView.setScrollEnabled(true);
+
+       /* mListView.post(new Runnable() {
+            @Override
+            public void run() {
+                new CountDownTimer(totalScrollTime, scrollPeriod )
+                {
+                    public void onTick(long millisUntilFinished)
+                    {
+                        int scroll = mListView.getScrollY();
+                        if(scroll == 0)
+                        {
+                            mListView.scrollBy(0, heightToScroll);
+                        }
+                    }
+
+                    public void onFinish() {
+                        //you can add code for restarting timer here
+                    }
+                }.start();
+            }
+        });*/
+
+
+
+
 
         if (mDataList != null)
             mDataList = null;

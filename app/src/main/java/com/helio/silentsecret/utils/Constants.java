@@ -30,7 +30,8 @@ public class Constants {
     public static final String ENCRYPT_HUG_METHOD = "MazpHTFcGqCuuTQoe5ouZw==";
     public static final String ENCRYPT_HEART_METHOD = "IeSPJ1eBiTGTxDwpuTtHng==";
 
-
+    public static final String[] emotion_name_array = {"scared", "FML", "sad", "lol", "lonely", "happy", "grateful", "frustrated"
+            , "love", "angry", "ashamed", "anxious"};
 
     public static final String ENCRYPT_LF_See_All = "ZVqWxqnrho8WmCaAwzEzmA==";
     public static final String ENCRYPT_LF_Deep = "hJnOtO4HrS3qSfpxMJLF2Q==";
@@ -94,6 +95,10 @@ public class Constants {
 
 
     public final static String USER_SAFE_GUARD = "safe_guard";
+    public final static String MEDIATOR_CODE = "mediator_code";
+    public final static String MEDIATOR_AGENCY_ID = "agency_unq_id";
+    public final static String MEDIATOR_SUPPORT_WORKER_ID = "created_by_user_id";
+    public final static String MEDIATOR_SUPPORT_WORKER_NAME = "created_by_user_un";
 
 
     public final static String USER_AGE = "age";
@@ -309,6 +314,7 @@ public class Constants {
     public static final String USER_NAME = "username";
     public static final String USER_FIRST_NAME = "user_firstname";
     public static final String SHOW_THANK_MESSAGE = "thank_you_message";
+    public static final String NETWORK_FAILER = "Please check your internet connection.";
 
 
     public static final String GUEST_USER_NAME = "guest_username";

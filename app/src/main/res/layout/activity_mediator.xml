@@ -8,37 +8,37 @@
     tools:context="com.helio.silentsecret.activities.MediatorActivity">
 
     <RelativeLayout
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@color/ifriend_top_bar">
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/ifriend_top_bar">
 
-    <TextView
-        android:id="@+id/back_iv"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:background="@drawable/back"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/back_iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/back"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
 
-    <TextView
+        <TextView
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-        android:layout_centerInParent="true"
-        android:layout_marginRight="15dp"
-        android:gravity="center"
-        android:text="Mediator"
-        android:textColor="@color/white"
-        android:textSize="20sp" />
+            android:layout_centerInParent="true"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:text="Mediator"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
-</RelativeLayout>
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -54,7 +54,7 @@
 
             android:orientation="vertical">
 
-            <TextView
+            <com.helio.silentsecret.utils.MyTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -65,7 +65,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.helio.silentsecret.utils.MyTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -92,18 +92,18 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/gray_round_border"
                     android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:singleLine="true"
                     android:hint="Enter your code here"
+                    android:inputType="numberDecimal"
                     android:paddingLeft="50dp"
                     android:paddingRight="50dp"
+                    android:singleLine="true"
                     android:textColor="@color/black"
                     android:textColorHint="@color/grey_bar" />
 
 
             </RelativeLayout>
 
-            <TextView
+            <com.helio.silentsecret.utils.MyTextView
                 android:id="@+id/submit_button"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
@@ -119,12 +119,12 @@
     </ScrollView>
 
     <RelativeLayout
+        android:id="@+id/mediator_option"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
-        android:id="@+id/mediator_option"
-        android:visibility="gone"
-        android:background="@color/glimpse_gray">
+        android:background="@color/glimpse_gray"
+        android:visibility="gone">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -159,7 +159,7 @@
                         android:padding="10dp"
                         android:src="@drawable/prepare_meeting" />
 
-                    <TextView
+                    <com.helio.silentsecret.utils.MyTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="9"
@@ -168,21 +168,22 @@
 
                         android:text="prepare for meeting/workshop"
                         android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/prepare_meeting_textsize" />
                 </LinearLayout>
 
 
-                <TextView
+                <com.helio.silentsecret.utils.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
+                    android:layout_weight="9"
                     android:gravity="center"
                     android:text="just down your thoughts as notes head of a meeting make it easier fof yourself to discuss what matters to you."
                     android:textColor="@color/top_bar"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/meeting_detail_textsize"
+               />
 
                 <LinearLayout
                     android:id="@+id/assignment"
@@ -191,8 +192,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    >
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="0dp"
@@ -205,7 +205,7 @@
                         android:padding="10dp"
                         android:src="@drawable/assignment" />
 
-                    <TextView
+                    <com.helio.silentsecret.utils.MyTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="9"
@@ -214,19 +214,20 @@
 
                         android:text="complete assignment"
                         android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:textSize="@dimen/meeting_option_text_size" />
                 </LinearLayout>
-                <TextView
+
+                <com.helio.silentsecret.utils.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
+                    android:layout_weight="9"
                     android:gravity="center"
                     android:text="complete questions prepared by your support worker"
                     android:textColor="@color/top_bar"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/meeting_detail_textsize"/>
 
                 <LinearLayout
                     android:id="@+id/reminders"
@@ -235,8 +236,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="0dp"
@@ -249,7 +250,7 @@
                         android:padding="10dp"
                         android:src="@drawable/reminder" />
 
-                    <TextView
+                    <com.helio.silentsecret.utils.MyTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="9"
@@ -260,14 +261,16 @@
                         android:textColor="@color/white"
                         android:textSize="20sp" />
                 </LinearLayout>
-                <TextView
+
+                <com.helio.silentsecret.utils.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
+                    android:layout_weight="9"
+                    android:gravity="center"
+                    android:visibility="gone"
                     android:text="view and set appointment dates and time"
                     android:textColor="@color/top_bar"
                     android:textSize="13sp" />
@@ -293,7 +296,8 @@
                         android:padding="10dp"
                         android:src="@drawable/daily_emotions" />
 
-                    <TextView
+                    <com.helio.silentsecret.utils.MyTextView
+                        android:id="@+id/myTextView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="9"
@@ -301,20 +305,20 @@
                         android:gravity="center"
                         android:text="daily emotions"
                         android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:textSize="@dimen/meeting_option_text_size" />
                 </LinearLayout>
 
-                <TextView
+                <com.helio.silentsecret.utils.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
+                    android:layout_weight="9"
+                    android:gravity="center"
                     android:text="capture how you are feeling today"
                     android:textColor="@color/top_bar"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/meeting_detail_textsize"/>
 
                 <LinearLayout
                     android:id="@+id/raise_awareness"
@@ -323,8 +327,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                  >
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="0dp"
@@ -337,7 +340,7 @@
                         android:padding="10dp"
                         android:src="@drawable/set_goals" />
 
-                    <TextView
+                    <com.helio.silentsecret.utils.MyTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="9"
@@ -345,22 +348,22 @@
                         android:gravity="center"
                         android:text="set goals or raise awareness"
                         android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/prepare_meeting_textsize" />
                 </LinearLayout>
 
 
-                <TextView
+                <com.helio.silentsecret.utils.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:gravity="center"
+                    android:layout_marginBottom="30dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_weight="9"
+                    android:gravity="center"
                     android:text="set simple or lige goals raise your voice on chat for what you want to see changed"
                     android:textColor="@color/top_bar"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/meeting_detail_textsize"/>
 
 
             </LinearLayout>

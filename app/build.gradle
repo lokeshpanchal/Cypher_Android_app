@@ -28,8 +28,8 @@ android {
         applicationId "com.helio.silentsecret"
         minSdkVersion 16
         targetSdkVersion 20
-        versionCode 44
-        versionName "4.0.4"
+        versionCode 45
+        versionName "4.0.5"
         renderscriptTargetApi 20
         renderscriptSupportModeEnabled true
         multiDexEnabled true
@@ -50,6 +50,7 @@ dependencies {
     compile 'com.parse:parse-android:1.13.1'*/
 
     compile project(':LeonidsLib')
+
     compile files('libs/universal-image-loader-1.9.3-SNAPSHOT.jar')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;

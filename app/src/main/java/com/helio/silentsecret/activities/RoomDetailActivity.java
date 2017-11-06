@@ -340,8 +340,44 @@ boolean is_flagged = false;
                     String phone = null;
                     for (String item : data)
                     {
-                        // if (item.length() > 5)
+
+
+                        item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                        if (item.length() > 1)
                         {
+                            int unm_len = item.length();
+                            int numnber = Integer.parseInt(item);
+
+                            String dev_num_str = "1";
+                            for (int kk = 1; kk < unm_len; kk++) {
+                                dev_num_str = dev_num_str + "0";
+                            }
+                            int dev_num = Integer.parseInt(dev_num_str);
+                            int remind = numnber % dev_num;
+
+                            if (remind == 0)
+                            {
+
+                            }
+                            else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                                is_flagged = true;
+                                KeyboardUtil.hideKeyBoard(edt_reply, ct);
+                                image_title.setVisibility(View.GONE);
+                                new AddReply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                                return;
+                            }
+                        } else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                            is_flagged = true;
+                            KeyboardUtil.hideKeyBoard(edt_reply, ct);
+                            image_title.setVisibility(View.GONE);
+                            new AddReply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                            return;
+                        }
+
+
+                        /*{
                             phone = item;
                             item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
                             if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}"))
@@ -353,7 +389,7 @@ boolean is_flagged = false;
 
                                 return;
                             }
-                        }
+                        }*/
                     }
 
                     new KeywordsChecker(new KeywordCheckerCallback() {
@@ -361,7 +397,14 @@ boolean is_flagged = false;
                         public void onDone(boolean result, String riskword) {
 
                             if (!result)
-                                is_flagged = true;
+                            {
+                                String key_name = riskword;
+                                key_name = key_name.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                                if (key_name.length() > 0)
+                                    is_flagged = false;
+                                else
+                                    is_flagged = true;
+                            }
 
                                 uploadToParse();
                         }
@@ -387,8 +430,43 @@ boolean is_flagged = false;
             String phone = null;
             for (String item : data)
             {
-                // if (item.length() > 5)
+
+                item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                if (item.length() > 1)
                 {
+                    int unm_len = item.length();
+                    int numnber = Integer.parseInt(item);
+
+                    String dev_num_str = "1";
+                    for (int kk = 1; kk < unm_len; kk++) {
+                        dev_num_str = dev_num_str + "0";
+                    }
+                    int dev_num = Integer.parseInt(dev_num_str);
+                    int remind = numnber % dev_num;
+
+                    if (remind == 0)
+                    {
+
+                    }
+                    else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                        is_flagged = true;
+                        KeyboardUtil.hideKeyBoard(edt_reply, ct);
+                        image_title.setVisibility(View.GONE);
+                        new AddReply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                        return;
+                    }
+                } else if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}")) {
+                    is_flagged = true;
+                    KeyboardUtil.hideKeyBoard(edt_reply, ct);
+                    image_title.setVisibility(View.GONE);
+                    new AddReply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                    return;
+                }
+
+                // if (item.length() > 5)
+                /*{
                     phone = item;
                     item = item.replaceAll("[^0-9]", ObjectMaker.EMPTY);
                     if (CommentSecretActivity.isNumeric(item) || item.matches("[0-9]+") || item.matches("(\\\\d-)?(\\\\d{3}-)?\\\\d{3}-\\\\d{4}"))
@@ -400,15 +478,21 @@ boolean is_flagged = false;
 
                         return;
                     }
-                }
+                }*/
             }
 
             new KeywordsChecker(new KeywordCheckerCallback() {
                 @Override
                 public void onDone(boolean result, String riskword)
                 {
-                    if (!result) {
-                        is_flagged = true;
+                    if (!result)
+                    {
+                        String key_name = riskword;
+                        key_name = key_name.replaceAll("[^0-9]", ObjectMaker.EMPTY);
+                        if (key_name.length() > 0)
+                            is_flagged = false;
+                        else
+                            is_flagged = true;
                     }
                     try {
                         uploadToParse();

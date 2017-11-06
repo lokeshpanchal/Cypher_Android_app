@@ -87,7 +87,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
     private static final int MUTUAL_POSITION = 2;
-    private   ScrollDisabledListView mListView = null;
+    private ScrollDisabledListView mListView = null;
     private LayoutInflater inflater;
     List<Secret> mDataList;
     private List<Secret> mMe2sList = new ArrayList<>();
@@ -166,18 +166,18 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
     public FeedAdapter(LayoutInflater inflater, List<Secret> list, Context context, ScrollDisabledListView scrollDisabledListView) {
 
-        loadData(inflater, list, context , scrollDisabledListView);
+        loadData(inflater, list, context, scrollDisabledListView);
 
     }
 
     public FeedAdapter(LayoutInflater inflater, List<Secret> list, Context context, boolean canShare, ScrollDisabledListView scrollDisabledListView) {
-        loadData(inflater, list, context , scrollDisabledListView);
+        loadData(inflater, list, context, scrollDisabledListView);
         this.canShare = canShare;
 
     }
 
     public FeedAdapter(LayoutInflater inflater, List<Secret> list, String title, String lastText, Context context, ScrollDisabledListView scrollDisabledListView) {
-        loadData(inflater, list, context , scrollDisabledListView);
+        loadData(inflater, list, context, scrollDisabledListView);
         this.scrollTitle = title;
 
 
@@ -186,7 +186,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
     }
 
 
-    private void loadData(LayoutInflater inflater, List<Secret> list, Context context , ScrollDisabledListView scrollDisabledListView) {
+    private void loadData(LayoutInflater inflater, List<Secret> list, Context context, ScrollDisabledListView scrollDisabledListView) {
         try {
 
             this.inflater = inflater;
@@ -211,9 +211,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                 }
             }
 
-
             mListView = scrollDisabledListView;
-
             this.mContext = context;
             this.mLoader = new ImageLoaderUtil(context);
             this.mOperations = new SocialOperations(context);
@@ -313,6 +311,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
             holder.selected_hilarious = (ImageView) convertView.findViewById(R.id.selected_hilarious);
+            holder.selected_heart = (ImageView) convertView.findViewById(R.id.selected_heart);
             holder.selected_wow = (ImageView) convertView.findViewById(R.id.selected_wow);
             holder.selected_dont_giveup = (ImageView) convertView.findViewById(R.id.selected_dont_giveup);
             holder.selected_you_inspired_me = (ImageView) convertView.findViewById(R.id.selected_you_inspired_me);
@@ -321,22 +320,26 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
             holder.selected_been_there = (ImageView) convertView.findViewById(R.id.selected_been_there);
+            holder.selected_me2 = (ImageView) convertView.findViewById(R.id.selected_me2);
             holder.selected_fml_short = (ImageView) convertView.findViewById(R.id.selected_fml_short);
             holder.selected_you_are_not_alone = (ImageView) convertView.findViewById(R.id.selected_you_are_not_alone);
 
 
             holder.selected_keep_going = (ImageView) convertView.findViewById(R.id.selected_keep_going);
+            holder.selected_hug = (ImageView) convertView.findViewById(R.id.selected_hug);
             holder.selected_you_got_afriend = (ImageView) convertView.findViewById(R.id.selected_you_got_afriend);
             holder.selected_keep_smiling = (ImageView) convertView.findViewById(R.id.selected_keep_smiling);
             holder.selected_we_love_you = (ImageView) convertView.findViewById(R.id.selected_we_love_you);
             holder.selected_keep_you_headup = (ImageView) convertView.findViewById(R.id.selected_keep_you_headup);
 
             holder.been_there = (TextView) convertView.findViewById(R.id.been_there);
+            holder.ic_me2 = (TextView) convertView.findViewById(R.id.ic_me2);
             holder.fml_short = (TextView) convertView.findViewById(R.id.fml_short);
             holder.you_are_not_alone = (TextView) convertView.findViewById(R.id.you_are_not_alone);
 
 
             holder.hilarious = (TextView) convertView.findViewById(R.id.hilarious);
+            holder.ic_heart = (TextView) convertView.findViewById(R.id.ic_heart);
             holder.lamo = (TextView) convertView.findViewById(R.id.lamo);
             holder.powerful = (TextView) convertView.findViewById(R.id.powerful);
             holder.you_inspired_me = (TextView) convertView.findViewById(R.id.you_inspired_me);
@@ -345,6 +348,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
             holder.keep_going = (TextView) convertView.findViewById(R.id.keep_going);
+            holder.ic_hug = (TextView) convertView.findViewById(R.id.ic_hug);
             holder.you_got_afriend = (TextView) convertView.findViewById(R.id.you_got_afriend);
             holder.we_love_you = (TextView) convertView.findViewById(R.id.we_love_you);
             holder.keep_you_headup = (TextView) convertView.findViewById(R.id.keep_you_headup);
@@ -417,10 +421,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
                 try {
                     if (secret.getText() != null && secret.getText().contains("iFriend"))
-
                     {
-
-
                         for (int j = 1; j <= 20; j++) {
 
                             if (secret.getText().contains("iFriend" + wordArray[j - 1])) {
@@ -428,7 +429,6 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
                             }
                         }
-
 
                     }
                 } catch (Exception e) {
@@ -743,7 +743,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                 e2.printStackTrace();
                             }
 
-                            new ToastUtil(mContext, "Please check your internet connection.");
+                            new ToastUtil(mContext, Constants.NETWORK_FAILER);
                         } else if (!age_verify) {
                             is_click = false;
                             new ToastUtil(mContext, "This user is not available for ifriend");
@@ -786,7 +786,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
             @Override
             public void onClick(View v) {
                 if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                    new ToastUtil(mContext, "Please check your internet connection.");
+                    new ToastUtil(mContext, Constants.NETWORK_FAILER);
                     return;
                 }
 
@@ -829,6 +829,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
             public boolean onTouch(View v, MotionEvent event) {
 
                 try {
+                    secret = getItem(position);
                     switch (event.getActionMasked()) {
                         case MotionEvent.ACTION_DOWN:
                             try {
@@ -838,6 +839,8 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                 still_press = true;
                                 start_dX = v.getX();
                                 start_dY = v.getY();
+
+                                setscroll();
                                 selected_position = 100;
                                 holder.selected_keep_going.postDelayed(new Runnable() {
                                     @Override
@@ -847,27 +850,37 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                             still_press = false;
                                             holder.hug_anim_layout.setVisibility(View.VISIBLE);
 
+                                            holder.selected_hug.setVisibility(View.GONE);
                                             holder.selected_keep_going.setVisibility(View.GONE);
                                             holder.selected_you_got_afriend.setVisibility(View.GONE);
                                             holder.selected_keep_smiling.setVisibility(View.GONE);
                                             holder.selected_we_love_you.setVisibility(View.GONE);
                                             holder.selected_keep_you_headup.setVisibility(View.GONE);
-
-
                                             holder.keep_going.setVisibility(View.VISIBLE);
                                             holder.you_got_afriend.setVisibility(View.VISIBLE);
                                             holder.we_love_you.setVisibility(View.VISIBLE);
                                             holder.keep_you_headup.setVisibility(View.VISIBLE);
                                             holder.keep_smiling.setVisibility(View.VISIBLE);
+                                            holder.ic_hug.setVisibility(View.VISIBLE);
+
+
+                                            if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username))
+                                            {
+                                                holder.ic_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                                holder.selected_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                            } else {
+                                              //  holder.ic_hug.setBackgroundResource(R.drawable.ic_hug);
+                                              //  holder.selected_hug.setBackgroundResource(R.drawable.ic_hug);
+
+                                                holder.ic_hug.setVisibility(View.GONE);
+                                                holder.selected_hug.setVisibility(View.GONE);
+                                            }
 
                                         }
-
                                     }
-                                }, 300);
-
+                                }, 1);
 
                                 downtime = Calendar.getInstance().getTimeInMillis();
-
                                 MainActivity.mMainPager.setPagingEnabled(false);
                                 mListView.setScrollEnabled(false);
                             } catch (Exception e) {
@@ -888,7 +901,8 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                 point_dx = point_dx + " x : " + x_pos_change + " y : " + y_pos_change;
 
                                 long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
-                                if (clickDuration >= 500) {
+                                if (clickDuration >= 150)
+                                {
                                     holder.hug_anim_layout.setVisibility(View.VISIBLE);
 
                                     holder.selected_you_got_afriend.setVisibility(View.GONE);
@@ -896,34 +910,72 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                     holder.selected_we_love_you.setVisibility(View.GONE);
                                     holder.selected_keep_you_headup.setVisibility(View.GONE);
                                     holder.selected_keep_going.setVisibility(View.GONE);
+                                    holder.selected_hug.setVisibility(View.GONE);
 
                                     holder.you_got_afriend.setVisibility(View.VISIBLE);
                                     holder.we_love_you.setVisibility(View.VISIBLE);
                                     holder.keep_you_headup.setVisibility(View.VISIBLE);
                                     holder.keep_smiling.setVisibility(View.VISIBLE);
                                     holder.keep_going.setVisibility(View.VISIBLE);
+                                    holder.ic_hug.setVisibility(View.VISIBLE);
+
+
+                                    if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username))
+                                    {
+                                        holder.ic_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                        holder.selected_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                    } else {
+                                        //  holder.ic_hug.setBackgroundResource(R.drawable.ic_hug);
+                                        //  holder.selected_hug.setBackgroundResource(R.drawable.ic_hug);
+
+                                        holder.ic_hug.setVisibility(View.GONE);
+                                        holder.selected_hug.setVisibility(View.GONE);
+                                    }
+
 
                                     int width = CommonFunction.getScreenWidth();
-                                    if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
-                                        if (x_pos_change > 0 && x_pos_change < width / 12) {
+                                    if (y_pos_change < width / 2 && y_pos_change > -width / 2)
+                                    {
+                                        if (x_pos_change < 0 && x_pos_change > -width / 20)
+                                        {
+
+                                            if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username))
+                                            {
+                                                holder.ic_hug.setBackgroundResource(R.drawable.ic_not_hug);
+                                                holder.selected_hug.setBackgroundResource(R.drawable.ic_not_hug);
+
+
+                                                selected_position = 5;
+                                                holder.selected_hug.setVisibility(View.VISIBLE);
+                                                holder.ic_hug.setVisibility(View.INVISIBLE);
+
+                                            } else {
+                                                //  holder.ic_hug.setBackgroundResource(R.drawable.ic_hug);
+                                                //  holder.selected_hug.setBackgroundResource(R.drawable.ic_hug);
+                                                selected_position = 100;
+                                                holder.ic_hug.setVisibility(View.GONE);
+                                                holder.selected_hug.setVisibility(View.GONE);
+                                            }
+
+                                        } else if (x_pos_change > -width / 20 && x_pos_change < width / 30) {
                                             selected_position = 0;
                                             holder.selected_keep_going.setVisibility(View.VISIBLE);
                                             holder.keep_going.setVisibility(View.INVISIBLE);
-                                        } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                        } else if (x_pos_change > width / 30 && x_pos_change < width / 12) {
                                             selected_position = 1;
                                             holder.selected_you_got_afriend.setVisibility(View.VISIBLE);
                                             holder.you_got_afriend.setVisibility(View.INVISIBLE);
 
-                                        } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
+                                        } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
                                             selected_position = 2;
                                             holder.selected_we_love_you.setVisibility(View.VISIBLE);
                                             holder.we_love_you.setVisibility(View.INVISIBLE);
 
-                                        } else if (x_pos_change > width / 5 && x_pos_change < width / 4) {
+                                        } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
                                             selected_position = 3;
                                             holder.selected_keep_you_headup.setVisibility(View.VISIBLE);
                                             holder.keep_you_headup.setVisibility(View.INVISIBLE);
-                                        } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                        } else if (x_pos_change > width / 5 && x_pos_change < width / 3) {
                                             selected_position = 4;
                                             holder.selected_keep_smiling.setVisibility(View.VISIBLE);
                                             holder.keep_smiling.setVisibility(View.INVISIBLE);
@@ -948,6 +1000,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                 still_press = false;
                                 holder.hug_anim_layout.setVisibility(View.GONE);
                                 holder.selected_keep_going.setVisibility(View.GONE);
+                                holder.selected_hug.setVisibility(View.GONE);
                                 selected_position = 100;
                                 uptime = System.currentTimeMillis();
                                 MainActivity.mMainPager.setPagingEnabled(true);
@@ -958,70 +1011,55 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
-
                             break;
-
                         case MotionEvent.ACTION_UP:
-
                             try {
                                 still_press = false;
                                 holder.hug_anim_layout.setVisibility(View.GONE);
                                 holder.selected_keep_going.setVisibility(View.GONE);
+                                holder.selected_hug.setVisibility(View.GONE);
                                 uptime = System.currentTimeMillis();
                                 MainActivity.mMainPager.setPagingEnabled(true);
-
-
                                 v.setY(start_dY);
                                 v.setX(start_dX);
-
-
                                 long diff = uptime - downtime;
-                                if (diff < 500) {
-                                    try {
-                                        if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                            new ToastUtil(mContext, "Please check your internet connection.");
-                                            return false;
-                                        }
-                                        secret = getItem(position);
-                                        if (secret.getHugUsers() != null)
-                                            if (secret.getHugUsers().contains(MainActivity.enc_username)) {
-                                                mDataList.get(position).setHugUsers(mOperations.unHug(secret, holder));
-                                                startTracking(mContext.getString(R.string.analytics_Unhug));
-                                            } else {
-                                                mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, ""));
-                                                startTracking(mContext.getString(R.string.analytics_hug));
-
-
-                                                AnimationUtils.playHugAnim(Constants.ANIM_STATE_HUG, ((MainActivity) mContext));
-                                            }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    if (selected_position < 10) {
+                                if (diff > 150)
+                                {
+                                    if (selected_position < 10)
+                                    {
 
                                         try {
                                             if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                                new ToastUtil(mContext, "Please check your internet connection.");
+                                                new ToastUtil(mContext, Constants.NETWORK_FAILER);
                                                 return false;
                                             }
-                                            secret = getItem(position);
-                                            if (secret.getHugUsers() != null)
-                                                if (secret.getHugUsers().contains(MainActivity.enc_username)) {
-
-                                                    //  mDataList.get(position).setHugUsers(mOperations.hug(secret, holder , hug_short_sentence[selected_position] ));
-                                                    mOperations.addShortSenetense(secret, hug_short_sentence[selected_position], "hug");
+                                            if (selected_position == 5)
+                                            {
+                                                if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username))
+                                                {
+                                                    mDataList.get(position).setHugUsers(mOperations.unHug(secret, holder));
+                                                    startTracking(mContext.getString(R.string.analytics_Unhug));
                                                 } else {
-                                                    mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, hug_short_sentence[selected_position]));
-                                                    mOperations.addShortSenetense(secret, hug_short_sentence[selected_position], "hug");
+                                                    mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, ""));
                                                     startTracking(mContext.getString(R.string.analytics_hug));
 
+
+
                                                 }
+                                            } else if (secret.getHugUsers() != null && secret.getHugUsers().size() > 0 && secret.getHugUsers().contains(MainActivity.enc_username)) {
+
+                                                //  mDataList.get(position).setHugUsers(mOperations.hug(secret, holder , hug_short_sentence[selected_position] ));
+                                                mOperations.addShortSenetense(secret, hug_short_sentence[selected_position], "hug");
+                                            } else {
+                                                mDataList.get(position).setHugUsers(mOperations.hug(secret, holder, hug_short_sentence[selected_position]));
+                                                mOperations.addShortSenetense(secret, hug_short_sentence[selected_position], "hug");
+                                                AnimationUtils.playHugAnim(Constants.ANIM_STATE_HUG, ((MainActivity) mContext));
+                                                startTracking(mContext.getString(R.string.analytics_hug));
+
+                                            }
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-
 
                                     }
                                 }
@@ -1052,6 +1090,8 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
             public boolean onTouch(View v, MotionEvent event) {
 
                 try {
+                    secret = getItem(position);
+
                     switch (event.getActionMasked()) {
                         case MotionEvent.ACTION_DOWN:
                             MainActivity.mMainPager.setPagingEnabled(false);
@@ -1061,6 +1101,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                             start_dY = v.getY();
                             still_press = true;
                             mListView.setScrollEnabled(false);
+                            setscroll();
                             selected_position = 100;
                             holder.selected_hilarious.postDelayed(new Runnable() {
                                 @Override
@@ -1071,6 +1112,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                         holder.heart_anim_layout.setVisibility(View.VISIBLE);
 
                                         holder.selected_hilarious.setVisibility(View.GONE);
+                                        holder.selected_heart.setVisibility(View.GONE);
                                         holder.selected_dont_giveup.setVisibility(View.GONE);
                                         holder.selected_wow.setVisibility(View.GONE);
                                         holder.selected_you_inspired_me.setVisibility(View.GONE);
@@ -1079,16 +1121,32 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
                                         holder.hilarious.setVisibility(View.VISIBLE);
+                                        holder.ic_heart.setVisibility(View.VISIBLE);
                                         holder.dont_giveup.setVisibility(View.VISIBLE);
                                         holder.wow.setVisibility(View.VISIBLE);
                                         holder.you_inspired_me.setVisibility(View.VISIBLE);
                                         holder.powerful.setVisibility(View.VISIBLE);
                                         holder.lamo.setVisibility(View.VISIBLE);
 
+
+                                        if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                            holder.ic_heart.setBackgroundResource(R.drawable.ic_heart);
+                                            holder.selected_heart.setBackgroundResource(R.drawable.ic_heart);
+                                        } else {
+                                         //   holder.ic_heart.setBackgroundResource(R.drawable.ic_hearted);
+                                           // holder.selected_heart.setBackgroundResource(R.drawable.ic_hearted);
+
+                                            holder.ic_heart.setVisibility(View.GONE);
+                                            holder.selected_heart.setVisibility(View.GONE);
+                                        }
+
+
+
+
                                     }
 
                                 }
-                            }, 300);
+                            }, 1);
 
 
                             downtime = System.currentTimeMillis();
@@ -1108,11 +1166,13 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
                             long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
-                            if (clickDuration >= 500) {
+                            if (clickDuration >= 150)
+                            {
                                 holder.heart_anim_layout.setVisibility(View.VISIBLE);
 
 
                                 holder.selected_hilarious.setVisibility(View.GONE);
+                                holder.selected_heart.setVisibility(View.GONE);
                                 holder.selected_you_got_afriend.setVisibility(View.GONE);
                                 holder.selected_dont_giveup.setVisibility(View.GONE);
                                 holder.selected_wow.setVisibility(View.GONE);
@@ -1126,29 +1186,65 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                 holder.you_inspired_me.setVisibility(View.VISIBLE);
                                 holder.powerful.setVisibility(View.VISIBLE);
                                 holder.hilarious.setVisibility(View.VISIBLE);
+                                holder.ic_heart.setVisibility(View.VISIBLE);
                                 holder.lamo.setVisibility(View.VISIBLE);
+
+
+                                if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                    holder.ic_heart.setBackgroundResource(R.drawable.ic_heart);
+                                    holder.selected_heart.setBackgroundResource(R.drawable.ic_heart);
+                                } else {
+                                    //   holder.ic_heart.setBackgroundResource(R.drawable.ic_hearted);
+                                    // holder.selected_heart.setBackgroundResource(R.drawable.ic_hearted);
+
+                                    holder.ic_heart.setVisibility(View.GONE);
+                                    holder.selected_heart.setVisibility(View.GONE);
+                                }
 
                                 int width = CommonFunction.getScreenWidth();
                                 if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
-                                    if (x_pos_change > 0 && x_pos_change < width / 12) {
+
+                                    if (x_pos_change < 0 && x_pos_change > -width / 20) {
+
+
+                                        if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                            holder.ic_heart.setBackgroundResource(R.drawable.ic_heart);
+                                            holder.selected_heart.setBackgroundResource(R.drawable.ic_heart);
+
+                                            selected_position = 6;
+                                            holder.selected_heart.setVisibility(View.VISIBLE);
+                                            holder.ic_heart.setVisibility(View.INVISIBLE);
+
+                                        } else {
+
+                                            selected_position = 100;
+                                            //   holder.ic_heart.setBackgroundResource(R.drawable.ic_hearted);
+                                            // holder.selected_heart.setBackgroundResource(R.drawable.ic_hearted);
+
+                                            holder.ic_heart.setVisibility(View.GONE);
+                                            holder.selected_heart.setVisibility(View.GONE);
+                                        }
+
+
+                                    } else if (x_pos_change > -width / 20 && x_pos_change < width / 30) {
                                         selected_position = 0;
                                         holder.selected_hilarious.setVisibility(View.VISIBLE);
                                         holder.hilarious.setVisibility(View.INVISIBLE);
-                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                    } else if (x_pos_change > width / 30 && x_pos_change < width / 12) {
                                         selected_position = 1;
                                         holder.selected_dont_giveup.setVisibility(View.VISIBLE);
                                         holder.dont_giveup.setVisibility(View.INVISIBLE);
 
-                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
+                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
                                         selected_position = 2;
                                         holder.selected_wow.setVisibility(View.VISIBLE);
                                         holder.wow.setVisibility(View.INVISIBLE);
 
-                                    } else if (x_pos_change > width / 5 && x_pos_change < width / 4) {
+                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 5) {
                                         selected_position = 3;
                                         holder.selected_you_inspired_me.setVisibility(View.VISIBLE);
                                         holder.you_inspired_me.setVisibility(View.INVISIBLE);
-                                    } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                    } else if (x_pos_change > width / 5 && x_pos_change < width / 3) {
                                         selected_position = 4;
                                         holder.selected_powerful.setVisibility(View.VISIBLE);
                                         holder.powerful.setVisibility(View.INVISIBLE);
@@ -1170,14 +1266,11 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                             still_press = false;
                             holder.heart_anim_layout.setVisibility(View.GONE);
                             holder.selected_hilarious.setVisibility(View.GONE);
-
                             uptime = System.currentTimeMillis();
                             MainActivity.mMainPager.setPagingEnabled(true);
                             v.setY(start_dY);
                             v.setX(start_dX);
-
                             mListView.setScrollEnabled(true);
-
                             break;
 
                         case MotionEvent.ACTION_UP:
@@ -1186,56 +1279,39 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                             mListView.setScrollEnabled(true);
                             v.setY(start_dY);
                             v.setX(start_dX);
-
                             still_press = false;
                             holder.heart_anim_layout.setVisibility(View.GONE);
                             holder.selected_hilarious.setVisibility(View.GONE);
-
                             long diff = uptime - downtime;
-                            if (diff < 500) {
+                            if (diff > 150)
+                            {
 
-                                try {
-                                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                        new ToastUtil(mContext, "Please check your internet connection.");
-                                        return false;
-                                    }
-                                    secret = getItem(position);
-                                    if (secret.getHeartUsers() != null)
-                                        if (secret.getHeartUsers().contains(MainActivity.enc_username)) {
-                                            mDataList.get(position).setHeartUsers(mOperations.unHeart(secret, holder));
-                                            startTracking(mContext.getString(R.string.analytics_Unlike));
-                                        } else {
-                                            mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder, ""));
-                                            startTracking(mContext.getString(R.string.analytics_like));
-
-
-                                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
-                                        }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
 
                                 if (selected_position < 10) {
-
                                     try {
                                         if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                            new ToastUtil(mContext, "Please check your internet connection.");
+                                            new ToastUtil(mContext, Constants.NETWORK_FAILER);
                                             return false;
                                         }
-                                        secret = getItem(position);
-                                        if (secret.getHeartUsers() != null)
-                                            if (secret.getHeartUsers().contains(MainActivity.enc_username)) {
-                                                mOperations.addShortSenetense(secret, heart_short_sentence[selected_position], "heart");
-                                                //  mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder , heart_short_sentence[selected_position]));
+                                        if (selected_position == 6) {
+                                            if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                                mDataList.get(position).setHeartUsers(mOperations.unHeart(secret, holder));
+                                                startTracking(mContext.getString(R.string.analytics_Unlike));
                                             } else {
-                                                mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder, heart_short_sentence[selected_position]));
-                                                mOperations.addShortSenetense(secret, heart_short_sentence[selected_position], "heart");
+                                                mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder, ""));
                                                 startTracking(mContext.getString(R.string.analytics_like));
 
-
-                                                // AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
                                             }
+                                        } else if (secret.getHeartUsers() != null && secret.getHeartUsers().size() > 0 && secret.getHeartUsers().contains(MainActivity.enc_username)) {
+                                            mOperations.addShortSenetense(secret, heart_short_sentence[selected_position], "heart");
+                                            //  mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder , heart_short_sentence[selected_position]));
+                                        } else {
+                                            mDataList.get(position).setHeartUsers(mOperations.heart(secret, holder, heart_short_sentence[selected_position]));
+                                            mOperations.addShortSenetense(secret, heart_short_sentence[selected_position], "heart");
+                                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
+                                            startTracking(mContext.getString(R.string.analytics_like));
+                                            // AnimationUtils.playHugAnim(Constants.ANIM_STATE_LOVE, ((MainActivity) mContext));
+                                        }
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -1265,10 +1341,13 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
             public boolean onTouch(View v, MotionEvent event) {
 
                 try {
+                    secret = getItem(position);
+
                     switch (event.getActionMasked()) {
                         case MotionEvent.ACTION_DOWN:
                             MainActivity.mMainPager.setPagingEnabled(false);
                             mListView.setScrollEnabled(false);
+                            setscroll();
                             dX = v.getX() - event.getRawX();
                             dY = v.getY() - event.getRawY();
                             start_dX = v.getX();
@@ -1285,19 +1364,37 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                                         holder.me2_anim_layout.setVisibility(View.VISIBLE);
 
                                         holder.selected_been_there.setVisibility(View.GONE);
+                                        holder.selected_me2.setVisibility(View.GONE);
                                         holder.selected_fml_short.setVisibility(View.GONE);
                                         holder.selected_you_are_not_alone.setVisibility(View.GONE);
 
 
                                         holder.been_there.setVisibility(View.VISIBLE);
+                                        holder.ic_me2.setVisibility(View.VISIBLE);
+
                                         holder.fml_short.setVisibility(View.VISIBLE);
                                         holder.you_are_not_alone.setVisibility(View.VISIBLE);
+
+                                        if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                            holder.ic_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                            holder.selected_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                        } else {
+
+
+                                            holder.ic_me2.setVisibility(View.GONE);
+                                            holder.selected_me2.setVisibility(View.GONE);
+                                        }
+
+
+
+
+
 
 
                                     }
 
                                 }
-                            }, 300);
+                            }, 1);
                             break;
 
                         case MotionEvent.ACTION_MOVE:
@@ -1313,31 +1410,61 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
                             long clickDuration = Calendar.getInstance().getTimeInMillis() - downtime;
-                            if (clickDuration >= 500) {
+                            if (clickDuration >= 150) {
                                 holder.me2_anim_layout.setVisibility(View.VISIBLE);
 
 
                                 holder.selected_been_there.setVisibility(View.GONE);
+                                holder.selected_me2.setVisibility(View.GONE);
                                 holder.selected_fml_short.setVisibility(View.GONE);
                                 holder.selected_you_are_not_alone.setVisibility(View.GONE);
 
 
+                                holder.ic_me2.setVisibility(View.VISIBLE);
                                 holder.been_there.setVisibility(View.VISIBLE);
                                 holder.fml_short.setVisibility(View.VISIBLE);
                                 holder.you_are_not_alone.setVisibility(View.VISIBLE);
 
+                                if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                    holder.ic_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                    holder.selected_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                } else {
+
+
+                                    holder.ic_me2.setVisibility(View.GONE);
+                                    holder.selected_me2.setVisibility(View.GONE);
+                                }
+
                                 int width = CommonFunction.getScreenWidth();
                                 if (y_pos_change < width / 2 && y_pos_change > -width / 2) {
-                                    if (x_pos_change > width / 12 && x_pos_change < width / 7) {
+                                    if (x_pos_change > 0 && x_pos_change < width / 20) {
+
+                                        if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                            holder.ic_me2.setBackgroundResource(R.drawable.ic_me_off);
+                                            holder.selected_me2.setBackgroundResource(R.drawable.ic_me_off);
+
+                                            selected_position = 3;
+                                            holder.selected_me2.setVisibility(View.VISIBLE);
+                                            holder.ic_me2.setVisibility(View.INVISIBLE);
+                                        } else {
+
+                                            selected_position = 100;
+                                            holder.ic_me2.setVisibility(View.GONE);
+                                            holder.selected_me2.setVisibility(View.GONE);
+                                        }
+
+
+
+                                    } else if (x_pos_change > width / 20 && x_pos_change < width / 12) {
                                         selected_position = 0;
                                         holder.selected_been_there.setVisibility(View.VISIBLE);
                                         holder.been_there.setVisibility(View.INVISIBLE);
 
-                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 4) {
+                                    } else if (x_pos_change > width / 12 && x_pos_change < width / 7) {
                                         selected_position = 1;
                                         holder.selected_fml_short.setVisibility(View.VISIBLE);
                                         holder.fml_short.setVisibility(View.INVISIBLE);
-                                    } else if (x_pos_change > width / 4 && x_pos_change < width / 3) {
+                                    } else if (x_pos_change > width / 7 && x_pos_change < width / 3) {
                                         selected_position = 2;
                                         holder.selected_you_are_not_alone.setVisibility(View.VISIBLE);
                                         holder.you_are_not_alone.setVisibility(View.INVISIBLE);
@@ -1375,52 +1502,48 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
                             v.setX(start_dX);
 
                             long diff = uptime - downtime;
-                            if (diff < 500) {
-
-                                try {
-                                    if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                        new ToastUtil(mContext, "Please check your internet connection.");
-                                        return false;
-                                    }
-
-                                    secret = getItem(position);
-                                    if (secret.getMe2Users() != null)
-                                        if (secret.getMe2Users().contains(MainActivity.enc_username)) {
-                                            mDataList.get(position).setMe2Users(mOperations.unMe2(secret, holder));
-                                            startTracking(mContext.getString(R.string.analytics_Unme2));
-                                        } else {
-                                            startTracking(mContext.getString(R.string.analytics_me2));
-                                            mDataList.get(position).setMe2Users(mOperations.me2(secret, holder, ""));
+                            if (diff > 150)
+                            {
 
 
-                                            AnimationUtils.playHugAnim(Constants.ANIM_STATE_ME2, ((MainActivity) mContext));
-                                        }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
+
                                 if (selected_position < 10) {
 
                                     try {
                                         if (!ConnectionDetector.isNetworkAvailable(mContext)) {
-                                            new ToastUtil(mContext, "Please check your internet connection.");
+                                            new ToastUtil(mContext, Constants.NETWORK_FAILER);
                                             return false;
                                         }
 
-                                        secret = getItem(position);
-                                        if (secret.getMe2Users() != null)
-                                            if (secret.getMe2Users().contains(MainActivity.enc_username)) {
-                                                mOperations.addShortSenetense(secret, me2_short_sentence[selected_position], "me2s");
+                                        // secret = getItem(position);
+                                        if (selected_position == 3) {
+
+                                            if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                                mDataList.get(position).setMe2Users(mOperations.unMe2(secret, holder));
+                                                startTracking(mContext.getString(R.string.analytics_Unme2));
+                                            } else {
+                                                startTracking(mContext.getString(R.string.analytics_me2));
+                                                mDataList.get(position).setMe2Users(mOperations.me2(secret, holder, ""));
+
+
+                                                AnimationUtils.playHugAnim(Constants.ANIM_STATE_ME2, ((MainActivity) mContext));
+                                            }
+
+                                        } else {
+
+                                            if (secret.getMe2Users() != null && secret.getMe2Users().size() > 0 && secret.getMe2Users().contains(MainActivity.enc_username)) {
+                                                mOperations.addShortSenetense(secret, me2_short_sentence[selected_position], "me2");
                                                 // mDataList.get(position).setMe2Users(mOperations.me2(secret, holder , me2_short_sentence[selected_position]));
 
                                             } else {
                                                 startTracking(mContext.getString(R.string.analytics_me2));
                                                 mDataList.get(position).setMe2Users(mOperations.me2(secret, holder, me2_short_sentence[selected_position]));
 
-                                                mOperations.addShortSenetense(secret, me2_short_sentence[selected_position], "me2s");
-
+                                                mOperations.addShortSenetense(secret, me2_short_sentence[selected_position], "me2");
+                                                AnimationUtils.playHugAnim(Constants.ANIM_STATE_ME2, ((MainActivity) mContext));
 
                                             }
+                                        }
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -2014,6 +2137,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
         public ImageView selected_hilarious;
+        public ImageView selected_heart;
         public ImageView selected_you_inspired_me;
         public ImageView selected_dont_giveup;
         public ImageView selected_wow;
@@ -2024,21 +2148,25 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
         public ImageView selected_keep_going;
         public ImageView selected_we_love_you;
         public ImageView selected_keep_you_headup;
+        public ImageView selected_hug;
 
 
         public ImageView selected_you_got_afriend;
         public ImageView selected_keep_smiling;
 
         public TextView been_there;
+        public TextView ic_me2;
         public TextView fml_short;
         public TextView you_are_not_alone;
 
         public ImageView selected_been_there;
+        public ImageView selected_me2;
         public ImageView selected_fml_short;
         public ImageView selected_you_are_not_alone;
 
 
         public TextView hilarious;
+        public TextView ic_heart;
         public TextView lamo;
         public TextView powerful;
         public TextView you_inspired_me;
@@ -2047,6 +2175,7 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
 
 
         public TextView keep_going;
+        public TextView ic_hug;
         public TextView you_got_afriend;
         public TextView we_love_you;
         public TextView keep_you_headup;
@@ -2720,6 +2849,18 @@ public class FeedAdapter extends BaseAdapter implements View.OnTouchListener {
         }
     }
 
+
+    final int heightToScroll = CommonFunction.getScreenHeight()/200;// will be scrolled to 20 px every time. smaller values for smoother scrolling
+
+    private void setscroll()
+    {
+        int scroll = mListView.getScrollY();
+        if(scroll == 0)
+        {
+            mListView.scrollBy(0, heightToScroll);
+        }
+
+    }
 
 }
 

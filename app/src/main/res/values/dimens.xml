@@ -105,6 +105,7 @@
     <dimen name="alma_height">30dp</dimen>
 
     <dimen name="share_mood_size">35dp</dimen>
+    <dimen name="insert_location_height">40dp</dimen>
 
 
     <dimen name="continue_button_quotes">40dp</dimen>
@@ -140,6 +141,8 @@
     <dimen name="policy_sides">8dp</dimen>
 
     <!-- CREATE !-->
+    <dimen name="insert_meeting_title_padding">10dp</dimen>
+
     <dimen name="count_padding">20dp</dimen>
     <dimen name="create_text_ts">20sp</dimen>
     <dimen name="create_padding_sides">15dp</dimen>
@@ -243,10 +246,13 @@
     <dimen name="glimpse_tool_navigator_w">40dp</dimen>
     <dimen name="glimpse_tool_navigator_h">30dp</dimen>
     <dimen name="glimpse_item_margin">10dp</dimen>
+
     <dimen name="glimpse_view_height">20dp</dimen>
     <dimen name="happy_glimpse_layout_heitgh">60dp</dimen>
     <dimen name="happy_glimpse_icon_size">40dp</dimen>
-
+    <dimen name="meeting_title_margin">10dp</dimen>
+    <dimen name="meeting_header_top_margin">10dp</dimen>
+    <dimen name="meeting_margin">20dp</dimen>
 
     <dimen name="room_pager_height">270dp</dimen>
 
@@ -262,6 +268,10 @@
     <dimen name="add_note_width">95dp</dimen>
     <dimen name="add_note_height">35dp</dimen>
     <dimen name="header_height">50dp</dimen>
+    <dimen name="create_meeting_option_margine">40dp</dimen>
+    <dimen name="prepare_meeting_textsize">16sp</dimen>
+    <dimen name="meeting_detail_textsize">13sp</dimen>
+    <dimen name="meeting_option_text_size">20sp</dimen>
 
     <dimen name="room_icon_height">50dp</dimen>
 

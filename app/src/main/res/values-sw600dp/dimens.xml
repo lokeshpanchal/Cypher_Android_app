@@ -7,7 +7,7 @@
     <dimen name="petlayout">220dp</dimen>
 
     <dimen name="glimpse_button_height">150dp</dimen>
-    <dimen name="mediator_button_height">110dp</dimen>
+    <dimen name="mediator_button_height">120dp</dimen>
 
     <dimen name="quotoes_icon">60dp</dimen>
     <dimen name="home_top_header">70dp</dimen>
@@ -22,6 +22,11 @@
     <dimen name="skin_height">70dp</dimen>
 
     <dimen name="share_mood_size">45dp</dimen>
+
+
+    <dimen name="support_close_size">50dp</dimen>
+
+    <dimen name="insert_location_height">65dp</dimen>
 
     <dimen name="home_pet_size">75dp</dimen>
 
@@ -71,8 +76,19 @@
     <dimen name="add_note_width">140dp</dimen>
     <dimen name="header_height">70dp</dimen>
 
-    <dimen name="add_note_height">55dp</dimen>
+    <dimen name="meeting_detail_textsize">16sp</dimen>
 
+    <dimen name="meeting_option_text_size">24sp</dimen>
+
+    <dimen name="create_meeting_option_margine">60dp</dimen>
+    <dimen name="prepare_meeting_textsize">22sp</dimen>
+
+    <dimen name="meeting_header_top_margin">20dp</dimen>
+    <dimen name="meeting_title_margin">15dp</dimen>
+    <dimen name="meeting_margin">35dp</dimen>
+
+    <dimen name="add_note_height">55dp</dimen>
+    <dimen name="insert_meeting_title_padding">15dp</dimen>
     <dimen name="room_icon_height">70dp</dimen>
 
     <dimen name="room_button_height">65dp</dimen>

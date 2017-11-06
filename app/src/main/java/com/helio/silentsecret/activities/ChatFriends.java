@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +37,7 @@ public class ChatFriends extends AppCompatActivity {
     RelativeLayout time_lyout_bg = null;
     Context ct = null;
     TextView runAnime = null, cancel_help = null;
-    ImageView img1, img2, img3, img4, img5, img6, img7, img8;
+
     private int width = 0, height;
 
     @Override

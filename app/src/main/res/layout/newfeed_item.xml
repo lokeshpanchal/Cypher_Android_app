@@ -132,7 +132,6 @@
                                 android:layout_weight="2.2"
                                 android:background="@drawable/like_me_hug_count_bt"
                                 android:gravity="center"
-
                                 android:textColor="@color/dark_grey"
                                 android:textSize="@dimen/feed_count_ts" />
 
@@ -292,11 +291,25 @@
                 android:paddingTop="2dp"
                 android:visibility="visible">
 
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/ic_hug"
+                        android:layout_width="@dimen/home_top_bar_icon"
+                        android:layout_height="@dimen/home_top_bar_icon"
+                        android:background="@drawable/ic_hug"
+                        android:gravity="center" />
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:orientation="vertical">
 
                     <TextView
@@ -305,7 +318,6 @@
                         android:layout_height="@dimen/home_top_bar_icon"
                         android:background="@drawable/keep_going"
                         android:gravity="center" />
-
 
                 </LinearLayout>
 
@@ -393,6 +405,33 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:paddingTop="2dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/selected_hug_"
+                        android:layout_width="@dimen/home_top_bar_icon"
+                        android:layout_height="@dimen/home_top_bar_icon"
+                        android:background="@drawable/create_lol"
+                        android:gravity="center"
+                        android:visibility="invisible" />
+
+
+                    <ImageView
+                        android:id="@+id/selected_hug"
+                        android:layout_width="@dimen/selected_like_size"
+                        android:layout_height="@dimen/selected_like_size"
+                        android:background="@drawable/ic_hug"
+                        android:gravity="center"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -546,14 +585,12 @@
 
 
             <LinearLayout
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right"
                 android:layout_marginBottom="50dp"
                 android:layout_marginTop="@dimen/like_anim_top_margin"
-
                 android:background="@drawable/recieved_border"
                 android:clickable="true"
                 android:orientation="horizontal"
@@ -567,7 +604,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/ic_heart"
+                        android:layout_width="@dimen/home_top_bar_icon"
+                        android:layout_height="@dimen/home_top_bar_icon"
+                        android:background="@drawable/ic_hearted"
+                        android:gravity="center" />
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:orientation="vertical">
 
                     <TextView
@@ -575,10 +625,7 @@
                         android:layout_width="@dimen/home_top_bar_icon"
                         android:layout_height="@dimen/home_top_bar_icon"
                         android:background="@drawable/hilarious"
-
                         android:gravity="center" />
-
-
                 </LinearLayout>
 
 
@@ -586,7 +633,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-
                     android:layout_marginLeft="5dp"
                     android:orientation="vertical">
 
@@ -682,6 +728,33 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:paddingTop="2dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="@dimen/home_top_bar_icon"
+                        android:layout_height="@dimen/home_top_bar_icon"
+                        android:background="@drawable/create_lol"
+                        android:gravity="center"
+                        android:visibility="invisible" />
+
+
+                    <ImageView
+                        android:id="@+id/selected_heart"
+                        android:layout_width="@dimen/selected_like_size"
+                        android:layout_height="@dimen/selected_like_size"
+                        android:background="@drawable/ic_hearted"
+                        android:gravity="center"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -884,6 +957,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/ic_me2"
+                        android:layout_width="@dimen/home_top_bar_icon"
+                        android:layout_height="@dimen/home_top_bar_icon"
+                        android:background="@drawable/ic_me"
+                        android:gravity="center" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
 
                     android:orientation="vertical">
 
@@ -950,6 +1037,34 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:paddingTop="2dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="@dimen/home_top_bar_icon"
+                        android:layout_height="@dimen/home_top_bar_icon"
+                        android:background="@drawable/create_lol"
+                        android:gravity="center"
+                        android:visibility="invisible" />
+
+
+                    <ImageView
+                        android:id="@+id/selected_me2"
+                        android:layout_width="@dimen/selected_like_size"
+                        android:layout_height="@dimen/selected_like_size"
+                        android:background="@drawable/ic_me"
+                        android:gravity="center"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"

@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -48,6 +47,11 @@ import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.helio.silentsecret.BuildConfig;
 import com.helio.silentsecret.EncryptionDecryption.CryptLib;
 import com.helio.silentsecret.R;
@@ -115,30 +119,28 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.helio.silentsecret.activities.MySecretsActivity.chatcount;
+
 
 public class MainActivity extends BaseActivity implements
-        View.OnClickListener, ViewPager.OnPageChangeListener
-{
+        View.OnClickListener, ViewPager.OnPageChangeListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private double latitude;
     private double longitude;
-    Location location;
+   // Location location;
 
     RelativeLayout landing_page = null, ruby_code_layout = null;
     ImageView skip = null;
 
-    TextView special_code = null, submit_button = null , privacy_policy = null;
+    TextView special_code = null, submit_button = null, privacy_policy = null;
 
     String code = "";
     EditText edt_search = null;
     SlidingDrawer simpleSlidingDrawer;
 
 
-
-
-
-
-
+    //TextView chat_count = null;
     LinearLayout whole_layout = null;
 
     public static StataicObjectDTO stataicObjectDTO = null;
@@ -179,27 +181,29 @@ public class MainActivity extends BaseActivity implements
             "Cat", "Dog", "Unicorn", "Dragon", "Dinosaur", "Starfish"};
     public static boolean is_booking = false;
 
-   // public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
+    // public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
 
     private String get_date = "";
     public static String AgencyId = "";
-    static TextView runAnime = null, settings = null ;
+    static TextView runAnime = null, settings = null;
 
     private int width = 0, height;
 
 
     public static int session_left = 0;
-    ImageView search_button = null, notification_button = null, home_button = null;
-
+    ImageView search_button = null,
+            home_button = null;
+    RelativeLayout notification_button = null;
     public static ArrayList<String> users = null;
 
     public static ArrayList<String> scratchscretid = null;
-TextView deep_filter = null , seeall_filter ,tense_filter ,light_filter ;
+    TextView deep_filter = null, seeall_filter, tense_filter, light_filter;
     public static boolean is_running = false;
 
 
     public interface OnReplace {
         void runMood();
+
         void runRoom();
     }
 
@@ -211,8 +215,6 @@ TextView deep_filter = null , seeall_filter ,tense_filter ,light_filter ;
 
 
     private static FilterUpdateCallback mLatestUpdate;
-
-
 
 
     //private EditText mSearchEdit;
@@ -237,8 +239,6 @@ TextView deep_filter = null , seeall_filter ,tense_filter ,light_filter ;
     public String searchText = null;
 
 
-
-
     private PagerTabStrip tabStrip;
 
 
@@ -252,18 +252,17 @@ TextView deep_filter = null , seeall_filter ,tense_filter ,light_filter ;
     TextView loaddata = null;
 
 
-
     public static ArrayList<String> userListNamesOnlyWaiting = new ArrayList<>();
     public static CustomDialog cd;
 
-    LinearLayout pet_main_layout = null ,filter_layout = null;
+    LinearLayout pet_main_layout = null, filter_layout = null;
 
     private static View view = null;
 
     RelativeLayout pet_layout = null, petlayout;
 
-ImageView exit_tutorials = null , hand_icon = null;
-    TextView skip_pet, done_pet = null,  search_ok = null;
+    ImageView exit_tutorials = null, hand_icon = null;
+    TextView skip_pet, done_pet = null, search_ok = null;
 
     public static int oxygen = 10, food = 10, water = 10;
     public static ImageView petimage = null;
@@ -272,7 +271,7 @@ ImageView exit_tutorials = null , hand_icon = null;
     TextView show_safeguard, disclaimer_ok, safeguard_ok;
     public static ProgressBar water_progress, food_progress;
 
-       //public static RelativeLayout scratch_layout = null;
+    //public static RelativeLayout scratch_layout = null;
     //public static int[] colorsking = {R.drawable.circle_shape, R.drawable.circle_shape1, R.drawable.circle_shape2, R.drawable.circle_shape3, R.drawable.circle_shape4, R.drawable.circle_shape5, R.drawable.circle_shape6, R.drawable.circle_shape7, R.drawable.circle_shape8, R.drawable.circle_shape9};
 
     RelativeLayout viewPagerIndicator = null, disclaimer_layout = null, safeguard_layout = null;
@@ -281,16 +280,21 @@ ImageView exit_tutorials = null , hand_icon = null;
     boolean is_from_notification = false, is_from_tutorials = false;
 
 
-
     TextView trending_tab_selected = null, happy_tab_selected = null,
             glimplse_tab_selected = null, seeall_tab_selected = null;
 
     TextView trending_tab = null, happy_tab = null,
-            glimplse_tab = null, seeall_tab = null , chat_boat = null;
+            glimplse_tab = null, seeall_tab = null, chat_boat = null, glimpse_text = null, see_all_text = null, happy_text = null, trending_text = null;
 
     LinearLayout tab_layout = null;
-RelativeLayout tutor_layout = null , location_detecter = null;
+    RelativeLayout tutor_layout = null, location_detecter = null;
     TextView shaaremood = null;
+
+
+    private Location mLastLocation;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,19 +305,15 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         location_detecter = (RelativeLayout) findViewById(R.id.location_detecter);
         try {
             String userna = AppSession.getValue(ct, Constants.USER_NAME);
-            if (userna == null || userna.equalsIgnoreCase(""))
-            {
-                enc_username = AppSession.getValue(ct,Constants.GUEST_USER_NAME);
-                String done_landing = AppSession.getValue(ct,Constants.DONE_LANDING_SCREEN);
-                if (done_landing == null || done_landing.equalsIgnoreCase(""))
-                {
+            if (userna == null || userna.equalsIgnoreCase("")) {
+                enc_username = AppSession.getValue(ct, Constants.GUEST_USER_NAME);
+                String done_landing = AppSession.getValue(ct, Constants.DONE_LANDING_SCREEN);
+                if (done_landing == null || done_landing.equalsIgnoreCase("")) {
                     landing_page.setVisibility(View.VISIBLE);
                 }
-            }
-            else
-            enc_username = CryptLib.encrypt(AppSession.getValue(ct, Constants.USER_NAME));
-        } catch (Exception e)
-        {
+            } else
+                enc_username = CryptLib.encrypt(AppSession.getValue(ct, Constants.USER_NAME));
+        } catch (Exception e) {
 
         }
 
@@ -321,6 +321,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
 
 
+            buildGoogleApiClient();
 
             try {
                 latitude = Double.parseDouble(Preference.getUserLat());
@@ -331,10 +332,9 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             }
 
 
-            if (longitude == 0.0 && latitude == 0.0)
-            {
+            if (longitude == 0.0 && latitude == 0.0) {
                 location_detecter.setVisibility(View.VISIBLE);
-                LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                /*LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                 if (location == null)
@@ -368,9 +368,8 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                     public void onProviderDisabled(String provider) {
 
                     }
-                });
+                });*/
             }
-
 
 
             location_detecter.setOnClickListener(new View.OnClickListener() {
@@ -383,9 +382,45 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                     if (longitude == 0.0 && latitude == 0.0)
+                    {
+                        buildGoogleApiClient();
+
+                        try {
+                            AlertDialog.Builder dialog2 = new AlertDialog.Builder(ct);
+                            dialog2.setMessage(getResources().getString(R.string.gps_guest_enabled));
+                            dialog2.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                    // TODO Auto-generated method stub
+                                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivity(myIntent);
+                                    //get gps
+                                }
+                            });
+
+                            dialog2.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                    // TODO Auto-generated method stub
+
+
+                                }
+                            });
+
+                            AlertDialog gps = dialog2.create();
+                            gps.setCanceledOnTouchOutside(false);
+                            gps.show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else
+                        location_detecter.setVisibility(View.GONE);
+
+
+                    /*if (longitude == 0.0 && latitude == 0.0)
                     {
                         location_detecter.setVisibility(View.VISIBLE);
                         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -474,32 +509,28 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                         });
                     }
                     else
-                        location_detecter.setVisibility(View.GONE);
+                        location_detecter.setVisibility(View.GONE);*/
                 }
             });
 
-            simpleSlidingDrawer =(SlidingDrawer) findViewById(R.id.slidingDrawer); // initiate the SlidingDrawer
+            simpleSlidingDrawer = (SlidingDrawer) findViewById(R.id.slidingDrawer); // initiate the SlidingDrawer
             simpleSlidingDrawer.open();
 
-            simpleSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener()
-            {
+            simpleSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
                 @Override
-                public void onDrawerClosed()
-                {
+                public void onDrawerClosed() {
                     landing_page.setVisibility(View.GONE);
 
-                    AppSession.save(ct,Constants.DONE_LANDING_SCREEN,"done");
+                    AppSession.save(ct, Constants.DONE_LANDING_SCREEN, "done");
 
                     code = AppSession.getValue(ct, Constants.USER_CODE);
-                    if (code == null || code.equalsIgnoreCase(""))
-                    {
+                    if (code == null || code.equalsIgnoreCase("")) {
                         try {
                             AlertDialog.Builder dialog2 = new AlertDialog.Builder(ct);
                             dialog2.setMessage(getResources().getString(R.string.have_a_code));
                             dialog2.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface paramDialogInterface, int paramInt)
-                                {
+                                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                                     paramDialogInterface.dismiss();
                                     ruby_code_layout.setVisibility(View.VISIBLE);
                                 }
@@ -526,7 +557,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                     }
 
 
-
                 }
             });
 
@@ -537,6 +567,11 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             submit_button = (TextView) findViewById(R.id.submit_button);
             chat_boat = (TextView) findViewById(R.id.chat_boat);
             edt_search = (EditText) findViewById(R.id.edt_search);
+            chat_count = (TextView) findViewById(R.id.chat_count);
+            glimpse_text = (TextView) findViewById(R.id.glimpse_text);
+            see_all_text = (TextView) findViewById(R.id.see_all_text);
+            trending_text = (TextView) findViewById(R.id.trending_text);
+            happy_text = (TextView) findViewById(R.id.happy_text);
 
 
             chat_boat.setOnClickListener(new View.OnClickListener() {
@@ -629,7 +664,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             users = new ArrayList<>();
             whole_layout = (LinearLayout) findViewById(R.id.whole_layout);
             tab_layout = (LinearLayout) findViewById(R.id.tab_layout);
-           // mWebView = (WebView) findViewById(R.id.feed_view_vb);
+            // mWebView = (WebView) findViewById(R.id.feed_view_vb);
 
             pet_main_layout = (LinearLayout) findViewById(R.id.pet_main_layout);
             filter_layout = (LinearLayout) findViewById(R.id.filter_layout);
@@ -640,9 +675,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             safeguard_layout = (RelativeLayout) findViewById(R.id.safeguard_layout);
             skip_pet = (TextView) findViewById(R.id.skip_pet);
             done_pet = (TextView) findViewById(R.id.done_pet);
-
-
-
 
 
             view = findViewById(R.id.banner_text);
@@ -663,7 +695,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             search_button = (ImageView) findViewById(R.id.search_button);
             exit_tutorials = (ImageView) findViewById(R.id.exit_tutorials);
             hand_icon = (ImageView) findViewById(R.id.hand_icon);
-            notification_button = (ImageView) findViewById(R.id.notification_button);
+            notification_button = (RelativeLayout) findViewById(R.id.notification_button);
             home_button = (ImageView) findViewById(R.id.home_button);
 
             tutorial_viewpager = (ViewPager) findViewById(R.id.tutorial_viewpager);
@@ -683,20 +715,30 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             glimplse_tab = (TextView) findViewById(R.id.glimpse_tab);
             seeall_tab = (TextView) findViewById(R.id.seeall_tab);
 
+
+            glimpse_text.setVisibility(View.INVISIBLE);
+            see_all_text.setVisibility(View.INVISIBLE);
+            trending_text.setVisibility(View.INVISIBLE);
+            happy_text.setVisibility(View.VISIBLE);
+
             int state = Preference.getFilter();
 
             if (state == Constants.STATE_SEE_ALL)
             {
+                see_all_text.setText("See all");
                 seeall_tab.setBackgroundResource(R.drawable.seeall_icon);
             } else if (state == Constants.STATE_LIGHT)
             {
+                see_all_text.setText("Light");
                 seeall_tab.setBackgroundResource(R.drawable.light_icon);
 
             } else if (state == Constants.STATE_DEEP)
             {
+                see_all_text.setText("Deep");
                 seeall_tab.setBackgroundResource(R.drawable.deep_icon);
             } else if (state == Constants.STATE_TENSE)
             {
+                see_all_text.setText("Tense");
                 seeall_tab.setBackgroundResource(R.drawable.tense_icon);
             }
 
@@ -706,13 +748,10 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                 public void onClick(View v) {
 
                     String userna = AppSession.getValue(ct, Constants.USER_NAME);
-                    if (userna == null || userna.equalsIgnoreCase(""))
-                    {
+                    if (userna == null || userna.equalsIgnoreCase("")) {
                         Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
                         startActivity(intent);
-                    }
-                    else
-                    {
+                    } else {
                         AccessMysecret();
                     }
                 }
@@ -723,6 +762,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                     filter_layout.setVisibility(View.GONE);
                     Preference.saveFilter(Constants.STATE_DEEP);
                     seeall_tab.setBackgroundResource(R.drawable.deep_icon);
+                    see_all_text.setText("Deep");
                     MainActivity.is_Refresh_Latest = true;
                     mMainPager.setCurrentItem(2);
                     mLatestUpdate.onUpdate();
@@ -736,6 +776,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                     Preference.saveFilter(Constants.STATE_LIGHT);
                     seeall_tab.setBackgroundResource(R.drawable.light_icon);
                     MainActivity.is_Refresh_Latest = true;
+                    see_all_text.setText("Light");
                     mMainPager.setCurrentItem(2);
                     mLatestUpdate.onUpdate();
                 }
@@ -747,6 +788,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                     Preference.saveFilter(Constants.STATE_TENSE);
                     seeall_tab.setBackgroundResource(R.drawable.tense_icon);
                     MainActivity.is_Refresh_Latest = true;
+                    see_all_text.setText("Tense");
                     mMainPager.setCurrentItem(2);
                     mLatestUpdate.onUpdate();
                 }
@@ -758,6 +800,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                     Preference.saveFilter(Constants.STATE_SEE_ALL);
                     seeall_tab.setBackgroundResource(R.drawable.seeall_icon);
                     MainActivity.is_Refresh_Latest = true;
+                    see_all_text.setText("See all");
                     mMainPager.setCurrentItem(2);
                     mLatestUpdate.onUpdate();
                 }
@@ -765,33 +808,29 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
             tab_layout.setOnClickListener(this);
 
-            final String tutor = AppSession.getValue(ct,Constants.CYPHER_TUTORIALS );
+            final String tutor = AppSession.getValue(ct, Constants.CYPHER_TUTORIALS);
 
-            if(tutor == null || tutor.equalsIgnoreCase(""))
-            {
+            if (tutor == null || tutor.equalsIgnoreCase("")) {
                 tutor_layout.setVisibility(View.VISIBLE);
                 is_from_tutorials = true;
             }
 
-           // tutor_layout.setVisibility(View.VISIBLE);
+            // tutor_layout.setVisibility(View.VISIBLE);
 
             exit_tutorials.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     tutor_layout.setVisibility(View.GONE);
                     is_from_tutorials = false;
-                    AppSession.save(ct,Constants.CYPHER_TUTORIALS ,"true");
+                    AppSession.save(ct, Constants.CYPHER_TUTORIALS, "true");
                 }
             });
 
 
-
             hand_icon.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public boolean onTouch(View view, MotionEvent motionEvent)
-                {
-                    if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                    {
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                         tutorial_viewpager.setVisibility(View.VISIBLE);
                         viewPagerIndicator.setVisibility(View.VISIBLE);
                         hand_icon.setVisibility(View.GONE);
@@ -820,11 +859,10 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
             glimplse_tab.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view)
-                {
+                public void onClick(View view) {
 
 
-                        mMainPager.setCurrentItem(3);
+                    mMainPager.setCurrentItem(3);
 
                 }
             });
@@ -833,7 +871,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             seeall_tab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                  //  mMainPager.setCurrentItem(2);
+                    //  mMainPager.setCurrentItem(2);
                     filter_layout.setVisibility(View.VISIBLE);
 
                 }
@@ -866,12 +904,10 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                 @Override
                 public void onClick(View view) {
                     String userna = AppSession.getValue(ct, Constants.USER_NAME);
-                    if (userna == null || userna.equalsIgnoreCase(""))
-                    {
+                    if (userna == null || userna.equalsIgnoreCase("")) {
                         Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
                         startActivity(intent);
-                    }
-                    else {
+                    } else {
                         postEmotion();
                     }
                 }
@@ -891,8 +927,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             });
 
             String userna = AppSession.getValue(ct, Constants.USER_NAME);
-            if (userna != null && !userna.equalsIgnoreCase(""))
-            {
+            if (userna != null && !userna.equalsIgnoreCase("")) {
                 new ChecUserSessionfirsttime().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 new CheckFlagverified().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -987,7 +1022,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
 
             // getAppintment();
-           // search_ok = (TextView) findViewById(R.id.search_ok);
+            // search_ok = (TextView) findViewById(R.id.search_ok);
 
 
             AgencyId = "";
@@ -1004,23 +1039,21 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                         KeyboardUtil.hideKeyBoard(mSearchEdit, MainActivity.this);
 
 */
-                    if (ConnectionDetector.isNetworkAvailable(ct))
-                    {
+                    if (ConnectionDetector.isNetworkAvailable(ct)) {
 
                         String userna = AppSession.getValue(ct, Constants.USER_NAME);
-                        if (userna == null || userna.equalsIgnoreCase(""))
-                        {
+                        if (userna == null || userna.equalsIgnoreCase("")) {
                             Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
                             startActivity(intent);
-                        }
-                        else {
+                        } else {
+                            // showNotificationAccessDialog();
+                            new CheckIfriendFlagverified().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-                            findViewById(R.id.search_frame).setVisibility(View.GONE);
-                            showNotificationAccessDialog();
+
                         }
 
                     } else {
-                        new ToastUtil(ct, "Please check your internet connection.");
+                        new ToastUtil(ct, Constants.NETWORK_FAILER);
                     }
 
 
@@ -1037,7 +1070,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             });
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1049,12 +1081,9 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             runAnime = new TextView(this);
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
 
 
         skip_pet.setOnClickListener(new View.OnClickListener() {
@@ -1068,13 +1097,10 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             public void onClick(View v) {
 
 
-                if (select_index >= 0)
-                {
+                if (select_index >= 0) {
 
                     new SetPetInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     pet_layout.setVisibility(View.GONE);
-
-
 
 
                 } else {
@@ -1090,7 +1116,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
             }
         });
-
 
 
         try {
@@ -1112,8 +1137,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
 
         Timer timerObj = new Timer();
-        TimerTask timerTaskObj = new TimerTask()
-        {
+        TimerTask timerTaskObj = new TimerTask() {
             public void run() {
                 try {
                     if (stataicObjectDTO == null)
@@ -1126,7 +1150,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                             mGcmPushNotifHandler.register();
 
                         } else {
-                            new ToastUtil(ct, "Please check your internet connection.");
+                            new ToastUtil(ct, Constants.NETWORK_FAILER);
                         }
                     }
 
@@ -1185,7 +1209,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                             }
 
 
-
                             try {
                                 if (getIntent().hasExtra("MOOD_PAGE")) {
                                     MOOD_PAGE = getIntent().getBooleanExtra("MOOD_PAGE", false);
@@ -1197,9 +1220,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
-
-
 
 
                             if (getIntent().hasExtra("GET_SUPPORT_PAGE")) {
@@ -1220,8 +1240,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                             }
 
 
-
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -1232,8 +1250,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                     get_date = myPrefs.getString("Date", "Nothing");
 
                     String userna = AppSession.getValue(ct, Constants.USER_NAME);
-                    if (userna != null && !userna.equalsIgnoreCase(""))
-                    {
+                    if (userna != null && !userna.equalsIgnoreCase("")) {
 
                         Timer timerObj1 = new Timer();
                         TimerTask timerTaskObj1 = new TimerTask() {
@@ -1250,8 +1267,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
                             }
                         };
-                        timerObj1.schedule(timerTaskObj1,500);
-
+                        timerObj1.schedule(timerTaskObj1, 500);
 
 
                     }
@@ -1265,8 +1281,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         };
         timerObj.schedule(timerTaskObj, 2500);
 
-        if (getIntent().hasExtra(GcmIntentService.mUsernameSecret))
-        {
+        if (getIntent().hasExtra(GcmIntentService.mUsernameSecret)) {
             USERNAME = getIntent().getBooleanExtra(GcmIntentService.mUsernameSecret, false);
             if (USERNAME) {
                 is_from_notification = true;
@@ -1276,13 +1291,11 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         }
 
 
-        if (is_from_notification == false)
-        {
+        if (is_from_notification == false) {
             String userna = AppSession.getValue(ct, Constants.USER_NAME);
-            if (userna != null && !userna.equalsIgnoreCase(""))
-            {
+            if (userna != null && !userna.equalsIgnoreCase("")) {
                 pet_name = AppSession.getValue(ct, Constants.USER_PET_NAME);
-                if (pet_name == null || pet_name.equalsIgnoreCase("")  || pet_name.equalsIgnoreCase("null")) {
+                if (pet_name == null || pet_name.equalsIgnoreCase("") || pet_name.equalsIgnoreCase("null")) {
                     //new GetPetInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     pet_layout.setVisibility(View.VISIBLE);
                     pet_name = "";
@@ -1322,7 +1335,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             e.printStackTrace();
         }
     }
-
 
 
     public static void postEmotion() {
@@ -1382,8 +1394,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
-
     public void setupFilterCallback(FilterUpdateCallback data) {
         this.mLatestUpdate = data;
     }
@@ -1416,11 +1426,106 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             mMainPager = (OwnPager) this.findViewById(R.id.pager);
 
 
-
             adapter = new ViewPagerMainAdapter(getSupportFragmentManager());
             mMainPager.setOffscreenPageLimit(3);
             mMainPager.setAdapter(adapter);
             mMainPager.setOnPageChangeListener(this);
+
+
+            mMainPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position)
+                {
+
+                    glimpse_text.setVisibility(View.INVISIBLE);
+                    see_all_text.setVisibility(View.INVISIBLE);
+                    trending_text.setVisibility(View.INVISIBLE);
+                    happy_text.setVisibility(View.INVISIBLE);
+
+
+
+
+                    filter_layout.setVisibility(View.GONE);
+
+
+                    trending_tab_selected.setVisibility(View.INVISIBLE);
+                    happy_tab_selected.setVisibility(View.INVISIBLE);
+                    glimplse_tab_selected.setVisibility(View.INVISIBLE);
+                    seeall_tab_selected.setVisibility(View.INVISIBLE);
+
+
+                 /*   if (position == 0)
+                    {
+                        //trending_text.setVisibility(View.VISIBLE);
+
+                        trending_tab_selected.setVisibility(View.VISIBLE);
+                        happy_tab_selected.setVisibility(View.INVISIBLE);
+                        glimplse_tab_selected.setVisibility(View.INVISIBLE);
+                        seeall_tab_selected.setVisibility(View.INVISIBLE);
+
+                    } else if (position == 1) {
+
+
+                        //  happy_text.setVisibility(View.VISIBLE);
+
+
+                        trending_tab_selected.setVisibility(View.INVISIBLE);
+                        glimplse_tab_selected.setVisibility(View.INVISIBLE);
+                        happy_tab_selected.setVisibility(View.VISIBLE);
+                        seeall_tab_selected.setVisibility(View.INVISIBLE);
+                    } else if (position == 2) {
+                        //  see_all_text.setVisibility(View.VISIBLE);
+
+
+                        trending_tab_selected.setVisibility(View.INVISIBLE);
+                        glimplse_tab_selected.setVisibility(View.INVISIBLE);
+                        happy_tab_selected.setVisibility(View.INVISIBLE);
+                        seeall_tab_selected.setVisibility(View.VISIBLE);
+                    } else if (position == 3)
+                    {
+                        // glimpse_text.setVisibility(View.VISIBLE);
+
+                        trending_tab_selected.setVisibility(View.INVISIBLE);
+                        happy_tab_selected.setVisibility(View.INVISIBLE);
+                        glimplse_tab_selected.setVisibility(View.VISIBLE);
+                        seeall_tab_selected.setVisibility(View.INVISIBLE);
+                    }
+                    */
+                    if(position ==0)
+                    {
+                        trending_text.setVisibility(View.VISIBLE);
+                        trending_tab_selected.setVisibility(View.VISIBLE);
+                    }
+                    else  if(position ==1)
+                    {
+                        happy_text.setVisibility(View.VISIBLE);
+                        happy_tab_selected.setVisibility(View.VISIBLE);
+                    }
+                    else  if(position ==2)
+                    {
+                        see_all_text.setVisibility(View.VISIBLE);
+                        seeall_tab_selected.setVisibility(View.VISIBLE);
+                    }
+                    else  if(position ==3)
+                    {
+                        glimpse_text.setVisibility(View.VISIBLE);
+                        glimplse_tab_selected.setVisibility(View.VISIBLE);
+                    }
+
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+
+
 
 
             if (getIntent().hasExtra("TRENDING_PAGE")) {
@@ -1449,9 +1554,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             tabStrip.setTabIndicatorColor(getResources().getColor(R.color.upper_line));
 
             //initLeftMenu(leftView);
-           // loadDefault(true);
-
-
+            // loadDefault(true);
 
 
             findViewById(R.id.search_toggle).setOnClickListener(this);
@@ -1463,7 +1566,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         }
 
     }
-
 
 
     /*private void startReferFriend() {
@@ -1507,7 +1609,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
     public void runMediator() {
 
-        Intent intent = new Intent(this,MediatorActivity.class);
+        Intent intent = new Intent(this, MediatorActivity.class);
         startActivity(intent);
 
     }
@@ -1558,7 +1660,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -1578,10 +1679,21 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                 if (getIntent() != null)
                     updateTitleBanner(1);
             }
+
+            chat_count.postDelayed(refreshchatcount, 1000);
+            Intent intent = new Intent(this, BoundService.class);
+            startService(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        try {
+            if (mGoogleApiClient != null) {
+                mGoogleApiClient.connect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void replaceSearch() {
@@ -1648,26 +1760,30 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
-
-
     private boolean getAge() {
         return Integer.parseInt(Preference.getUserAge()) > 15;
     }
-
-
 
 
     @Override
     public void onDestroy() {
 
         super.onDestroy();
+        try {
+            chat_count.removeCallbacks(refreshchatcount);
+            Intent intent = new Intent(this, BoundService.class);
+            stopService(intent);
 
+            if (mGoogleApiClient != null) {
+                mGoogleApiClient.disconnect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
         switch (resultCode) {
@@ -1812,7 +1928,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                 if (ConnectionDetector.isNetworkAvailable(ct))
                     checkpost();
                 else {
-                    new ToastUtil(ct, "Please check your internet connection.");
+                    new ToastUtil(ct, Constants.NETWORK_FAILER);
                 }
                 break;
         }
@@ -1838,6 +1954,10 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
     private void showNotificationAccessDialog() {
         replaceDialog(Constants.ACCESS_NOTIFICATIONS);
+    }
+
+    private void ShowIfriednAccessDialog() {
+        replaceDialog(Constants.ACCESS_IFRIEND);
     }
 
     public void hideSearchBar() {
@@ -1880,8 +2000,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             e.printStackTrace();
         }
     }
-
-
 
 
     public void showProgress() {
@@ -1982,7 +2100,9 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                 YoYo.with(Techniques.FadeOutDown).duration(100).playOn(findViewById(R.id.activity_text));
             }
 
-
+            chat_count.removeCallbacks(refreshchatcount);
+            Intent intent1 = new Intent(this, BoundService.class);
+            stopService(intent1);
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -2054,48 +2174,19 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         try {
 
             if (is_from_tutorials)
             {
-                for (int i = 0; i < dotsCount; i++)
-                {
+                for (int i = 0; i < dotsCount; i++) {
                     dots[i].setImageDrawable(getResources().getDrawable(R.drawable.nonselecteditem_dot));
                 }
 
                 dots[position].setImageDrawable(getResources().getDrawable(R.drawable.selecteditem_dot));
 
 
-            } else
-            {
-                filter_layout.setVisibility(View.GONE);
-                if (position == 0)
-                {
-                    trending_tab_selected.setVisibility(View.VISIBLE);
-                    happy_tab_selected.setVisibility(View.INVISIBLE);
-                    glimplse_tab_selected.setVisibility(View.INVISIBLE);
-                    seeall_tab_selected.setVisibility(View.INVISIBLE);
-
-                } else if (position == 1) {
-
-                    trending_tab_selected.setVisibility(View.INVISIBLE);
-                    glimplse_tab_selected.setVisibility(View.INVISIBLE);
-                    happy_tab_selected.setVisibility(View.VISIBLE);
-                    seeall_tab_selected.setVisibility(View.INVISIBLE);
-                } else if (position == 2) {
-                    trending_tab_selected.setVisibility(View.INVISIBLE);
-                    glimplse_tab_selected.setVisibility(View.INVISIBLE);
-                    happy_tab_selected.setVisibility(View.INVISIBLE);
-                    seeall_tab_selected.setVisibility(View.VISIBLE);
-                } else if (position == 3) {
-                    trending_tab_selected.setVisibility(View.INVISIBLE);
-                    happy_tab_selected.setVisibility(View.INVISIBLE);
-                    glimplse_tab_selected.setVisibility(View.VISIBLE);
-                    seeall_tab_selected.setVisibility(View.INVISIBLE);
-                }
             }
 
 
@@ -2193,7 +2284,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -2253,9 +2343,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             e.printStackTrace();
         }
     }
-
-
-
 
 
     int select_index = -1;
@@ -2328,7 +2415,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
         }
     }
-
 
 
     private class Getallfriend extends android.os.AsyncTask<String, String, Bitmap> {
@@ -2508,8 +2594,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     static SetVerifyFlagConditionDTO setVerifyFlagConditionDTO = null;
 
 
-
-
     private void Ratingoopup() {
         try {
             boolean showpopup = false;
@@ -2573,28 +2657,18 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
-
-
-
-
-    private void checkpost()
-    {
+    private void checkpost() {
         if (!is_flag) {
             String userna = AppSession.getValue(ct, Constants.USER_NAME);
-            if (userna == null || userna.equalsIgnoreCase(""))
-            {
+            if (userna == null || userna.equalsIgnoreCase("")) {
                 Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
                 startActivity(intent);
-            }
-            else {
+            } else {
                 startActivityForResult(new Intent(MainActivity.this, CreateSecretActivity.class), 0);
             }
 
-        }
-        else
+        } else
             Toast.makeText(ct, "You are not permitted to share a secret.", Toast.LENGTH_SHORT).show();
-
 
 
     }
@@ -2649,8 +2723,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
-
     private class SetPetInfo extends AsyncTask<String, String, Bitmap> {
 
         android.app.ProgressDialog pDialog;
@@ -2695,8 +2767,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
-
     private static class UpdateVeryfiFlag extends AsyncTask<String, String, Bitmap> {
 
         android.app.ProgressDialog pDialog;
@@ -2731,6 +2801,63 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         }
     }
 
+
+    private class CheckIfriendFlagverified extends android.os.AsyncTask<String, String, Bitmap> {
+
+        android.app.ProgressDialog pDialog;
+        String data = "0";
+        Bitmap bitmap;
+
+        String response = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(ct);
+                FindbyNameDTO findbyNameDTO = new FindbyNameDTO(MainActivity.enc_username);
+                FindNameDTO findNameDTO = new FindNameDTO(Constants.ENCRYPT_USER_TABLE, Constants.ENCRYPT_FIND_METHOD, findbyNameDTO);
+                FindbynameObjectDTO findbynameObjectDTO = new FindbynameObjectDTO(findNameDTO);
+                http.Getflagverified(findbynameObjectDTO);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            try {
+
+                String verify = AppSession.getValue(ct, Constants.USER_VERIFIED);
+
+
+                if (verify != null && verify.equalsIgnoreCase("true")) {
+                    ShowIfriednAccessDialog();
+                    findViewById(R.id.search_frame).setVisibility(View.GONE);
+                } else
+                    new ToastUtil(ct, getString(R.string.sorry_not_verified));
+
+                String result = AppSession.getValue(ct, Constants.USER_FLAG);
+                if (result != null && !result.equalsIgnoreCase("true")) {
+                    is_flag = false;
+                } else
+                    is_flag = true;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
 
     private class CheckFlagverified extends android.os.AsyncTask<String, String, Bitmap> {
@@ -2768,7 +2895,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         protected void onPostExecute(Bitmap image) {
             try {
 
-               // String verify = AppSession.getValue(ct, Constants.USER_VERIFIED);
+                // String verify = AppSession.getValue(ct, Constants.USER_VERIFIED);
 
 
                 String result = AppSession.getValue(ct, Constants.USER_FLAG);
@@ -2829,12 +2956,10 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                                     dialog.dismiss();
 
                                     String userna = AppSession.getValue(ct, Constants.USER_NAME);
-                                    if (userna == null || userna.equalsIgnoreCase(""))
-                                    {
+                                    if (userna == null || userna.equalsIgnoreCase("")) {
                                         Intent intent = new Intent(MainActivity.this, SignUpDialogActivity.class);
                                         startActivity(intent);
-                                    }
-                                    else {
+                                    } else {
                                         startActivityForResult(new Intent(MainActivity.this, CreateSecretActivity.class), 0);
                                     }
 
@@ -3307,19 +3432,17 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-    private void showTutorials()
-    {
+    private void showTutorials() {
         List<String> tutoriasl = new ArrayList<>();
-         String[] petnamearray = {"Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Meerkat", "Mermaid","Mermaid","Mermaid"};
+        String[] petnamearray = {"Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Monkey", "Meerkat", "Mermaid", "Mermaid", "Mermaid"};
 
-        for(int i=0; i<13; i++)
-        {
+        for (int i = 0; i < 13; i++) {
             tutoriasl.add(petnamearray[i]);
         }
-        mAdapter = new Tutorial_adapter( ct, tutoriasl);
+        mAdapter = new Tutorial_adapter(ct, tutoriasl);
 
         tutorial_viewpager.setAdapter(mAdapter);
-       // tutorial_viewpager.setPageTransformer(true, new ZoomOutSlideTransformer());
+        // tutorial_viewpager.setPageTransformer(true, new ZoomOutSlideTransformer());
         tutorial_viewpager.setCurrentItem(0);
         tutorial_viewpager.setOnPageChangeListener(this);
         setPageViewIndicator();
@@ -3340,7 +3463,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
             dots[i].setImageDrawable(getResources().getDrawable(R.drawable.nonselecteditem_dot));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                   20,
+                    20,
                     20
             );
 
@@ -3365,7 +3488,6 @@ RelativeLayout tutor_layout = null , location_detecter = null;
     }
 
 
-
     private class CHeckRubyCode extends AsyncTask<String, String, Bitmap> {
 
         android.app.ProgressDialog pDialog;
@@ -3376,7 +3498,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-           showProgress();
+            showProgress();
         }
 
         protected Bitmap doInBackground(String... args) {
@@ -3408,7 +3530,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
 
         protected void onPostExecute(Bitmap image) {
             try {
-               stopProgress();
+                stopProgress();
                 String status = "", guest_clun01 = "";
                 Object object = new JSONTokener(response).nextValue();
                 if (object instanceof JSONObject) {
@@ -3467,7 +3589,7 @@ RelativeLayout tutor_layout = null , location_detecter = null;
                 IfriendRequest http = new IfriendRequest(ct);
                 StaticDataDTO staticDataDTO = new StaticDataDTO();
                 StaticObjectDTO staticObjectDTO = new StaticObjectDTO(staticDataDTO);
-               stataicObjectDTO = http.GetstaticData(staticObjectDTO);
+                stataicObjectDTO = http.GetstaticData(staticObjectDTO);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -3478,11 +3600,105 @@ RelativeLayout tutor_layout = null , location_detecter = null;
         protected void onPostExecute(Bitmap image) {
 
 
+        }
+    }
 
+    TextView chat_count = null;
+    Runnable refreshchatcount = new Runnable() {
+        @Override
+        public void run() {
+            try {
+
+
+                chat_count.removeCallbacks(refreshchatcount);
+                chat_count.postDelayed(refreshchatcount, 3000);
+                if (chatcount > 0) {
+                    chat_count.setText("" + chatcount);
+                    chat_count.setVisibility(View.VISIBLE);
+                } else
+                    chat_count.setVisibility(View.GONE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        try {
+            mLocationRequest = LocationRequest.create();
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setInterval(10000); // Update location every ten seconds
+
+
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+            if (mLastLocation != null) {
+          /*  latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+            location = mLastLocation;*/
+
+
+                longitude = mLastLocation.getLongitude();
+                latitude = mLastLocation.getLatitude();
+                Preference.saveUserLat("" + latitude);
+                Preference.saveUserLon("" + longitude);
+
+                location_detecter.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location1) {
+        if (location1 != null) {
+
+
+            try {
+                longitude = location1.getLongitude();
+                latitude = location1.getLatitude();
+                Preference.saveUserLat("" + latitude);
+                Preference.saveUserLon("" + longitude);
+
+                location_detecter.setVisibility(View.GONE);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
         }
+
     }
+
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        buildGoogleApiClient();
+    }
+
+    synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
 
 }
 

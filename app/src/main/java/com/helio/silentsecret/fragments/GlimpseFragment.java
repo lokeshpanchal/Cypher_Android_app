@@ -15,12 +15,16 @@ import com.helio.silentsecret.activities.MoodActivity;
 import com.helio.silentsecret.activities.RoomsActivity;
 import com.helio.silentsecret.activities.SignUpDialogActivity;
 import com.helio.silentsecret.application.SilentSecretApplication;
+import com.helio.silentsecret.connection.ConnectionDetector;
 import com.helio.silentsecret.controller.Controller;
 import com.helio.silentsecret.utils.AppSession;
 import com.helio.silentsecret.utils.Constants;
+import com.helio.silentsecret.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.helio.silentsecret.activities.MainActivity.ct;
 
 public class GlimpseFragment extends Fragment implements MainActivity.OnReplace, View.OnClickListener {
 
@@ -59,7 +63,12 @@ public class GlimpseFragment extends Fragment implements MainActivity.OnReplace,
                     startActivity(intent);
                 }
                 else {
-                    Controller.runGlimpse(Controller.MOOD, getActivity(), true);
+                    if (ConnectionDetector.isNetworkAvailable(getActivity()))
+                    {
+                        Controller.runGlimpse(Controller.MOOD, getActivity(), true);
+                    }
+                    else new ToastUtil(getActivity(),Constants.NETWORK_FAILER);
+
                 }
 
 
@@ -73,7 +82,13 @@ public class GlimpseFragment extends Fragment implements MainActivity.OnReplace,
                     startActivity(intent);
                 }
                 else {
-                    Controller.runGlimpse(Controller.COUNSELL, getActivity(), true);
+
+                    if (ConnectionDetector.isNetworkAvailable(getActivity()))
+                    {
+                        Controller.runGlimpse(Controller.COUNSELL, getActivity(), true);
+                    }
+                    else new ToastUtil(getActivity(),Constants.NETWORK_FAILER);
+
                 }
 
 
@@ -86,8 +101,11 @@ public class GlimpseFragment extends Fragment implements MainActivity.OnReplace,
                     startActivity(intent);
                 }
                 else {
-
-                    ((MainActivity) getActivity()).AccessMediator();
+                    if (ConnectionDetector.isNetworkAvailable(getActivity()))
+                    {
+                        ((MainActivity) getActivity()).AccessMediator();
+                    }
+                    else new ToastUtil(getActivity(),Constants.NETWORK_FAILER);
                 }
 
 
@@ -175,7 +193,7 @@ public class GlimpseFragment extends Fragment implements MainActivity.OnReplace,
 
 
     protected void startTracking(String path) {
-        Tracker t = ((SilentSecretApplication) MainActivity.ct.getApplicationContext()).getTracker(
+        Tracker t = ((SilentSecretApplication) ct.getApplicationContext()).getTracker(
                 SilentSecretApplication.TrackerName.APP_TRACKER);
         t.setScreenName(path);
         t.send(new HitBuilders.AppViewBuilder().build());

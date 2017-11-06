@@ -43,6 +43,9 @@ public class HappyFragment extends Fragment implements UpdateCallback {
     private List<Secret> list = null;
 
 
+
+    boolean is_scroll_done = false;
+
     private int SKIP = 0;
     public int preLast;
 
@@ -52,6 +55,30 @@ public class HappyFragment extends Fragment implements UpdateCallback {
 
         mListView = (ScrollDisabledListView) mView.findViewById(R.id.feed_list_view);
 
+        mListView.setScrollEnabled(true);
+
+
+       /* mListView.post(new Runnable() {
+            @Override
+            public void run() {
+                new CountDownTimer(totalScrollTime, scrollPeriod )
+                {
+                    public void onTick(long millisUntilFinished)
+                    {
+                        int scroll = mListView.getScrollY();
+                        if(scroll == 0)
+                        {
+                            mListView.scrollBy(0, heightToScroll);
+
+                        }
+                    }
+
+                    public void onFinish() {
+                        //you can add code for restarting timer here
+                    }
+                }.start();
+            }
+        });*/
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.activity_main_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

@@ -234,9 +234,13 @@
             android:theme="@style/ChatFriendsTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+        <activity
+            android:name=".activities.PrepareMeeting"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
-
-        <activity android:name=".activities.PrepareMeeting"
+        <activity android:name=".activities.CompleteAssignment"
             android:screenOrientation="portrait"
             android:theme="@style/ChatFriendsTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
@@ -321,6 +325,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
 
     </application>
 

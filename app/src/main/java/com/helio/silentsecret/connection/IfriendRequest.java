@@ -120,9 +120,9 @@ public class IfriendRequest {
     String RecoveryServer = "https://dev1.eu-gb.mybluemix.net/api/service";
     //    String RecoveryServer = "https://dev2.eu-gb.mybluemix.net/api/service";
 
-
-     //String MainServer = "https://90d04ade.ngrok.io/api/service";     // local
-    // String RecoveryServer = "https://90d04ade.ngrok.io/api/service"; // local
+    //https://69b40854.ngrok.io/api/service
+    // String MainServer = "https://17a7904f.ngrok.io/api/service";     // local
+   // String RecoveryServer = "https://17a7904f.ngrok.io/api/service"; // local
 
 
     //String MainServer = "https://cypherproduction-v3.eu-gb.mybluemix.net/api/service";
@@ -1866,15 +1866,10 @@ public class IfriendRequest {
         return json;
     }
 
-
-
     private List<RoomsInfoDTO> ParseRooms(String jsonResponse) {
 
         String room_name = "", room_creator = "", room_image = "", room_search_text = "", room_unique_id = "" , ruby_code = "";
-
-
         String status = "";
-
         List<RoomsInfoDTO> roomsInfoDTOs = new ArrayList<>();
         try {
             Object object = new JSONTokener(jsonResponse).nextValue();

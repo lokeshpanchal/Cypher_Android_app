@@ -36,6 +36,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.TimeZone;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -97,6 +98,96 @@ public class CommonFunction {
 
         return time;
 
+    }
+
+
+    public static String getCurrentdateTime() {
+        String time = "";
+        try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+            time = df.format(c.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return time;
+
+    }
+
+    public static String GetDDMM(String dd_mm_yyyy)
+    {
+        String date_time = "";
+
+        String day = "",Month = "",year = "";
+        String appint_array[] = dd_mm_yyyy.split(" ");
+        if (appint_array != null && appint_array.length > 0)
+        {
+            String date_suggestby_counsel = appint_array[0];
+
+            String datesplitarray[] = date_suggestby_counsel.split("/");
+
+            if (datesplitarray != null && datesplitarray.length > 2)
+            {
+                day = datesplitarray[1];
+                Month = datesplitarray[0];
+
+            }
+            date_time = day+"/"+Month;
+
+        }
+        return date_time;
+    }
+
+public static String ChangeDateFormat(String mm_dd_yyyy)
+{
+    String date_time = "";
+
+    String day = "",Month = "",year = "";
+    String appint_array[] = mm_dd_yyyy.split(" ");
+    if (appint_array != null && appint_array.length > 0)
+    {
+        String date_suggestby_counsel = appint_array[0];
+
+        String datesplitarray[] = date_suggestby_counsel.split("/");
+
+        if (datesplitarray != null && datesplitarray.length > 2)
+        {
+            day = datesplitarray[1];
+            Month = datesplitarray[0];
+            year = datesplitarray[2];
+        }
+        date_time = day+"/"+Month+"/"+year +" "+appint_array[1];
+
+    }
+    return date_time;
+}
+
+
+    public static int Getdatediff(String time , String CompareDate)
+    {
+        int day = 0;
+        try {
+            String outputPattern = "MM/dd/yyyy";
+            SimpleDateFormat format = new SimpleDateFormat(outputPattern);
+
+
+            Date Date1 = format.parse(CompareDate);
+            Date Date2 = format.parse(time);
+            long mills = Date2.getTime() - Date1.getTime();
+            long Day1 = mills / (1000 * 60 * 60);
+
+            day = (int) Day1 / 24;
+
+
+           /* if (day < 0)
+                day = 0;*/
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return day;
     }
 
 
@@ -1003,6 +1094,87 @@ public class CommonFunction {
             e.printStackTrace();
         }
         return risk_word;
+    }
+
+
+    public static String getLocalTime(String datetime)
+    {
+        String result = "";
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    "MM/dd/yyyy HH:mm");
+            Date myDate = null;
+            try {
+                myDate = dateFormat.parse(datetime);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            current = Calendar.getInstance();
+
+
+            TimeZone tzCurrent = current.getTimeZone();
+            int offset = tzCurrent.getRawOffset();
+            if (tzCurrent.inDaylightTime(new Date())) {
+                offset = offset + tzCurrent.getDSTSavings();
+            }
+
+            Calendar current1 = Calendar.getInstance();
+
+            current1.setTime(myDate);
+            miliSeconds = current1.getTimeInMillis();
+            miliSeconds = miliSeconds + offset;
+            resultdate = new Date(miliSeconds);
+            SimpleDateFormat destFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+            TimeZone london = TimeZone.getTimeZone("Europe/London");
+            long now = resultdate.getTime();
+            Date resultdate1 = new Date(miliSeconds - london.getOffset(now));
+            result = destFormat.format(resultdate1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return result;
+    }
+    private static Calendar current;
+    private static long miliSeconds;
+    private static Date resultdate;
+
+    public static String getGMTTime(String datetime)
+    {
+        String result = "";
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    "MM/dd/yyyy HH:mm");
+            Date myDate = null;
+            try {
+                myDate = dateFormat.parse(datetime);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            current = Calendar.getInstance();
+            current.setTime(myDate);
+            miliSeconds = current.getTimeInMillis();
+            TimeZone tzCurrent = current.getTimeZone();
+            int offset = tzCurrent.getRawOffset();
+            if (tzCurrent.inDaylightTime(new Date())) {
+                offset = offset + tzCurrent.getDSTSavings();
+            }
+            miliSeconds = miliSeconds - offset;
+            resultdate = new Date(miliSeconds);
+            SimpleDateFormat destFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+            TimeZone london = TimeZone.getTimeZone("Europe/London");
+            long now = resultdate.getTime();
+            Date resultdate1 = new Date(miliSeconds + london.getOffset(now));
+            result = destFormat.format(resultdate1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return result;
     }
 
 }

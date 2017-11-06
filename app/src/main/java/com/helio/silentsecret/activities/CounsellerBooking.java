@@ -2550,7 +2550,8 @@ public class CounsellerBooking extends Activity {
 
                             try {
                                 String appint_array[] = appointmentdate.split(" ");
-                                if (appint_array != null && appint_array.length > 0) {
+                                if (appint_array != null && appint_array.length > 0)
+                                {
                                     date_suggestby_counsel = appint_array[0];
 
                                     String datesplitarray[] = date_suggestby_counsel.split("/");
