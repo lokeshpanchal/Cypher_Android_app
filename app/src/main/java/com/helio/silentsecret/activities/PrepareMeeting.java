@@ -25,6 +25,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.helio.silentsecret.EncryptionDecryption.CryptLib;
 import com.helio.silentsecret.R;
 import com.helio.silentsecret.connection.IfriendRequest;
 import com.helio.silentsecret.dialogs.CustomDateTimePicker;
@@ -78,8 +79,6 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
             R.drawable.create_lonely, R.drawable.ic_happy, R.drawable.create_greatful, R.drawable.create_frustated,
             R.drawable.ic_love, R.drawable.ic_angry, R.drawable.ic_ashamed, R.drawable.create_anxious};
 
-    final int SCARED = 0, FML = 1, SAD = 2, LOL = 3, LONELY = 4, HAPPY = 5, GRATEFUL = 6, FRUSTRATED = 7, LOVE = 8, ANGRY = 9,
-            ASHAMED = 10, ANXIOUS = 11;
     /*String[] emotion_name_array = {"scared", "FML", "sad", "lol", "lonely", "happy", "grateful", "frustrated"
             , "love", "angry", "ashamed", "anxious"};*/
     ImageView mFeelingAnxious;
@@ -609,65 +608,65 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
 
             case R.id.feeling_angry:
                 share_mood_layout.setVisibility(View.GONE);
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[ANGRY]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[ANGRY]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.ANGRY]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.ANGRY]);
                 break;
             case R.id.feeling_anxious:
                 share_mood_layout.setVisibility(View.GONE);
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[ANXIOUS]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[ANXIOUS]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.ANXIOUS]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.ANXIOUS]);
                 break;
             case R.id.feeling_ashamed:
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[ASHAMED]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[ASHAMED]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.ASHAMED]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.ASHAMED]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.feeling_fml:
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[FML]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[FML]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.FML]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.FML]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.feeling_frustrated:
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[FRUSTRATED]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[FRUSTRATED]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.FRUSTRATED]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.FRUSTRATED]);
                 share_mood_layout.setVisibility(View.GONE);
 
                 break;
             case R.id.feeling_greatful:
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[GRATEFUL]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[GRATEFUL]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.GRATEFUL]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.GRATEFUL]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.feeling_happy:
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[HAPPY]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[HAPPY]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.HAPPY]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.HAPPY]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.feeling_lol:
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[LOL]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[LOL]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.LOL]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.LOL]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.feeling_lonely:
 
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[LONELY]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[LONELY]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.LONELY]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.LONELY]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.feeling_love:
 
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[LOVE]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[LOVE]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.LOVE]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.LOVE]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.feeling_sad:
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[SAD]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[SAD]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.SAD]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.SAD]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.feeling_scared:
-                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[SCARED]);
-                emotion_name_list.set(emotion_index, Constants.emotion_name_array[SCARED]);
+                emotion_list.get(emotion_index).setBackgroundResource(emogies_icon_array[Constants.SCARED]);
+                emotion_name_list.set(emotion_index, Constants.emotion_name_array[Constants.SCARED]);
                 share_mood_layout.setVisibility(View.GONE);
                 break;
             case R.id.done_button:
@@ -725,6 +724,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
 
                     // room_topic = room_topic + "#" + text;
                 }
+
                 new CreateMeeting().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } else {
                 Toast.makeText(ct, "Added point should not be empty.", Toast.LENGTH_SHORT).show();
@@ -733,16 +733,14 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
+    private boolean is_running = false;
 
     private class CreateMeeting extends android.os.AsyncTask<String, String, Bitmap> {
 
         android.app.ProgressDialog pDialog;
         String data = "0";
         Bitmap bitmap;
-
-
         String response = "";
-
 
         @Override
         protected void onPreExecute() {
@@ -754,52 +752,57 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
         protected Bitmap doInBackground(String... args) {
             try {
 
+                if (is_running == false)
+                {
+                    is_running = true;
 
-                IfriendRequest httpRequest = new IfriendRequest(ct);
-
-
-                JSONObject mJsonObjectSub = new JSONObject();
-                JSONObject requestdata = new JSONObject();
-                JSONObject main_object = new JSONObject();
-
-                JSONArray bullet_note = new JSONArray();
-                JSONArray bullet_mood = new JSONArray();
+                    IfriendRequest httpRequest = new IfriendRequest(ct);
 
 
-                for (int i = 0; i < final_note_list.size(); i++) {
-                    bullet_note.put(final_note_list.get(i));
+                    JSONObject mJsonObjectSub = new JSONObject();
+                    JSONObject requestdata = new JSONObject();
+                    JSONObject main_object = new JSONObject();
+
+                    JSONArray bullet_note = new JSONArray();
+                    JSONArray bullet_mood = new JSONArray();
+
+
+                    for (int i = 0; i < final_note_list.size(); i++) {
+                        bullet_note.put(CryptLib.encrypt(final_note_list.get(i)));
+                    }
+
+                    for (int i = 0; i < final_mood_list.size(); i++) {
+                        bullet_mood.put(final_mood_list.get(i));
+                    }
+                    meeting_date_time = CommonFunction.getGMTTime(meeting_date_time);
+
+
+                    String mediator_name = AppSession.getValue(ct, Constants.MEDIATOR_SUPPORT_WORKER_NAME);
+                    String mediator_id = AppSession.getValue(ct, Constants.MEDIATOR_AGENCY_ID);
+
+                    mJsonObjectSub.put("lat", "" + latitude);
+                    mJsonObjectSub.put("long", "" + longitude);
+                    mJsonObjectSub.put("clmtngtime01", meeting_date_time);
+                    mJsonObjectSub.put("clmtngtitle01", CryptLib.encrypt(meeting_title));
+                    mJsonObjectSub.put("clmtngnote01", bullet_note);
+                    mJsonObjectSub.put("clmediatorun01", mediator_name);
+                    mJsonObjectSub.put("clun01", MainActivity.enc_username);
+                    mJsonObjectSub.put("address", CryptLib.encrypt(meeting_address));
+                    mJsonObjectSub.put("clmtngnotemood01", bullet_mood);
+                    mJsonObjectSub.put("agency_unq_id", mediator_id);
+
+
+                    requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
+                    requestdata.put("data", mJsonObjectSub);
+                    requestdata.put("requestType", "createMeeting");
+
+                    main_object.put("requestData", requestdata);
+                    try {
+                        response = httpRequest.Create_room(main_object.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-
-                for (int i = 0; i < final_mood_list.size(); i++) {
-                    bullet_mood.put(final_mood_list.get(i));
-                }
-                meeting_date_time = CommonFunction.getGMTTime(meeting_date_time);
-
-
-                String mediator_name = AppSession.getValue(ct, Constants.MEDIATOR_SUPPORT_WORKER_NAME);
-
-                mJsonObjectSub.put("lat", "" + latitude);
-                mJsonObjectSub.put("long", "" + longitude);
-                mJsonObjectSub.put("clmtngtime01", meeting_date_time);
-                mJsonObjectSub.put("clmtngtitle01", meeting_title);
-                mJsonObjectSub.put("clmtngnote01", bullet_note);
-                mJsonObjectSub.put("clmediatorun01", mediator_name);
-                mJsonObjectSub.put("clun01", MainActivity.enc_username);
-                mJsonObjectSub.put("address", meeting_address);
-                mJsonObjectSub.put("clmtngnotemood01", bullet_mood);
-
-
-                requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
-                requestdata.put("data", mJsonObjectSub);
-                requestdata.put("requestType", "createMeeting");
-
-                main_object.put("requestData", requestdata);
-                try {
-                    response = httpRequest.Create_room(main_object.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -809,9 +812,13 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
         protected void onPostExecute(Bitmap image) {
             try {
 
-                if (response != null) {
+                if (response != null)
+                {
+                    Mediator_meeting.is_from_create_meeting = true;
                     finish();
                 }
+
+                is_running = false;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -820,19 +827,17 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
-    private void ShowOldTitle()
-    {
+    private void ShowOldTitle() {
         pre_meet_layout.removeAllViews();
         check_box_list.clear();
-        for (int i=0; i <Mediator_meeting.pre_meeting_title.size(); i++)
-        {
+        for (int i = 0; i < Mediator_meeting.pre_meeting_title.size(); i++) {
             int width = CommonFunction.getScreenWidth();
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             LinearLayout mainlayout = new LinearLayout(ct);
             mainlayout.setOrientation(LinearLayout.HORIZONTAL);
             // lp.setMargins(width / 150, width / 100,width / 100, width / 100);
             mainlayout.setLayoutParams(lp);
-            lp = new LinearLayout.LayoutParams(width /10, width / 10);
+            lp = new LinearLayout.LayoutParams(width / 10, width / 10);
             lp.setMargins(width / 400, width / 100, 0, 0);
             lp.gravity = Gravity.CENTER_VERTICAL;
             TextView dot = new TextView(ct);
@@ -840,23 +845,18 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
             dot.setTextSize(13);
             dot.setGravity(Gravity.CENTER);
             dot.setBackgroundResource(R.drawable.unmark_checkbox);
-            dot.setId(i+1);
+            dot.setId(i + 1);
             dot.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
-                    try
-                    {
-                        for (int i=0; i <check_box_list.size(); i++)
-                        {
+                public void onClick(View v) {
+                    try {
+                        for (int i = 0; i < check_box_list.size(); i++) {
                             check_box_list.get(i).setBackgroundResource(R.drawable.unmark_checkbox);
                         }
                         v.setBackgroundResource(R.drawable.mark_check_box);
-                        int index = v.getId()-1;
+                        int index = v.getId() - 1;
                         edt_meeting_title.setText(Mediator_meeting.pre_meeting_title.get(index));
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -870,7 +870,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
             text.setTextSize(15);
             text.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/ubuntu.ttf"));
             text.setTextColor(getResources().getColor(R.color.homemenu));
-            dot.setGravity(Gravity.CENTER|Gravity.LEFT);
+            text.setGravity(Gravity.CENTER | Gravity.LEFT);
             text.setText(Mediator_meeting.pre_meeting_title.get(i));
 
             mainlayout.addView(dot);

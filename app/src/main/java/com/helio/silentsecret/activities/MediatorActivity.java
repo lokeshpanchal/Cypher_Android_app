@@ -32,7 +32,7 @@ public class MediatorActivity extends AppCompatActivity {
     Context ct = this;
 
     String mediator_code = "";
-    LinearLayout meeting_workshop = null , assignment = null;
+    LinearLayout meeting_workshop = null , assignment = null , daily_emotion = null , raise_awareness = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +45,8 @@ public class MediatorActivity extends AppCompatActivity {
         progress_bar = (RelativeLayout) findViewById(R.id.progress_bar);
         meeting_workshop = (LinearLayout) findViewById(R.id.meeting_workshop);
         assignment = (LinearLayout) findViewById(R.id.assignment);
+        daily_emotion = (LinearLayout) findViewById(R.id.daily_emotion);
+        raise_awareness = (LinearLayout) findViewById(R.id.raise_awareness);
         back_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +68,20 @@ public class MediatorActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        daily_emotion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ct, DailyEmotion.class);
+                startActivity(intent);
+            }
+        });
+        raise_awareness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ct, SetGoalsAwareness.class);
+                startActivity(intent);
+            }
+        });
 
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +167,8 @@ public class MediatorActivity extends AppCompatActivity {
                                 if (jsonObject.has("status"))
                                     status = jsonObject.getString("status");
 
-                                if (status != null && status.equalsIgnoreCase("true")) {
+                                if (status != null && status.equalsIgnoreCase("true"))
+                                {
                                     String userinfo = "";
 
                                     if (jsonObject.has("data"))
@@ -184,6 +200,8 @@ public class MediatorActivity extends AppCompatActivity {
                                         mediator_option.setVisibility(View.VISIBLE);
 
                                 }
+                                else
+                                    new ToastUtil(ct,"Please enter valid code.");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

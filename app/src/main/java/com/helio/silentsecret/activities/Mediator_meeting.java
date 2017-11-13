@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.helio.silentsecret.EncryptionDecryption.CryptLib;
 import com.helio.silentsecret.R;
 import com.helio.silentsecret.connection.IfriendRequest;
 import com.helio.silentsecret.models.MeetingDetail;
@@ -42,7 +43,7 @@ public class Mediator_meeting extends AppCompatActivity {
     TextView new_meeting_textview = null;
     Context ct = this;
 
-
+public  static boolean is_from_create_meeting = false;
     int emogies_icon_array[] = {R.drawable.ic_scared, R.drawable.create_fml, R.drawable.ic_sad, R.drawable.create_lol,
             R.drawable.create_lonely, R.drawable.ic_happy, R.drawable.create_greatful, R.drawable.create_frustated,
             R.drawable.ic_love, R.drawable.ic_angry, R.drawable.ic_ashamed, R.drawable.create_anxious};
@@ -51,6 +52,7 @@ public class Mediator_meeting extends AppCompatActivity {
     List<String> emotion_name_list = new ArrayList<>();
     RelativeLayout view_meet_layout = null;
     boolean is_from_view = false;
+    TextView emoji_text = null;
     List<MeetingDetail> meetingDetail = new ArrayList<>();
     public  static List<String> pre_meeting_title = new ArrayList<>();
 
@@ -65,6 +67,7 @@ public class Mediator_meeting extends AppCompatActivity {
         meeting_date_time = (TextView) findViewById(R.id.meeting_date_time);
         view_back = (TextView) findViewById(R.id.view_back);
         prev_back = (TextView) findViewById(R.id.prev_back);
+        emoji_text = (TextView) findViewById(R.id.emoji_text);
         new_meeting_textview = (TextView) findViewById(R.id.new_meeting_textview);
         prev_meet_layout = (RelativeLayout) findViewById(R.id.prev_meet_layout);
         view_meet_layout = (RelativeLayout) findViewById(R.id.view_meet_layout);
@@ -97,6 +100,8 @@ public class Mediator_meeting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 view_meet_layout.setVisibility(View.GONE);
+
+
             }
         });
 
@@ -114,9 +119,11 @@ public class Mediator_meeting extends AppCompatActivity {
         view_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (meetingDetail != null && meetingDetail.size() > 0) {
-                    view_meet_layout.setVisibility(View.VISIBLE);
-                    Viewmeeting();
+                if (meetingDetail != null && meetingDetail.size() > 0)
+                {
+                    prev_meet_layout.setVisibility(View.VISIBLE);
+                   // view_meet_layout.setVisibility(View.VISIBLE);
+                    showCurrentMeeting();
                 }
             }
         });
@@ -127,6 +134,100 @@ public class Mediator_meeting extends AppCompatActivity {
             }
         });
 
+        is_from_create_meeting = false;
+    }
+
+
+    private void showCurrentMeeting() {
+        prev_main_layout.removeAllViews();
+        int width = CommonFunction.getScreenWidth();
+        for (int i = 0; i < meetingDetail.size(); i++) {
+
+
+            String currentdate_time = CommonFunction.getCurrentdateTime();
+
+            int date_diff = CommonFunction.Getdatediff(meetingDetail.get(i).getClmtngtime01(), currentdate_time);
+
+            if (date_diff >= 0) {
+
+
+                LinearLayout main_linear = new LinearLayout(ct);
+                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.WRAP_CONTENT);
+                //llp.setMargins(0,width/60,0,width/60);
+                main_linear.setOrientation(LinearLayout.HORIZONTAL);
+                main_linear.setLayoutParams(llp);
+                main_linear.setId(i + 1);
+                main_linear.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int index = v.getId() - 1;
+                        view_meet_layout.setVisibility(View.VISIBLE);
+                        ViewmeetingDetail(meetingDetail.get(index));
+                    }
+                });
+
+                llp = new LinearLayout.LayoutParams(width, width / 50);
+                TextView margin2 = new TextView(ct);
+                margin2.setLayoutParams(llp);
+
+                prev_main_layout.addView(margin2);
+
+
+                llp = new LinearLayout.LayoutParams(width / 5, width / 4 + width / 30);
+                LinearLayout dates_leanir = new LinearLayout(ct);
+                dates_leanir.setLayoutParams(llp);
+                dates_leanir.setOrientation(LinearLayout.VERTICAL);
+                dates_leanir.setBackgroundResource(R.drawable.white_left_corner);
+
+
+                llp = new LinearLayout.LayoutParams(width / 5, width / 12);
+                TextView margin1 = new TextView(ct);
+                margin1.setLayoutParams(llp);
+                dates_leanir.addView(margin1);
+
+                llp = new LinearLayout.LayoutParams(width / 5, LinearLayout.LayoutParams.WRAP_CONTENT);
+                TextView dates = new TextView(ct);
+                dates.setLayoutParams(llp);
+
+                String dd_mm_yy = CommonFunction.ChangeDateFormat(meetingDetail.get(i).getClmtngtime01());
+                dates.setText(CommonFunction.GetDDMM(dd_mm_yy));
+                dates.setTextSize(20);
+                dates.setTextColor(Color.parseColor("#3daaa4"));
+                dates.setGravity(Gravity.CENTER);
+
+                llp = new LinearLayout.LayoutParams(width / 5, LinearLayout.LayoutParams.WRAP_CONTENT);
+                TextView last_edited = new TextView(ct);
+                last_edited.setLayoutParams(llp);
+
+                last_edited.setText("");
+                last_edited.setTextSize(12);
+                last_edited.setGravity(Gravity.CENTER);
+                last_edited.setTextColor(Color.parseColor("#3daaa4"));
+
+                dates_leanir.addView(dates);
+                dates_leanir.addView(last_edited);
+
+                llp = new LinearLayout.LayoutParams(width / 2 + width / 4, width / 4 + width / 30);
+                TextView meeting_title = new TextView(ct);
+                meeting_title.setLayoutParams(llp);
+
+                meeting_title.setText(meetingDetail.get(i).getClmtngtitle01());
+                meeting_title.setTextSize(15);
+                meeting_title.setTextColor(Color.parseColor("#ffffff"));
+                meeting_title.setGravity(Gravity.CENTER);
+                meeting_title.setBackgroundResource(R.drawable.glimpse_button);
+
+                main_linear.addView(dates_leanir);
+                main_linear.addView(meeting_title);
+
+                prev_main_layout.addView(main_linear);
+                llp = new LinearLayout.LayoutParams(width, width / 50);
+                TextView margin = new TextView(ct);
+                margin.setLayoutParams(llp);
+
+                prev_main_layout.addView(margin);
+            }
+        }
     }
 
     private void showPrevMeeting() {
@@ -190,7 +291,7 @@ public class Mediator_meeting extends AppCompatActivity {
                 TextView last_edited = new TextView(ct);
                 last_edited.setLayoutParams(llp);
 
-                last_edited.setText("last edited");
+                last_edited.setText("");
                 last_edited.setTextSize(12);
                 last_edited.setGravity(Gravity.CENTER);
                 last_edited.setTextColor(Color.parseColor("#3daaa4"));
@@ -322,12 +423,17 @@ public class Mediator_meeting extends AppCompatActivity {
                                             clmtngtime01 = UserInfoobj.getString("clmtngtime01");
 
 
-                                        if (UserInfoobj.has("clmtngtitle01"))
+                                        if (UserInfoobj.has("clmtngtitle01")) {
                                             clmtngtitle01 = UserInfoobj.getString("clmtngtitle01");
+
+                                            clmtngtitle01 =   CryptLib.decrypt(clmtngtitle01);
+                                        }
                                         if (UserInfoobj.has("clmediatorun01"))
                                             clmediatorun01 = UserInfoobj.getString("clmediatorun01");
-                                        if (UserInfoobj.has("address"))
+                                        if (UserInfoobj.has("address")) {
                                             address = UserInfoobj.getString("address");
+                                            address =   CryptLib.decrypt(address);
+                                        }
 
                                         if (UserInfoobj.has("meeting_unq_id"))
                                             meeting_unq_id = UserInfoobj.getString("meeting_unq_id");
@@ -349,10 +455,11 @@ public class Mediator_meeting extends AppCompatActivity {
                                             keys_array1 = UserInfoobj.getJSONArray("clmtngnote01");
 
                                         String flausers2[] = toStringArray(keys_array1);
-
                                         ArrayList<String> flagusers1 = new ArrayList<String>();
-                                        for (int k = 0; k < flausers2.length; k++) {
-                                            flagusers1.add(flausers2[k]);
+                                        for (int k = 0; k < flausers2.length; k++)
+                                        {
+                                            flagusers1.add(CryptLib.decrypt(flausers2[k]));
+
                                         }
 
                                         clmtngtime01 = CommonFunction.getLocalTime(clmtngtime01);
@@ -371,8 +478,15 @@ public class Mediator_meeting extends AppCompatActivity {
                 }
 
 
-                if (meetingDetail != null && meetingDetail.size() > 0) {
+                if (meetingDetail != null && meetingDetail.size() > 0)
+                {
                     CheckMeetings();
+                    if(is_from_create_meeting)
+                    {
+                        is_from_create_meeting = false;
+                        prev_meet_layout.setVisibility(View.VISIBLE);
+                        showCurrentMeeting();
+                    }
                 }
 
             } catch (Exception e) {
@@ -386,8 +500,8 @@ public class Mediator_meeting extends AppCompatActivity {
     private void CheckMeetings() {
 
         for (int i = 0; i < meetingDetail.size(); i++) {
-            String currentdate_time = CommonFunction.getCurrentdateTime();
 
+            String currentdate_time = CommonFunction.getDateToString(MainActivity.currentdatetime);
             int date_diff = CommonFunction.Getdatediff(meetingDetail.get(i).getClmtngtime01(), currentdate_time);
 
             if (date_diff >= 0) {
@@ -401,7 +515,7 @@ public class Mediator_meeting extends AppCompatActivity {
     private void Viewmeeting() {
 
         for (int i = 0; i < meetingDetail.size(); i++) {
-            String currentdate_time = CommonFunction.getCurrentdateTime();
+            String currentdate_time = CommonFunction.getDateToString(MainActivity.currentdatetime);
 
             int date_diff = CommonFunction.Getdatediff(meetingDetail.get(i).getClmtngtime01(), currentdate_time);
 
@@ -418,7 +532,7 @@ public class Mediator_meeting extends AppCompatActivity {
         pre_meeting_title.clear();
         for (int i = 0; i < meetingDetail.size(); i++)
         {
-            String currentdate_time = CommonFunction.getCurrentdateTime();
+            String currentdate_time = CommonFunction.getDateToString(MainActivity.currentdatetime);
 
             int date_diff = CommonFunction.Getdatediff(meetingDetail.get(i).getClmtngtime01(), currentdate_time);
             if (date_diff < 0)
@@ -429,7 +543,7 @@ public class Mediator_meeting extends AppCompatActivity {
         }
     }
 
-    private void ViewmeetingDetail(MeetingDetail meetingDetail) {
+    private void ViewmeetingDetail(final MeetingDetail meetingDetail) {
         try {
             bullet_view_main_layout.removeAllViews();
             int width = CommonFunction.getScreenWidth();
@@ -441,7 +555,8 @@ public class Mediator_meeting extends AppCompatActivity {
             meeting_date_time.setText(ChangeDateFormat(meetingDetail.getClmtngtime01()));
 
 
-            for (int j = 0; j < meetingDetail.getClmtngnote01().size(); j++) {
+            for (int j = 0; j < meetingDetail.getClmtngnote01().size(); j++)
+            {
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 RelativeLayout mainlayout = new RelativeLayout(this);
                 mainlayout.setLayoutParams(lp);
@@ -457,7 +572,7 @@ public class Mediator_meeting extends AppCompatActivity {
                 dot.setBackgroundResource(R.drawable.dot);
 
 
-                dot.setId(1 + 1);
+                dot.setId(j + 1);
                 mainlayout.addView(dot);
 
 
@@ -472,7 +587,7 @@ public class Mediator_meeting extends AppCompatActivity {
                 topic_desc.setTextColor(Color.parseColor("#000000"));
                 topic_desc.setTextSize(20);
                 topic_desc.setPadding(width / 100, width / 50, width / 100, 0);
-                topic_desc.setId(1 + 2);
+                topic_desc.setId(j + 2);
                 topic_desc.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/ubuntu.ttf"));
 
                 lp = new RelativeLayout.LayoutParams(width / 12, width / 12);
@@ -482,8 +597,61 @@ public class Mediator_meeting extends AppCompatActivity {
                 emotion_icon.setLayoutParams(lp);
                 int index = emotion_name_list.indexOf(meetingDetail.getClmtngnotemood01().get(j));
                 emotion_icon.setBackgroundResource(emogies_icon_array[index]);
+                emotion_icon.setId(j+3);
+                emotion_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int index = v.getId() -3;
+                        countr =0;
+                        is_from_appear = true;
+
+                        int index1 = emotion_name_list.indexOf(meetingDetail.getClmtngnotemood01().get(index));
+                        emoji_text.setText(emotion_name_list.get(index1));
+                        emoji_text.postDelayed(hide_shoe_ext,100);
+
+                    }
+                });
+               /* emotion_icon.setOnTouchListener(new View.OnTouchListener()
+                {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
+                    {
+                        switch (event.getActionMasked()) {
+                            case MotionEvent.ACTION_DOWN:
+                                try {
 
 
+                                   float start_dX = v.getX();
+                                    float start_dY = v.getY();
+
+                                  //  float  dX = v.getX() - event.getRawX();
+                                    float  dY = v.getPivotY();
+                                    float  dY1 = v.getScaleY();
+                                    float  dY2 = v.getTranslationY();
+
+                                    emoji_text.setX(start_dX);
+                                    emoji_text.setY(start_dY);
+
+
+
+                                    int index = v.getId() -3;
+                                    countr =0;
+                                    is_from_appear = true;
+                                    int index1 = emotion_name_list.indexOf(meetingDetail.getClmtngnotemood01().get(index));
+                                    emoji_text.setText(emotion_name_list.get(index1));
+                                    emoji_text.postDelayed(hide_shoe_ext,100);
+
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+
+                        }
+
+                        return true;
+                    }
+                });*/
                 mainlayout.addView(topic_desc);
                 mainlayout.addView(emotion_icon);
 
@@ -495,4 +663,39 @@ public class Mediator_meeting extends AppCompatActivity {
         }
     }
 
+
+
+    int countr =0;
+    double alpha_value = 0.02;
+    boolean is_from_appear = false;
+    Runnable hide_shoe_ext = new Runnable() {
+        @Override
+        public void run()
+        {
+            emoji_text.removeCallbacks(hide_shoe_ext);
+
+            if(countr<80 && is_from_appear)
+            {
+                double curr_val = alpha_value*countr;
+                float currv = (float)curr_val;
+                emoji_text.setAlpha(currv);
+                emoji_text.postDelayed(hide_shoe_ext,10);
+                emoji_text.setVisibility(View.VISIBLE);
+                countr++;
+            }else if(countr >0 )
+            {
+                is_from_appear = false;
+                    double curr_val = alpha_value*countr;
+                    float currv = (float)curr_val;
+                    emoji_text.setAlpha(currv);
+                emoji_text.postDelayed(hide_shoe_ext,10);
+                countr--;
+            }
+            else
+            {
+                emoji_text.setVisibility(View.GONE);
+            }
+
+        }
+    };
 }

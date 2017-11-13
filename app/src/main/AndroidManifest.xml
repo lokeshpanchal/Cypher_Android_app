@@ -239,12 +239,25 @@
             android:screenOrientation="portrait"
             android:theme="@style/ChatFriendsTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
-        <activity android:name=".activities.CompleteAssignment"
+        <activity
+            android:name=".activities.CompleteAssignment"
             android:screenOrientation="portrait"
             android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.SetGoalsAwareness"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.DailyEmotion"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".activities.EmotionDialoagActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
-
         <!--
         <receiver android:name="com.parse.ParseBroadcastReceiver">
             <intent-filter>

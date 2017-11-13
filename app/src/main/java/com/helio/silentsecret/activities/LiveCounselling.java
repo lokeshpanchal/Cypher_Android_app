@@ -1727,6 +1727,19 @@ public class LiveCounselling extends SinchBaseActivity implements SinchService.S
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                if(currentdatetime == null)
+                {
+                    SimpleDateFormat dateFormat1 = new SimpleDateFormat(
+                            "MM/dd/yyyy HH:mm");
+                    try {
+                        currentdatetime = dateFormat1.parse(response);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 setdate_time();
             }
             new GetAppointment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

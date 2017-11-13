@@ -93,11 +93,14 @@ import com.helio.silentsecret.fragments.MineSecretsFragment;
 import com.helio.silentsecret.fragments.SearchFragment;
 import com.helio.silentsecret.models.AllIfriendDTO;
 import com.helio.silentsecret.models.AllIfriendobjectDTO;
+import com.helio.silentsecret.models.GetCurrentDateObjectDTO;
+import com.helio.silentsecret.models.GetCurrentDateTimeDTO;
 import com.helio.silentsecret.models.IfriendSecretPushDTO;
 import com.helio.silentsecret.models.IfriendsecrtpushobjectDTO;
 import com.helio.silentsecret.pushnotification.GCMPushNotifHandler;
 import com.helio.silentsecret.pushnotification.GcmIntentService;
 import com.helio.silentsecret.utils.AppSession;
+import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.KeyboardUtil;
 import com.helio.silentsecret.utils.Preference;
@@ -128,6 +131,8 @@ public class MainActivity extends BaseActivity implements
 
     private double latitude;
     private double longitude;
+
+   public static Date currentdatetime = null;
    // Location location;
 
     RelativeLayout landing_page = null, ruby_code_layout = null;
@@ -653,7 +658,7 @@ public class MainActivity extends BaseActivity implements
 
             e.printStackTrace();
         }
-
+        new GetCurrentDateTime().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         try {
             mainActivity = this;
             is_from_commNotif = false;
@@ -3699,6 +3704,70 @@ public class MainActivity extends BaseActivity implements
                 .build();
     }
 
+    private class GetCurrentDateTime extends android.os.AsyncTask<String, String, Bitmap> {
 
+        android.app.ProgressDialog pDialog;
+        String data = "0";
+        Bitmap bitmap;
+
+        String response = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+
+
+                IfriendRequest http = new IfriendRequest(ct);
+
+                GetCurrentDateTimeDTO allIfriendDTO = new GetCurrentDateTimeDTO("currentTime");
+
+                GetCurrentDateObjectDTO getCurrentDateObjectDTO = new GetCurrentDateObjectDTO(allIfriendDTO);
+
+
+                response = http.GetDateTime(getCurrentDateObjectDTO);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            if (response != null && !response.equalsIgnoreCase("")) {
+                //currentdatetime = token.getUpdatedAt();
+
+                response = CommonFunction.getLocalTime(response);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        "MM/dd/yyyy HH:mm:ss");
+                try {
+                    currentdatetime = dateFormat.parse(response);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if(currentdatetime == null)
+                {
+                    SimpleDateFormat dateFormat1 = new SimpleDateFormat(
+                            "MM/dd/yyyy HH:mm");
+                    try {
+                        currentdatetime = dateFormat1.parse(response);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+    }
 }
 

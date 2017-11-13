@@ -122,6 +122,9 @@ public class Constants {
     public final static String USER_IS_VERIFIED = "isVerified";
     public final static String USER_EMAIL = "email_id";
 
+
+    public final static String TODAYS_EMOTION = "email_id";
+
     public final static String USER_VERIFIED = "is_verified";
     public final static String USER_FLAG = "is_flaged";
 
@@ -267,7 +270,7 @@ public class Constants {
     public final static String ACCESS_BOOK_APPONTMENT = "access_book_appointment";
     public final static String ACCESS_PENDING_RATING = "access_pending_rating";
 
-
+    public final static String [] emotion_color_array = {"#6e1f93","#fb8ec7","#fdc601","#8e1042","#35e1ec","#eb4040"};
     public final static String ACCESS_UNVERIFY_ME = "access_unverify_me";
 
     public final static String USED_QR_CODE = "used_qr_code";
@@ -315,6 +318,15 @@ public class Constants {
     public static final String USER_FIRST_NAME = "user_firstname";
     public static final String SHOW_THANK_MESSAGE = "thank_you_message";
     public static final String NETWORK_FAILER = "Please check your internet connection.";
+
+    public static final String TEXT_AREA_TYPE = "textarea";
+    public static final String TEXT_TYPE = "text";
+    public static final String PARAGRAPH = "paragraph";
+    public static final String DATE_TYPE = "date";
+    public static final String DROP_DOWN_TYPE = "select";
+    public static final String NUMBER_TYPE = "number";
+    public static final String RADIO_GROUP_TYPE = "radio-group";
+    public static final String CHECKBOX_GROUP_TYPE = "checkbox-group";
 
 
     public static final String GUEST_USER_NAME = "guest_username";
@@ -496,4 +508,6 @@ public class Constants {
 
 
 
+    public static final int SCARED = 0, FML = 1, SAD = 2, LOL = 3, LONELY = 4, HAPPY = 5, GRATEFUL = 6, FRUSTRATED = 7, LOVE = 8, ANGRY = 9,
+            ASHAMED = 10, ANXIOUS = 11;
 }

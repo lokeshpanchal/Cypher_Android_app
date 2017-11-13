@@ -101,6 +101,21 @@ public class CommonFunction {
     }
 
 
+    public static String getDateToString(Date date) {
+        String time = "";
+        try {
+           // Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+            time = df.format(date.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return time;
+
+    }
+
+
     public static String getCurrentdateTime() {
         String time = "";
         try {

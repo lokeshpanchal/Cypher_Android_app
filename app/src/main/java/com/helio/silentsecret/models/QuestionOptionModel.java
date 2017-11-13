@@ -7,7 +7,15 @@ public class QuestionOptionModel
 {
 
 
-   String label = "";
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    String label = "";
 
     public String getValue() {
         return value;
@@ -18,11 +26,22 @@ public class QuestionOptionModel
     }
 
     String value = "";
-    public QuestionOptionModel(String label, String   value )
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    boolean selected = false;
+    public QuestionOptionModel(String label, String   value ,boolean selected)
     {
         super();
         this.label = label;
         this.value = value;
+        this.selected = selected;
     }
 
 }

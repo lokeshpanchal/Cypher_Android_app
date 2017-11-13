@@ -45,125 +45,125 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_margin="10dp"
-           android:orientation="vertical">
-           <LinearLayout
-               android:id="@+id/pre_meeting"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_marginTop="10dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
 
-               android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/pre_meeting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
 
-               <ImageView
-                   android:layout_width="0dp"
-                   android:layout_height="@dimen/glimpse_button_height"
-                   android:layout_gravity="center_vertical"
-                   android:layout_weight="3"
-                   android:background="@drawable/white_left_corner"
-                   android:gravity="center"
-                   android:padding="10dp"
-                   android:src="@drawable/pre_meeting" />
+                android:orientation="horizontal">
 
-               <com.helio.silentsecret.utils.MyTextView
-                   android:layout_width="0dp"
-                   android:layout_height="match_parent"
-                   android:layout_weight="9"
-                   android:paddingLeft="30dp"
-                   android:paddingRight="30dp"
-                   android:background="@drawable/glimpse_button"
-                   android:gravity="center"
-                   android:text="previous meeting/workshop preparation"
-                   android:textColor="@color/white"
-                   android:textSize="@dimen/meeting_option_text_size"  />
-           </LinearLayout>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/glimpse_button_height"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:background="@drawable/white_left_corner"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/pre_meeting" />
 
-           <LinearLayout
-               android:id="@+id/new_meeting"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_marginTop="10dp"
+                <com.helio.silentsecret.utils.MyTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:background="@drawable/glimpse_button"
+                    android:gravity="center"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    android:text="previous meeting/workshop preparation"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/meeting_option_text_size" />
+            </LinearLayout>
 
-               android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/new_meeting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
 
-               <ImageView
-                   android:layout_width="0dp"
-                   android:layout_height="@dimen/glimpse_button_height"
-                   android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-                   android:layout_weight="3"
-                   android:background="@drawable/white_left_corner"
-                   android:gravity="center"
-                   android:padding="10dp"
-                   android:src="@drawable/new_meeting" />
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/glimpse_button_height"
+                    android:layout_gravity="center_vertical"
 
-               <com.helio.silentsecret.utils.MyTextView
-                   android:layout_width="0dp"
-                   android:layout_height="match_parent"
-                   android:layout_weight="9"
-                   android:id="@+id/new_meeting_textview"
-                   android:background="@drawable/glimpse_button"
-                   android:gravity="center"
-                   android:paddingLeft="30dp"
-                   android:paddingRight="30dp"
-                   android:text="new meeting/workshop preparation"
-                   android:textColor="@color/white"
-                   android:textSize="@dimen/meeting_option_text_size"  />
-           </LinearLayout>
+                    android:layout_weight="3"
+                    android:background="@drawable/white_left_corner"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/new_meeting" />
+
+                <com.helio.silentsecret.utils.MyTextView
+                    android:id="@+id/new_meeting_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:background="@drawable/glimpse_button"
+                    android:gravity="center"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    android:text="new meeting/workshop preparation"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/meeting_option_text_size" />
+            </LinearLayout>
 
 
-           <LinearLayout
-               android:id="@+id/view_meeting"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:visibility="gone"
-               android:layout_marginTop="10dp"
-               android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/view_meeting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-               <ImageView
-                   android:layout_width="0dp"
-                   android:layout_height="@dimen/glimpse_button_height"
-                   android:layout_gravity="center_vertical"
-                   android:layout_weight="3"
-                   android:background="@drawable/white_left_corner"
-                   android:gravity="center"
-                   android:padding="10dp"
-                   android:src="@drawable/view_metting" />
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/glimpse_button_height"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:background="@drawable/white_left_corner"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/view_metting" />
 
-               <com.helio.silentsecret.utils.MyTextView
-                   android:layout_width="0dp"
-                   android:layout_height="match_parent"
-                   android:layout_weight="9"
-                   android:id="@+id/view_meeting_textview"
-                   android:background="@drawable/glimpse_button"
-                   android:gravity="center"
-                   android:paddingLeft="30dp"
-                   android:paddingRight="30dp"
-                   android:text="view meeting"
-                   android:textColor="@color/white"
-                   android:textSize="@dimen/meeting_option_text_size"  />
-           </LinearLayout>
-       </LinearLayout>
+                <com.helio.silentsecret.utils.MyTextView
+                    android:id="@+id/view_meeting_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:background="@drawable/glimpse_button"
+                    android:gravity="center"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    android:text="view meeting"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/meeting_option_text_size" />
+            </LinearLayout>
+        </LinearLayout>
 
     </ScrollView>
 
 
-
     <RelativeLayout
+        android:id="@+id/prev_meet_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/prev_meet_layout"
-        android:visibility="gone"
-        android:background="@color/glimpse_gray">
+        android:background="@color/glimpse_gray"
+        android:visibility="gone">
 
 
         <RelativeLayout
@@ -204,11 +204,11 @@
             android:layout_centerInParent="true">
 
             <LinearLayout
+                android:id="@+id/prev_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
 
-                android:id="@+id/prev_main_layout"
+                android:layout_margin="10dp"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -219,11 +219,11 @@
 
 
     <RelativeLayout
+        android:id="@+id/view_meet_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/view_meet_layout"
-        android:visibility="gone"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone">
 
 
         <RelativeLayout
@@ -250,7 +250,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginRight="15dp"
                 android:gravity="center"
-                android:text="Meeting Detail"
+                android:text="Meeting Details"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -264,115 +264,130 @@
             android:layout_centerInParent="true">
 
             <LinearLayout
+                android:id="@+id/view_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:id="@+id/view_main_layout"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:orientation="horizontal"
-                    android:padding="10dp"
-                    android:background="@color/white">
+                    android:padding="10dp">
+
                     <com.helio.silentsecret.utils.MyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="title:"
-                        android:textStyle="bold"
                         android:textColor="@color/black"
                         android:textSize="@dimen/abc_text_size_title_material"
-                        />
+                        android:textStyle="bold" />
+
                     <com.helio.silentsecret.utils.MyTextView
+                        android:id="@+id/meeting_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/meeting_title"
                         android:layout_marginLeft="10dp"
 
                         android:textColor="@color/counsel_color"
-                        android:textSize="@dimen/abc_text_size_title_material"
-                        />
+                        android:textSize="@dimen/abc_text_size_title_material" />
 
                 </LinearLayout>
-
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:orientation="horizontal"
-                    android:padding="10dp"
 
-                    android:background="@color/white">
+                    android:padding="10dp">
+
                     <com.helio.silentsecret.utils.MyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="location:"
-                        android:textStyle="bold"
                         android:textColor="@color/black"
                         android:textSize="@dimen/abc_text_size_title_material"
-                        />
+                        android:textStyle="bold" />
+
                     <com.helio.silentsecret.utils.MyTextView
+                        android:id="@+id/meeting_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/meeting_location"
                         android:layout_marginLeft="10dp"
                         android:textColor="@color/counsel_color"
-                        android:textSize="@dimen/abc_text_size_title_material"
-                        />
+                        android:textSize="@dimen/abc_text_size_title_material" />
 
                 </LinearLayout>
-
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-
                     android:layout_marginTop="10dp"
-                    android:background="@color/white">
+
+                    android:background="@color/white"
+                    android:orientation="horizontal">
+
                     <com.helio.silentsecret.utils.MyTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="date time:"
-                        android:textStyle="bold"
                         android:textColor="@color/black"
                         android:textSize="@dimen/abc_text_size_title_material"
-                        />
+                        android:textStyle="bold" />
+
                     <com.helio.silentsecret.utils.MyTextView
+                        android:id="@+id/meeting_date_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/meeting_date_time"
                         android:layout_marginLeft="10dp"
                         android:textColor="@color/counsel_color"
-                        android:textSize="@dimen/abc_text_size_title_material"
-                        />
+                        android:textSize="@dimen/abc_text_size_title_material" />
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <com.helio.silentsecret.utils.MyTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="bullet note"
-                    android:background="@color/white"
-                    android:padding="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_gravity="left"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/abc_text_size_title_material"/>
+                    <com.helio.silentsecret.utils.MyTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/white"
+                        android:padding="10dp"
+                        android:text="notes"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/abc_text_size_title_material" />
+
+                    <TextView
+                        android:id="@+id/emoji_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/theme_shape"
+                        android:paddingBottom="6dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="6dp"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </RelativeLayout>
 
 
                 <LinearLayout
+                    android:id="@+id/bullet_view_main_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:id="@+id/bullet_view_main_layout"
-                    android:orientation="vertical"
                     android:background="@color/white"
-                  >
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
                 </LinearLayout>
             </LinearLayout>

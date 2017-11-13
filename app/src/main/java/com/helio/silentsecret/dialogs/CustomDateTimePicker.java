@@ -1,10 +1,8 @@
 package com.helio.silentsecret.dialogs;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -15,10 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.ViewSwitcher;
 
+import com.helio.silentsecret.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by hp on 24-10-2017.
@@ -107,6 +106,14 @@ public class CustomDateTimePicker implements View.OnClickListener {
         viewSwitcher = new ViewSwitcher(activity);
         viewSwitcher.setLayoutParams(frame_match_wrap);
 
+      /*  final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);*/
+
+
+
+
         datePicker = new DatePicker(activity);
         timePicker = new TimePicker(activity);
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
@@ -117,6 +124,7 @@ public class CustomDateTimePicker implements View.OnClickListener {
             }
         });
 
+        datePicker.setMinDate(System.currentTimeMillis());
         viewSwitcher.addView(timePicker);
         viewSwitcher.addView(datePicker);
 

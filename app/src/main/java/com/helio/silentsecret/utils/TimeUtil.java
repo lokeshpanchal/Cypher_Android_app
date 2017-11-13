@@ -2,6 +2,7 @@ package com.helio.silentsecret.utils;
 
 import android.content.SharedPreferences;
 
+import com.helio.silentsecret.activities.MainActivity;
 import com.helio.silentsecret.views.ChartView;
 
 import java.text.DateFormatSymbols;
@@ -64,6 +65,72 @@ public class TimeUtil {
         }
         return time;
     }
+
+
+
+    public static String timeCalculateForDailyEmotion(long createTime) {
+
+        String time = "this year";
+      try
+      {
+          long countDown = (MainActivity.currentdatetime.getTime() / 1000) - (createTime / 1000);
+          long days, hours, minutes;
+          days = (Math.round(countDown) / 86400);
+          hours = (Math.round(countDown) / 3600) - (days * 24);
+          minutes = (Math.round(countDown) / 60) - (days * 1440) - (hours * 60);
+
+
+          if (days == 0) {
+              if (hours == 0) {
+                  if (minutes <= 0) {
+                      time = "right now";
+                  } else {
+                      if (minutes == 1) {
+                          time = "one minute ago";
+                      } else {
+                          time = String.format("%d " + "minutes ago", minutes);
+                      }
+
+                  }
+              } else {
+                  if (hours > 1) {
+                      time = String.format("%d " + "hours ago", hours);
+                  } else {
+                      time = "An hour ago";
+                  }
+              }
+          } else {
+              if (days < 30)
+              {
+                  if (days >= 1 && days <= 7)
+                  {
+                      time = "Few days ago";
+                  } else {
+                      if (days == 1)
+                      {
+                          time = "Yesterday";
+                      } else {
+                          time = String.format("%d " + "days ago", days);
+                      }
+
+                  }
+              } else {
+                  if (days < 365) {
+                      time = "Few month ago";
+                  } else {
+                      time = "Few years ago";
+                  }
+              }
+          }
+      }
+      catch (Exception e)
+      {
+          e.printStackTrace();
+      }
+        return time;
+    }
+
+
 
     private static final long SIX_MONTH = ChartView.ONE_DAY * 60;
 
