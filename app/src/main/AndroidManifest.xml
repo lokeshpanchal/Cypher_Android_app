@@ -203,6 +203,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/ChatFriendsTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <activity
+            android:name=".activities.MediatorChating"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activities.LiveCounselling"
             android:label="@string/title_activity_counseller_booking"

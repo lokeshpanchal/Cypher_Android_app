@@ -107,7 +107,7 @@
     <dimen name="prepare_meeting_textsize">18sp</dimen>
     <dimen name="header_height">50dp</dimen>
     <dimen name="add_note_width">100dp</dimen>
-    <dimen name="meeting_detail_textsize">13sp</dimen>
+    <dimen name="meeting_detail_textsize">15sp</dimen>
     <dimen name="add_note_height">40dp</dimen>
     <dimen name="meeting_option_text_size">20sp</dimen>
     <dimen name="create_meeting_option_margine">40dp</dimen>

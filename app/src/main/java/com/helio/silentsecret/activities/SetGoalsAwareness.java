@@ -42,6 +42,7 @@ public class SetGoalsAwareness extends AppCompatActivity {
 
     TextView back_iv = null;
     TextView saved_back = null;
+    boolean is_done_submitting = false;
     TextView saved_goal = null;
     TextView add_bullet = null, done_button = null, hide_keyboard = null;
     Context ct = this;
@@ -132,7 +133,10 @@ public class SetGoalsAwareness extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 KeyboardUtil.hideKeyBoard(v, ct);
-                sugmitGoal();
+                if(is_done_submitting == false) {
+                    is_done_submitting = true;
+                    sugmitGoal();
+                }
             }
         });
         saved_goal.setOnClickListener(new View.OnClickListener() {
@@ -252,12 +256,17 @@ public class SetGoalsAwareness extends AppCompatActivity {
         main_formate_layout_list.clear();
         main_bullet_layout.removeAllViews();
         remove_indexes.clear();
+        format_edit_text_list.clear();
+        final_note_list.clear();
         Add_new_bullet();
     }
 
-    private void sugmitGoal() {
-        if (format_edit_text_list.size() == 0)
+    private void sugmitGoal()
+    {
+        if (format_edit_text_list.size() == 0) {
             new ToastUtil(this, "Please add goal.");
+            is_done_submitting = false;
+        }
         else {
             boolean add_new = true;
             for (int i = 0; i < format_edit_text_list.size(); i++) {
@@ -271,7 +280,8 @@ public class SetGoalsAwareness extends AppCompatActivity {
                     }
                 }
             }
-            if (add_new) {
+            if (add_new)
+            {
 
                 final_note_list.clear();
 
@@ -288,6 +298,7 @@ public class SetGoalsAwareness extends AppCompatActivity {
 
                 new AddnewGoal().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } else {
+                is_done_submitting = false;
                 Toast.makeText(ct, "Added goal should not be empty.", Toast.LENGTH_SHORT).show();
             }
 
@@ -356,8 +367,10 @@ public class SetGoalsAwareness extends AppCompatActivity {
 
         protected void onPostExecute(Bitmap image) {
             try {
+                is_done_submitting = false;
                 progress_bar.setVisibility(View.GONE);
                 if (response != null) {
+
                     saved_goal_layout.setVisibility(View.VISIBLE);
                     resetView();
                     new GetSetGoal().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -484,6 +497,7 @@ public class SetGoalsAwareness extends AppCompatActivity {
                         }
                         if (dailyGoalLists != null && dailyGoalLists.size() > 0) {
                             saved_goal.setVisibility(View.VISIBLE);
+                            todays_note.clear();
                             showSaved();
                         } else
                             saved_goal.setVisibility(View.GONE);
@@ -547,11 +561,11 @@ public class SetGoalsAwareness extends AppCompatActivity {
             String todays_date = CommonFunction.getDateToString(MainActivity.currentdatetime);
             String emoji_post_date = CommonFunction.getDateToString(dailyGoalLists.get(i).getCreated_at());
             int date_diff = CommonFunction.Getdatediff(todays_date, emoji_post_date);
-            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
             is_from_today = false;
             llp.gravity = Gravity.CENTER_HORIZONTAL;
-            llp.setMargins(0, width / 50, 0, width / 50);
+        //    llp.setMargins(0, width / 50, 0, width / 50);
             TextView date_text = new TextView(ct);
             date_text.setLayoutParams(llp);
             date_text.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/ubuntu.ttf"));
@@ -559,29 +573,25 @@ public class SetGoalsAwareness extends AppCompatActivity {
                 is_from_today = true;
 
                 date_text.setText("Today");
-                date_text.setTextColor(Color.parseColor("#ffffff"));
-                date_text.setBackgroundResource(R.drawable.theme_shape);
-                date_text.setPadding(width / 50, width / 100, width / 50, width / 100);
-                date_text.setTextSize(20);
+
             } else if (date_diff == 1) {
 
                 date_text.setText("Yesterday");
-                date_text.setTextColor(Color.parseColor("#ffffff"));
-                date_text.setBackgroundResource(R.drawable.theme_shape);
-                date_text.setPadding(width / 50, width / 100, width / 50, width / 100);
-                date_text.setTextSize(20);
+
             } else {
 
 
                 String[] datefor = emoji_post_date.split("/");
                 emoji_post_date = datefor[1] + "/" + datefor[0] + "/" + datefor[2];
                 date_text.setText("" + emoji_post_date);
-                date_text.setTextColor(Color.parseColor("#ffffff"));
-                date_text.setBackgroundResource(R.drawable.theme_shape);
-                date_text.setPadding(width / 50, width / 100, width / 50, width / 100);
-                date_text.setTextSize(20);
-            }
 
+            }
+            date_text.setTextColor(Color.parseColor("#ffffff"));
+           // date_text.setBackgroundResource(R.drawable.theme_shape);
+            date_text.setPadding(width / 50, width / 100, width / 50, width / 100);
+            date_text.setTextSize(20);
+            date_text.setGravity(Gravity.CENTER);
+            date_text.setBackgroundColor(Color.parseColor(Constants.emotion_color_array[i%5]));
             save_goal_linear.addView(date_text);
             RelativeLayout.LayoutParams lp = null;
 

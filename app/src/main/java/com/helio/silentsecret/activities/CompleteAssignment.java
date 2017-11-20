@@ -52,7 +52,7 @@ import java.util.Locale;
 
 public class CompleteAssignment extends AppCompatActivity {
     TextView back_iv = null;
-    TextView submit_questionnair = null;
+    TextView submit_questionnair = null , not_found;
     RelativeLayout  congrats_message = null;
     Context ct = this;
     RelativeLayout progress_bar = null , questionair_layout = null;
@@ -71,6 +71,7 @@ public class CompleteAssignment extends AppCompatActivity {
         setContentView(R.layout.activity_complete_assignment);
         back_iv = (TextView) findViewById(R.id.back_iv);
         submit_questionnair = (TextView) findViewById(R.id.submit_questionnair);
+        not_found = (TextView) findViewById(R.id.not_found);
         congrats_message = (RelativeLayout) findViewById(R.id.congrats_message);
         main_layout = (LinearLayout) findViewById(R.id.main_layout);
         progress_bar = (RelativeLayout) findViewById(R.id.progress_bar);
@@ -202,6 +203,8 @@ public class CompleteAssignment extends AppCompatActivity {
 
                                             if (question_object.has("label")) {
                                                 lable = question_object.getString("label");
+                                                if(lable!= null)
+                                                    lable = lable.trim();
                                             }
 
                                             if (question_object.has("name")) {
@@ -274,9 +277,14 @@ public class CompleteAssignment extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    if (questioniarDTO != null) {
+                    if (questioniarDTO != null)
+                    {
+                        not_found.setVisibility(View.GONE);
                         questionair_layout.setVisibility(View.VISIBLE);
                         setQuestionair();
+                    }
+                    else {
+                        not_found.setVisibility(View.VISIBLE);
                     }
                 }
             } catch (Exception e) {
@@ -849,7 +857,8 @@ public class CompleteAssignment extends AppCompatActivity {
             builderSingle.setTitle("");
 
 
-            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ct, android.R.layout.select_dialog_singlechoice);
+           // final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ct, android.R.layout.select_dialog_singlechoice);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ct, android.R.layout.simple_list_item_1);
             for (int k = 0; k < questioniarDTO.getClquestioneranswer01().get(index).getValues().size(); k++) {
                 arrayAdapter.add(questioniarDTO.getClquestioneranswer01().get(index).getValues().get(k).getLabel());
             }

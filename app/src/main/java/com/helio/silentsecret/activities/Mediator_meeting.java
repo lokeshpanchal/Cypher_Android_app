@@ -43,7 +43,7 @@ public class Mediator_meeting extends AppCompatActivity {
     TextView new_meeting_textview = null;
     Context ct = this;
 
-public  static boolean is_from_create_meeting = false;
+    public static boolean is_from_create_meeting = false;
     int emogies_icon_array[] = {R.drawable.ic_scared, R.drawable.create_fml, R.drawable.ic_sad, R.drawable.create_lol,
             R.drawable.create_lonely, R.drawable.ic_happy, R.drawable.create_greatful, R.drawable.create_frustated,
             R.drawable.ic_love, R.drawable.ic_angry, R.drawable.ic_ashamed, R.drawable.create_anxious};
@@ -54,7 +54,7 @@ public  static boolean is_from_create_meeting = false;
     boolean is_from_view = false;
     TextView emoji_text = null;
     List<MeetingDetail> meetingDetail = new ArrayList<>();
-    public  static List<String> pre_meeting_title = new ArrayList<>();
+    public static List<String> pre_meeting_title = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,24 @@ public  static boolean is_from_create_meeting = false;
             @Override
             public void onClick(View v) {
                 prev_meet_layout.setVisibility(View.VISIBLE);
-                showPrevMeeting();
+                if (meetingDetail.size() > 0)
+                    showPrevMeeting();
+                else {
+                    prev_main_layout.removeAllViews();
+
+                    TextView textView = new TextView(ct);
+
+                    int width = CommonFunction.getScreenWidth();
+                    int height = CommonFunction.getScreenHeight();
+                    LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(width, width / 2 + width / 4);
+                    textView.setLayoutParams(llp);
+                    textView.setGravity(Gravity.BOTTOM | Gravity.CENTER);
+                    textView.setText("No previous meeting.");
+                    textView.setTextSize(18);
+                    textView.setTextColor(Color.parseColor("#000000"));
+                    // textView.setBackgroundColor(Color.parseColor("#ffffff"));
+                    prev_main_layout.addView(textView);
+                }
             }
         });
 
@@ -119,10 +136,9 @@ public  static boolean is_from_create_meeting = false;
         view_meeting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (meetingDetail != null && meetingDetail.size() > 0)
-                {
+                if (meetingDetail != null && meetingDetail.size() > 0) {
                     prev_meet_layout.setVisibility(View.VISIBLE);
-                   // view_meet_layout.setVisibility(View.VISIBLE);
+                    // view_meet_layout.setVisibility(View.VISIBLE);
                     showCurrentMeeting();
                 }
             }
@@ -426,13 +442,13 @@ public  static boolean is_from_create_meeting = false;
                                         if (UserInfoobj.has("clmtngtitle01")) {
                                             clmtngtitle01 = UserInfoobj.getString("clmtngtitle01");
 
-                                            clmtngtitle01 =   CryptLib.decrypt(clmtngtitle01);
+                                            clmtngtitle01 = CryptLib.decrypt(clmtngtitle01);
                                         }
                                         if (UserInfoobj.has("clmediatorun01"))
                                             clmediatorun01 = UserInfoobj.getString("clmediatorun01");
                                         if (UserInfoobj.has("address")) {
                                             address = UserInfoobj.getString("address");
-                                            address =   CryptLib.decrypt(address);
+                                            address = CryptLib.decrypt(address);
                                         }
 
                                         if (UserInfoobj.has("meeting_unq_id"))
@@ -456,8 +472,7 @@ public  static boolean is_from_create_meeting = false;
 
                                         String flausers2[] = toStringArray(keys_array1);
                                         ArrayList<String> flagusers1 = new ArrayList<String>();
-                                        for (int k = 0; k < flausers2.length; k++)
-                                        {
+                                        for (int k = 0; k < flausers2.length; k++) {
                                             flagusers1.add(CryptLib.decrypt(flausers2[k]));
 
                                         }
@@ -478,11 +493,9 @@ public  static boolean is_from_create_meeting = false;
                 }
 
 
-                if (meetingDetail != null && meetingDetail.size() > 0)
-                {
+                if (meetingDetail != null && meetingDetail.size() > 0) {
                     CheckMeetings();
-                    if(is_from_create_meeting)
-                    {
+                    if (is_from_create_meeting) {
                         is_from_create_meeting = false;
                         prev_meet_layout.setVisibility(View.VISIBLE);
                         showCurrentMeeting();
@@ -527,16 +540,13 @@ public  static boolean is_from_create_meeting = false;
         }
     }
 
-    private void SetPrev_meet_title()
-    {
+    private void SetPrev_meet_title() {
         pre_meeting_title.clear();
-        for (int i = 0; i < meetingDetail.size(); i++)
-        {
+        for (int i = 0; i < meetingDetail.size(); i++) {
             String currentdate_time = CommonFunction.getDateToString(MainActivity.currentdatetime);
 
             int date_diff = CommonFunction.Getdatediff(meetingDetail.get(i).getClmtngtime01(), currentdate_time);
-            if (date_diff < 0)
-            {
+            if (date_diff < 0) {
 
                 pre_meeting_title.add(meetingDetail.get(i).getClmtngtitle01());
             }
@@ -555,8 +565,7 @@ public  static boolean is_from_create_meeting = false;
             meeting_date_time.setText(ChangeDateFormat(meetingDetail.getClmtngtime01()));
 
 
-            for (int j = 0; j < meetingDetail.getClmtngnote01().size(); j++)
-            {
+            for (int j = 0; j < meetingDetail.getClmtngnote01().size(); j++) {
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 RelativeLayout mainlayout = new RelativeLayout(this);
                 mainlayout.setLayoutParams(lp);
@@ -597,17 +606,17 @@ public  static boolean is_from_create_meeting = false;
                 emotion_icon.setLayoutParams(lp);
                 int index = emotion_name_list.indexOf(meetingDetail.getClmtngnotemood01().get(j));
                 emotion_icon.setBackgroundResource(emogies_icon_array[index]);
-                emotion_icon.setId(j+3);
+                emotion_icon.setId(j + 3);
                 emotion_icon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int index = v.getId() -3;
-                        countr =0;
+                        int index = v.getId() - 3;
+                        countr = 0;
                         is_from_appear = true;
 
                         int index1 = emotion_name_list.indexOf(meetingDetail.getClmtngnotemood01().get(index));
                         emoji_text.setText(emotion_name_list.get(index1));
-                        emoji_text.postDelayed(hide_shoe_ext,100);
+                        emoji_text.postDelayed(hide_shoe_ext, 100);
 
                     }
                 });
@@ -664,35 +673,29 @@ public  static boolean is_from_create_meeting = false;
     }
 
 
-
-    int countr =0;
+    int countr = 0;
     double alpha_value = 0.02;
     boolean is_from_appear = false;
     Runnable hide_shoe_ext = new Runnable() {
         @Override
-        public void run()
-        {
+        public void run() {
             emoji_text.removeCallbacks(hide_shoe_ext);
 
-            if(countr<80 && is_from_appear)
-            {
-                double curr_val = alpha_value*countr;
-                float currv = (float)curr_val;
+            if (countr < 80 && is_from_appear) {
+                double curr_val = alpha_value * countr;
+                float currv = (float) curr_val;
                 emoji_text.setAlpha(currv);
-                emoji_text.postDelayed(hide_shoe_ext,10);
+                emoji_text.postDelayed(hide_shoe_ext, 10);
                 emoji_text.setVisibility(View.VISIBLE);
                 countr++;
-            }else if(countr >0 )
-            {
+            } else if (countr > 0) {
                 is_from_appear = false;
-                    double curr_val = alpha_value*countr;
-                    float currv = (float)curr_val;
-                    emoji_text.setAlpha(currv);
-                emoji_text.postDelayed(hide_shoe_ext,10);
+                double curr_val = alpha_value * countr;
+                float currv = (float) curr_val;
+                emoji_text.setAlpha(currv);
+                emoji_text.postDelayed(hide_shoe_ext, 10);
                 countr--;
-            }
-            else
-            {
+            } else {
                 emoji_text.setVisibility(View.GONE);
             }
 

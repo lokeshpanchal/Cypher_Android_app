@@ -81,12 +81,26 @@
 
     </RelativeLayout>
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:text="No assessment form"
+        android:textColor="@color/black"
+        android:background="@color/white"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:id="@+id/not_found"
+        android:layout_centerInParent="true"/>
     <RelativeLayout
         android:id="@+id/congrats_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
         android:background="@color/white"
+        android:clickable="true"
         android:visibility="gone">
 
 
@@ -100,8 +114,8 @@
             android:padding="20dp">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/well_done" />
 

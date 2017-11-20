@@ -206,7 +206,7 @@
             <LinearLayout
                 android:id="@+id/prev_main_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
 
                 android:layout_margin="10dp"
                 android:orientation="vertical">
@@ -365,19 +365,7 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/abc_text_size_title_material" />
 
-                    <TextView
-                        android:id="@+id/emoji_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/theme_shape"
-                        android:paddingBottom="6dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="6dp"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:visibility="gone" />
+
                 </RelativeLayout>
 
 
@@ -393,6 +381,21 @@
             </LinearLayout>
 
         </ScrollView>
+
+
+        <TextView
+            android:id="@+id/emoji_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/theme_shape"
+            android:paddingBottom="6dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="6dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

@@ -68,7 +68,7 @@ public class TimeUtil {
 
 
 
-    public static String timeCalculateForDailyEmotion(long createTime) {
+    public static String timeCalculateForDailyEmotion(long createTime, Date created_at) {
 
         String time = "this year";
       try
@@ -80,7 +80,12 @@ public class TimeUtil {
           minutes = (Math.round(countDown) / 60) - (days * 1440) - (hours * 60);
 
 
-          if (days == 0) {
+          String todays_date = CommonFunction.getDateToString(MainActivity.currentdatetime);
+          String emoji_post_date = CommonFunction.getDateToString(created_at);
+          int date_diff = CommonFunction.Getdatediff(todays_date, emoji_post_date);
+
+          if (date_diff == 0)
+          {
               if (hours == 0) {
                   if (minutes <= 0) {
                       time = "right now";
@@ -99,23 +104,25 @@ public class TimeUtil {
                       time = "An hour ago";
                   }
               }
-          } else {
-              if (days < 30)
+          }
+          else
               {
-                  if (days >= 1 && days <= 7)
+              if (date_diff < 30)
+              {
+                 /* if (days >= 1 && days <= 7)
                   {
                       time = "Few days ago";
-                  } else {
-                      if (days == 1)
+                  } else {*/
+                      if (date_diff == 1)
                       {
                           time = "Yesterday";
                       } else {
-                          time = String.format("%d " + "days ago", days);
+                          time = String.format("%d " + "days ago", date_diff);
                       }
 
-                  }
+                 // }
               } else {
-                  if (days < 365) {
+                  if (date_diff < 365) {
                       time = "Few month ago";
                   } else {
                       time = "Few years ago";

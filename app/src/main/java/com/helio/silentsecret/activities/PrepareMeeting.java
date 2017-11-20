@@ -174,6 +174,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
         prev_meet_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 pre_meet_layout.setVisibility(View.VISIBLE);
                 ShowOldTitle();
             }

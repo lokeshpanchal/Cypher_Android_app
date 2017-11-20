@@ -79,7 +79,7 @@ public class DailyEmotionAdapter extends BaseAdapter {
         holder.emoji_icon.setImageResource(emogies_icon_array[index]);
         holder.emoji_text.setText("feeling "+item.getEmoji_name());
 
-        holder.date_time.setText(TimeUtil.timeCalculateForDailyEmotion(item.getCreated_at().getTime()));
+        holder.date_time.setText(TimeUtil.timeCalculateForDailyEmotion(item.getCreated_at().getTime() , item.getCreated_at()));
 
         holder.root_view.setBackgroundColor(Color.parseColor(Constants.emotion_color_array[position%5]));
         // YoYo.with(Techniques.BounceIn).duration(500).playOn(convertView);

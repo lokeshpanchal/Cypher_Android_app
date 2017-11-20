@@ -76,7 +76,9 @@
     <dimen name="add_note_width">140dp</dimen>
     <dimen name="header_height">70dp</dimen>
 
-    <dimen name="meeting_detail_textsize">16sp</dimen>
+    <dimen name="home_page_header_text">11sp</dimen>
+
+    <dimen name="meeting_detail_textsize">19sp</dimen>
 
     <dimen name="meeting_option_text_size">24sp</dimen>
 
