@@ -34,7 +34,7 @@ import static com.helio.silentsecret.utils.CommonFunction.ChangeDateFormat;
 
 public class Mediator_meeting extends AppCompatActivity {
 
-    TextView back_iv = null, prev_back = null, view_back = null;
+    TextView back_iv = null, prev_back = null, view_back = null , edit_meeting = null;
 
     TextView meeting_title = null, meeting_location = null, meeting_date_time = null;
     RelativeLayout prev_meet_layout = null;
@@ -54,6 +54,7 @@ public class Mediator_meeting extends AppCompatActivity {
     boolean is_from_view = false;
     TextView emoji_text = null;
     List<MeetingDetail> meetingDetail = new ArrayList<>();
+    public  static MeetingDetail meetingDetailObject = null;
     public static List<String> pre_meeting_title = new ArrayList<>();
 
     @Override
@@ -68,6 +69,7 @@ public class Mediator_meeting extends AppCompatActivity {
         view_back = (TextView) findViewById(R.id.view_back);
         prev_back = (TextView) findViewById(R.id.prev_back);
         emoji_text = (TextView) findViewById(R.id.emoji_text);
+        edit_meeting = (TextView) findViewById(R.id.edit_meeting);
         new_meeting_textview = (TextView) findViewById(R.id.new_meeting_textview);
         prev_meet_layout = (RelativeLayout) findViewById(R.id.prev_meet_layout);
         view_meet_layout = (RelativeLayout) findViewById(R.id.view_meet_layout);
@@ -112,13 +114,19 @@ public class Mediator_meeting extends AppCompatActivity {
                 prev_meet_layout.setVisibility(View.GONE);
             }
         });
+        edit_meeting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(ct, EditMeeting.class);
+                startActivity(intent);
+            }
+        });
 
         view_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 view_meet_layout.setVisibility(View.GONE);
-
-
             }
         });
 
@@ -157,14 +165,16 @@ public class Mediator_meeting extends AppCompatActivity {
     private void showCurrentMeeting() {
         prev_main_layout.removeAllViews();
         int width = CommonFunction.getScreenWidth();
-        for (int i = 0; i < meetingDetail.size(); i++) {
+        for (int i = 0; i < meetingDetail.size(); i++)
+        {
 
 
             String currentdate_time = CommonFunction.getCurrentdateTime();
 
             int date_diff = CommonFunction.Getdatediff(meetingDetail.get(i).getClmtngtime01(), currentdate_time);
 
-            if (date_diff >= 0) {
+            if (date_diff >= 0)
+            {
 
 
                 LinearLayout main_linear = new LinearLayout(ct);
@@ -173,12 +183,14 @@ public class Mediator_meeting extends AppCompatActivity {
                 main_linear.setOrientation(LinearLayout.HORIZONTAL);
                 main_linear.setLayoutParams(llp);
                 main_linear.setId(i + 1);
-                main_linear.setOnClickListener(new View.OnClickListener() {
+                main_linear.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
                     public void onClick(View v) {
                         int index = v.getId() - 1;
                         view_meet_layout.setVisibility(View.VISIBLE);
-                        ViewmeetingDetail(meetingDetail.get(index));
+                        meetingDetailObject = meetingDetail.get(index);
+                        ViewmeetingDetail(meetingDetailObject);
                     }
                 });
 
@@ -493,9 +505,11 @@ public class Mediator_meeting extends AppCompatActivity {
                 }
 
 
-                if (meetingDetail != null && meetingDetail.size() > 0) {
+                if (meetingDetail != null && meetingDetail.size() > 0)
+                {
                     CheckMeetings();
-                    if (is_from_create_meeting) {
+                    if (is_from_create_meeting)
+                    {
                         is_from_create_meeting = false;
                         prev_meet_layout.setVisibility(View.VISIBLE);
                         showCurrentMeeting();
@@ -524,8 +538,14 @@ public class Mediator_meeting extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        view_meet_layout.setVisibility(View.GONE);
+        super.onStop();
+    }
 
-    private void Viewmeeting() {
+    private void Viewmeeting()
+    {
 
         for (int i = 0; i < meetingDetail.size(); i++) {
             String currentdate_time = CommonFunction.getDateToString(MainActivity.currentdatetime);
@@ -553,7 +573,8 @@ public class Mediator_meeting extends AppCompatActivity {
         }
     }
 
-    private void ViewmeetingDetail(final MeetingDetail meetingDetail) {
+    private void ViewmeetingDetail(final MeetingDetail meetingDetail)
+    {
         try {
             bullet_view_main_layout.removeAllViews();
             int width = CommonFunction.getScreenWidth();
@@ -565,7 +586,8 @@ public class Mediator_meeting extends AppCompatActivity {
             meeting_date_time.setText(ChangeDateFormat(meetingDetail.getClmtngtime01()));
 
 
-            for (int j = 0; j < meetingDetail.getClmtngnote01().size(); j++) {
+            for (int j = 0; j < meetingDetail.getClmtngnote01().size(); j++)
+            {
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 RelativeLayout mainlayout = new RelativeLayout(this);
                 mainlayout.setLayoutParams(lp);
@@ -620,47 +642,7 @@ public class Mediator_meeting extends AppCompatActivity {
 
                     }
                 });
-               /* emotion_icon.setOnTouchListener(new View.OnTouchListener()
-                {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event)
-                    {
-                        switch (event.getActionMasked()) {
-                            case MotionEvent.ACTION_DOWN:
-                                try {
 
-
-                                   float start_dX = v.getX();
-                                    float start_dY = v.getY();
-
-                                  //  float  dX = v.getX() - event.getRawX();
-                                    float  dY = v.getPivotY();
-                                    float  dY1 = v.getScaleY();
-                                    float  dY2 = v.getTranslationY();
-
-                                    emoji_text.setX(start_dX);
-                                    emoji_text.setY(start_dY);
-
-
-
-                                    int index = v.getId() -3;
-                                    countr =0;
-                                    is_from_appear = true;
-                                    int index1 = emotion_name_list.indexOf(meetingDetail.getClmtngnotemood01().get(index));
-                                    emoji_text.setText(emotion_name_list.get(index1));
-                                    emoji_text.postDelayed(hide_shoe_ext,100);
-
-                                }
-                                catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-
-                        }
-
-                        return true;
-                    }
-                });*/
                 mainlayout.addView(topic_desc);
                 mainlayout.addView(emotion_icon);
 

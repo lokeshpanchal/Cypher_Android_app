@@ -45,7 +45,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
+import static com.helio.silentsecret.utils.CommonFunction.ChangeDateFormat;
+
+public class EditMeeting extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
     LinearLayout main_bullet_layout = null;
     TextView back_iv = null, location_picker = null, map_back = null, done_location = null;
     int PLACE_PICKER_REQUEST = 1;
@@ -55,7 +57,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
 
     List<TextView> check_box_list = new ArrayList<>();
     //edt_meeting_title = null, edt_meeting_note = null;
-
+    Context ct = this;
     CustomDateTimePicker custom;
     LinearLayout pick_date_time = null;
     TextView date_time = null, add_note = null, add_bullet = null, bullet_view = null, done_button = null, meeting_note_back = null;
@@ -72,6 +74,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
     List<EditText> format_edit_text_list = new ArrayList<>();
     List<LinearLayout> main_formate_layout_list = new ArrayList<>();
     List<String> emotion_name_list = new ArrayList<>();
+    List<String> emotion_name_list_all_emoji_name = new ArrayList<>();
 
     List<String> final_note_list = new ArrayList<>();
     List<String> final_mood_list = new ArrayList<>();
@@ -79,7 +82,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
             R.drawable.create_lonely, R.drawable.ic_happy, R.drawable.create_greatful, R.drawable.create_frustated,
             R.drawable.ic_love, R.drawable.ic_angry, R.drawable.ic_ashamed, R.drawable.create_anxious};
 
-    /*String[] emotion_name_array = {"scared", "FML", "sad", "lol", "lonely", "happy", "grateful", "frustrated"
+/*    String[] emotion_name_array = {"scared", "FML", "sad", "lol", "lonely", "happy", "grateful", "frustrated"
             , "love", "angry", "ashamed", "anxious"};*/
     ImageView mFeelingAnxious;
     ImageView mFeelingFML;
@@ -95,19 +98,15 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
     ImageView mFeelingAshamed;
     ImageView post_emotion_close;
 
-    TextView prev_meet_title = null;
-    Context ct = this;
-
+    TextView prev_meet_title = null , update_meeting = null;
+LinearLayout bullet_view_main_layout = null;
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prepare_meeting);
-
-
-
+        setContentView(R.layout.activity_edit_meeting);
         back_iv = (TextView) findViewById(R.id.back_iv);
         map_back = (TextView) findViewById(R.id.map_back);
+        update_meeting = (TextView) findViewById(R.id.update_meeting);
         location_picker = (TextView) findViewById(R.id.location_picker);
         done_location = (TextView) findViewById(R.id.done_location);
         done_location = (TextView) findViewById(R.id.done_location);
@@ -124,9 +123,13 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
         add_note_layout = (RelativeLayout) findViewById(R.id.add_note_layout);
         share_mood_layout = (RelativeLayout) findViewById(R.id.share_mood_layout);
         pick_date_time = (LinearLayout) findViewById(R.id.pick_date_time);
+        bullet_view_main_layout = (LinearLayout) findViewById(R.id.bullet_view_main_layout);
         pre_meet_layout = (LinearLayout) findViewById(R.id.pre_meet_layout);
         main_bullet_layout = (LinearLayout) findViewById(R.id.main_bullet_layout);
 
+        for (int i = 0; i < Constants.emotion_name_array.length; i++) {
+            emotion_name_list_all_emoji_name.add(Constants.emotion_name_array[i]);
+        }
 
         mFeelingAngry = (ImageView) findViewById(R.id.feeling_angry);
         mFeelingAnxious = (ImageView) findViewById(R.id.feeling_anxious);
@@ -172,7 +175,32 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
             }
         });
 
-        if (Mediator_meeting.pre_meeting_title != null && Mediator_meeting.pre_meeting_title.size() > 0) {
+        if (Mediator_meeting.meetingDetailObject != null )
+        {
+            edt_meeting_title.setText(Mediator_meeting.meetingDetailObject.getClmtngtitle01());
+            address.setText(Mediator_meeting.meetingDetailObject.getAddress());
+            date_time.setText(ChangeDateFormat(Mediator_meeting.meetingDetailObject.getClmtngtime01()));
+
+            meeting_date_time = Mediator_meeting.meetingDetailObject.getClmtngtime01();
+            emotion_name_list.clear();
+            setvalue();
+        }
+
+        update_meeting.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                meeting_title = edt_meeting_title.getText().toString().trim();
+                meeting_address = address.getText().toString().trim();
+
+                KeyboardUtil.hideKeyBoard(address, ct);
+                sugmitMetting();
+            }
+        });
+
+        if (Mediator_meeting.pre_meeting_title != null && Mediator_meeting.pre_meeting_title.size() > 0)
+        {
             prev_meet_title.setVisibility(View.VISIBLE);
         }
 
@@ -315,9 +343,6 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
                 });
 
 
-
-
-
     }
 
 
@@ -457,7 +482,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
                                 + " " + hour + ":" + minute;
 
 
-                        date_time.setText(CommonFunction.ChangeDateFormat(meeting_date_time));
+                        date_time.setText(ChangeDateFormat(meeting_date_time));
                     }
 
                     @Override
@@ -474,6 +499,113 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
          * Pass Directly current data and time to show when it pop up
          */
         custom.setDate(Calendar.getInstance());
+    }
+
+
+
+    private void Set_bullet_bullet(int j)
+    {
+
+        int width = CommonFunction.getScreenWidth();
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout mainlayout = new LinearLayout(ct);
+        mainlayout.setOrientation(LinearLayout.HORIZONTAL);
+        // lp.setMargins(width / 150, width / 100,width / 100, width / 100);
+        mainlayout.setLayoutParams(lp);
+        lp = new LinearLayout.LayoutParams(width / 25, width / 25);
+        lp.setMargins(width / 400, width / 100, 0, 0);
+
+        TextView dot = new TextView(ct);
+        dot.setLayoutParams(lp);
+        dot.setTextSize(13);
+        dot.setGravity(Gravity.CENTER);
+        dot.setBackgroundResource(R.drawable.dot);
+
+        dot.setId(1 + 1);
+
+        mainlayout.addView(dot);
+        format_textv_list.add(dot);
+
+        lp = new LinearLayout.LayoutParams(width / 2 + width / 6, LinearLayout.LayoutParams.WRAP_CONTENT);
+        EditText topic_desc = new EditText(ct);
+
+
+        lp.setMargins(width / 40, 0, 0, 0);
+        topic_desc.setLayoutParams(lp);
+        topic_desc.setGravity(Gravity.LEFT);
+        topic_desc.setTextColor(Color.parseColor("#000000"));
+        topic_desc.setTextSize(16);
+        topic_desc.setTypeface(null, Typeface.BOLD);
+        topic_desc.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/ubuntu.ttf"));
+        topic_desc.setText(Mediator_meeting.meetingDetailObject.getClmtngnote01().get(j));
+        topic_desc.setBackgroundColor(Color.parseColor("#ffffff"));
+        format_edit_text_list.add(topic_desc);
+        mainlayout.addView(topic_desc);
+
+
+
+        lp = new LinearLayout.LayoutParams(width / 17, width / 17);
+        lp.setMargins(width / 100, 0, 0, 0);
+        lp.gravity = Gravity.CENTER_VERTICAL;
+        TextView delete_button = new TextView(ct);
+        delete_button.setLayoutParams(lp);
+        delete_button.setBackgroundResource(R.drawable.delete_topic);
+        delete_button.setId(index_counter + 1);
+        delete_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int index = view.getId() - 1;
+                main_formate_layout_list.get(index).setVisibility(View.GONE);
+
+                remove_indexes.add(index);
+
+
+
+            }
+        });
+
+        if (main_formate_layout_list.size() == 0)
+            delete_button.setVisibility(View.INVISIBLE);
+
+        lp = new LinearLayout.LayoutParams(width / 10, width / 10
+
+        );
+        lp.setMargins(width / 100, 0, 0, 0);
+        lp.gravity = Gravity.CENTER_VERTICAL;
+        TextView emotion_icon = new TextView(ct);
+        emotion_icon.setLayoutParams(lp);
+
+       // int index = emotion_name_list.indexOf(Mediator_meeting.meetingDetailObject.getClmtngnotemood01().get(j));
+
+        int index = emotion_name_list_all_emoji_name.indexOf(Mediator_meeting.meetingDetailObject.getClmtngnotemood01().get(j));
+
+
+        emotion_name_list.add(Mediator_meeting.meetingDetailObject.getClmtngnotemood01().get(j));
+
+        emotion_icon.setBackgroundResource(emogies_icon_array[index]);
+        emotion_icon.setId(index_counter + 2);
+        emotion_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emotion_index = v.getId() - 2;
+                share_mood_layout.setVisibility(View.VISIBLE);
+                KeyboardUtil.hideKeyBoard(address, ct);
+            }
+        });
+
+    //    emotion_name_list.add("happy");
+
+        emotion_list.add(emotion_icon);
+
+        mainlayout.addView(delete_button);
+        mainlayout.addView(emotion_icon);
+
+        topic_desc.setFocusable(true);
+        topic_desc.requestFocus();
+
+        main_formate_layout_list.add(mainlayout);
+        main_bullet_layout.addView(mainlayout);
+        index_counter++;
     }
 
 
@@ -494,20 +626,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
         dot.setTextSize(13);
         dot.setGravity(Gravity.CENTER);
         dot.setBackgroundResource(R.drawable.dot);
-        /*if (layout_format_state.equalsIgnoreCase("dot"))
-            dot.setBackgroundResource(R.drawable.dot);
-        else if (layout_format_state.equalsIgnoreCase("number")) {
-            dot.setBackgroundColor(Color.parseColor("#ffffff"));
-            int siz = format_textv_list.size() - remove_indexes.size() + 2;
-            dot.setText("" + siz);
-            dot.setTextColor(Color.parseColor("#000000"));
 
-        } else {
-            dot.setBackgroundResource(R.drawable.plus_sign);
-            dot.setText("");
-            dot.setTextColor(Color.parseColor("#000000"));
-
-        }*/
         dot.setId(1 + 1);
 
         mainlayout.addView(dot);
@@ -530,7 +649,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
         mainlayout.addView(topic_desc);
 
 
-        //lp = new LinearLayout.LayoutParams(width / 20, width / 20);
+
         lp = new LinearLayout.LayoutParams(width / 17, width / 17);
         lp.setMargins(width / 100, 0, 0, 0);
         lp.gravity = Gravity.CENTER_VERTICAL;
@@ -543,33 +662,11 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
             public void onClick(View view) {
                 int index = view.getId() - 1;
                 main_formate_layout_list.get(index).setVisibility(View.GONE);
-                //   main_formate_layout_list.remove(index);
+
                 remove_indexes.add(index);
 
 
-                /*if (layout_format_state.equalsIgnoreCase("number"))
-                {
-                    try {
-                        layout_format_state = "number";
 
-                        bullet_view.setBackgroundResource(R.drawable.number);
-
-                        int number_counter = 2;
-                        for (int i = 0; i < format_textv_list.size(); i++) {
-                            if (remove_indexes.size() > 0 && remove_indexes.contains(i)) {
-
-                            } else {
-                                format_textv_list.get(i).setText("" + number_counter);
-                                format_textv_list.get(i).setTextColor(Color.parseColor("#000000"));
-                                format_textv_list.get(i).setBackgroundColor(Color.parseColor("#ffffff"));
-                                number_counter++;
-                            }
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }*/
             }
         });
 
@@ -744,7 +841,7 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
 
     private boolean is_running = false;
 
-    private class CreateMeeting extends android.os.AsyncTask<String, String, Bitmap> {
+    private class CreateMeeting extends AsyncTask<String, String, Bitmap> {
 
         android.app.ProgressDialog pDialog;
         String data = "0";
@@ -758,7 +855,8 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
 
         }
 
-        protected Bitmap doInBackground(String... args) {
+        protected Bitmap doInBackground(String... args)
+        {
             try {
 
                 if (is_running == false)
@@ -799,11 +897,12 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
                     mJsonObjectSub.put("address", CryptLib.encrypt(meeting_address));
                     mJsonObjectSub.put("clmtngnotemood01", bullet_mood);
                     mJsonObjectSub.put("agency_unq_id", mediator_id);
+                    mJsonObjectSub.put("meeting_unq_id", Mediator_meeting.meetingDetailObject.getMeeting_unq_id());
 
 
                     requestdata.put("apikey", "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R");
                     requestdata.put("data", mJsonObjectSub);
-                    requestdata.put("requestType", "createMeeting");
+                    requestdata.put("requestType", "updateMeeting");
 
                     main_object.put("requestData", requestdata);
                     try {
@@ -886,6 +985,80 @@ public class PrepareMeeting extends FragmentActivity implements OnMapReadyCallba
             mainlayout.addView(text);
             pre_meet_layout.addView(mainlayout);
 
+        }
+    }
+
+
+    private void setvalue()
+    {
+        int width = CommonFunction.getScreenWidth();
+        for (int j = 0; j < Mediator_meeting.meetingDetailObject.getClmtngnote01().size(); j++)
+        {
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout mainlayout = new RelativeLayout(this);
+            mainlayout.setLayoutParams(lp);
+
+            mainlayout.setPadding(width / 100, width / 50, width / 100, 0);
+
+            lp = new RelativeLayout.LayoutParams(width / 25, width / 25);
+            lp.setMargins(width / 100, width / 50, width / 100, 0);
+            TextView dot = new TextView(this);
+            dot.setLayoutParams(lp);
+
+
+            dot.setBackgroundResource(R.drawable.dot);
+
+
+            dot.setId(j + 1);
+            mainlayout.addView(dot);
+
+
+            lp = new RelativeLayout.LayoutParams(width - width / 3, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            TextView topic_desc = new TextView(this);
+            lp.addRule(RelativeLayout.RIGHT_OF, dot.getId());
+            lp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+            lp.setMargins(width / 20, 0, width / 200, 0);
+            topic_desc.setText(Mediator_meeting.meetingDetailObject.getClmtngnote01().get(j));
+            topic_desc.setLayoutParams(lp);
+            topic_desc.setGravity(Gravity.LEFT);
+            topic_desc.setTextColor(Color.parseColor("#000000"));
+            topic_desc.setTextSize(20);
+            topic_desc.setPadding(width / 100, width / 50, width / 100, 0);
+            topic_desc.setId(j + 2);
+            topic_desc.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/ubuntu.ttf"));
+
+            lp = new RelativeLayout.LayoutParams(width / 12, width / 12);
+            lp.addRule(RelativeLayout.RIGHT_OF, topic_desc.getId());
+            lp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+            TextView emotion_icon = new TextView(ct);
+            emotion_icon.setLayoutParams(lp);
+            int index = emotion_name_list_all_emoji_name.indexOf(Mediator_meeting.meetingDetailObject.getClmtngnotemood01().get(j));
+
+
+         //   emotion_name_list.add(Mediator_meeting.meetingDetailObject.getClmtngnotemood01().get(j));
+            emotion_icon.setBackgroundResource(emogies_icon_array[index]);
+            emotion_icon.setId(j + 3);
+            emotion_icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   /* int index = v.getId() - 3;
+                    countr = 0;
+                    is_from_appear = true;
+
+                    int index1 = emotion_name_list.indexOf(meetingDetail.getClmtngnotemood01().get(index));
+                    emoji_text.setText(emotion_name_list.get(index1));
+                    emoji_text.postDelayed(hide_shoe_ext, 100);*/
+
+                }
+            });
+
+            mainlayout.addView(topic_desc);
+            mainlayout.addView(emotion_icon);
+
+            bullet_view_main_layout.addView(mainlayout);
+
+
+            Set_bullet_bullet( j);
         }
     }
 }

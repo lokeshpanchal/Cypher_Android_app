@@ -36,7 +36,8 @@ public class SplashActivity extends FragmentActivity {
         TimerTask timerTaskObj = new TimerTask()
         {
             @Override
-            public void run() {
+            public void run()
+            {
                 new GetPetInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         };

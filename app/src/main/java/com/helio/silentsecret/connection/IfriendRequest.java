@@ -121,11 +121,11 @@ public class IfriendRequest {
     //    String RecoveryServer = "https://dev2.eu-gb.mybluemix.net/api/service";
 
     //https://69b40854.ngrok.io/api/service
-    // String MainServer = "https://17a7904f.ngrok.io/api/service";     // local
-   // String RecoveryServer = "https://17a7904f.ngrok.io/api/service"; // local
+     //String MainServer = "https://3388f063.ngrok.io/api/service";     // local
+  //  String RecoveryServer = "https://3388f063.ngrok.io/api/service"; // local
 
 
-    //String MainServer = "https://cypherproduction-v3.eu-gb.mybluemix.net/api/service";
+   // String MainServer = "https://cypherproduction-v3.eu-gb.mybluemix.net/api/service";
    // String RecoveryServer = "https://cypherrecovery-v3.eu-gb.mybluemix.net/api/service";
 
 

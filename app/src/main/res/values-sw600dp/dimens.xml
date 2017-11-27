@@ -73,7 +73,7 @@
 
     <dimen name="room_pager_height">450dp</dimen>
 
-    <dimen name="add_note_width">140dp</dimen>
+    <dimen name="add_note_width">300dp</dimen>
     <dimen name="header_height">70dp</dimen>
 
     <dimen name="home_page_header_text">11sp</dimen>

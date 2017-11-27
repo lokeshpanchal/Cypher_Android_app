@@ -30,6 +30,9 @@ public class CustomDateTimePicker implements View.OnClickListener {
 
     private final int SET_DATE = 100, SET_TIME = 101, SET = 102, CANCEL = 103;
 
+    private final String DATE_ID = "date";
+    private final String TIME_ID = "time";
+
     private Button btn_setDate, btn_setTime, btn_set, btn_cancel;
 
     private Calendar calendar_date = null;
@@ -123,8 +126,9 @@ public class CustomDateTimePicker implements View.OnClickListener {
                 selectedMinute = minute;
             }
         });
-
+        timePicker.setTag(""+TIME_ID);
         datePicker.setMinDate(System.currentTimeMillis());
+        datePicker.setTag(""+DATE_ID);
         viewSwitcher.addView(timePicker);
         viewSwitcher.addView(datePicker);
 
@@ -271,13 +275,24 @@ public class CustomDateTimePicker implements View.OnClickListener {
             case SET_DATE:
                 btn_setTime.setEnabled(true);
                 btn_setDate.setEnabled(false);
-                viewSwitcher.showNext();
+               String tag =  (String) viewSwitcher.getCurrentView().getTag();
+                if(tag!= null && !tag.equalsIgnoreCase(DATE_ID))
+                {
+                    viewSwitcher.showNext();
+                }
                 break;
 
             case SET_TIME:
                 btn_setTime.setEnabled(false);
                 btn_setDate.setEnabled(true);
-                viewSwitcher.showPrevious();
+
+                String tag1 =  (String) viewSwitcher.getCurrentView().getTag();
+                if(tag1!= null && !tag1.equalsIgnoreCase(TIME_ID))
+                {
+                    viewSwitcher.showPrevious();
+                }
+
+
                 break;
 
             case SET:

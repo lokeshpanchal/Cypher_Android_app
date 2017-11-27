@@ -17,13 +17,19 @@ import android.widget.TextView;
 import com.helio.silentsecret.R;
 import com.helio.silentsecret.connection.IfriendRequest;
 import com.helio.silentsecret.utils.AppSession;
+import com.helio.silentsecret.utils.CommonFunction;
 import com.helio.silentsecret.utils.Constants;
 import com.helio.silentsecret.utils.KeyboardUtil;
 import com.helio.silentsecret.utils.ToastUtil;
+import com.helio.silentsecret.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class MediatorActivity extends AppCompatActivity {
 
@@ -32,7 +38,7 @@ public class MediatorActivity extends AppCompatActivity {
     EditText edt_code = null;
     RelativeLayout mediator_option = null, progress_bar = null;
     Context ct = this;
-boolean is_chat_clicked = false;
+    boolean is_chat_clicked = false;
     String mediator_code = "";
     LinearLayout meeting_workshop = null, assignment = null, daily_emotion = null, raise_awareness = null;
 
@@ -90,7 +96,7 @@ boolean is_chat_clicked = false;
         chat_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(is_chat_clicked == false) {
+                if (is_chat_clicked == false) {
                     is_chat_clicked = true;
                     new GetChatEnaleData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
@@ -277,7 +283,7 @@ boolean is_chat_clicked = false;
             try {
                 progress_bar.setVisibility(View.GONE);
 
-                String status = "", agency_unq_id = "", created_by_user_id = "", created_by_user_un = "";
+                String status = "", agency_unq_id = "", created_by_user_id = "", created_by_user_un = "", expire_date = "";
                 if (response != null) {
                     try {
                         Object object = new JSONTokener(response).nextValue();
@@ -287,8 +293,7 @@ boolean is_chat_clicked = false;
                             if (jsonObject.has("status"))
                                 status = jsonObject.getString("status");
 
-                            if (status != null && status.equalsIgnoreCase("true"))
-                            {
+                            if (status != null && status.equalsIgnoreCase("true")) {
                                 String userinfo = "";
 
                                 if (jsonObject.has("data"))
@@ -313,17 +318,49 @@ boolean is_chat_clicked = false;
                                     if (UserInfoobj.has("clmediatorun01"))
                                         created_by_user_un = UserInfoobj.getString("clmediatorun01");
 
+                                    if (UserInfoobj.has("expire_date"))
+                                        expire_date = UserInfoobj.getString("expire_date");
+
+
+                                    Date Created_at = null;
+                                    try {
+                                        Created_at = Utils.StringTodate(expire_date);
+                                        Created_at = getLocalTime(Created_at);
+
+                                        //comment.setCreatedAt(Created_at);
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
 
                                     AppSession.save(ct, Constants.MEDIATOR_CODE, mediator_code);
                                     AppSession.save(ct, Constants.MEDIATOR_AGENCY_ID, agency_unq_id);
                                     AppSession.save(ct, Constants.MEDIATOR_SUPPORT_WORKER_ID, created_by_user_id);
                                     AppSession.save(ct, Constants.MEDIATOR_SUPPORT_WORKER_NAME, created_by_user_un);
 
-                                    mediator_option.setVisibility(View.VISIBLE);
+                                    if (Created_at != null)
+                                    {
+                                        String todays_date = CommonFunction.getDateToString(MainActivity.currentdatetime);
+
+                                        String emoji_post_date = CommonFunction.getDateToString(Created_at);
+                                        int date_diff = CommonFunction.Getdatediff(emoji_post_date, todays_date);
+
+                                        if (date_diff >= 0)
+                                        {
+                                            mediator_option.setVisibility(View.VISIBLE);
+                                        }
+                                        else
+                                        {
+                                            mediator_option.setVisibility(View.GONE);
+                                        }
+
+                                    }
+
+
                                 }
-                            }
-                            else
-                            {
+                            } else {
 
                             }
                         }
@@ -340,6 +377,42 @@ boolean is_chat_clicked = false;
         }
     }
 
+    private Calendar current;
+    private long miliSeconds;
+    private Date resultdate;
+
+    private Date getLocalTime(Date myDate) {
+
+        Date resultdate1 = null;
+        try {
+
+            current = Calendar.getInstance();
+
+
+            TimeZone tzCurrent = current.getTimeZone();
+            int offset = tzCurrent.getRawOffset();
+            if (tzCurrent.inDaylightTime(new Date())) {
+                offset = offset + tzCurrent.getDSTSavings();
+            }
+
+            Calendar current1 = Calendar.getInstance();
+
+            current1.setTime(myDate);
+            miliSeconds = current1.getTimeInMillis();
+            miliSeconds = miliSeconds + offset;
+            resultdate = new Date(miliSeconds);
+
+           /* TimeZone london = TimeZone.getTimeZone("Europe/London");
+            long now = resultdate.getTime();
+             resultdate1 = new Date(miliSeconds - london.getOffset(now));*/
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return resultdate;
+    }
 
     private class GetChatEnaleData extends AsyncTask<String, String, Bitmap> {
 
