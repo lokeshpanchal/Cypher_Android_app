@@ -253,6 +253,20 @@
             android:theme="@style/ChatFriendsTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
+
+        <activity
+            android:name=".activities.OtherCountryUserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
+
+        <activity
+            android:name=".activities.CounsellingAssignment"
+            android:screenOrientation="portrait"
+            android:theme="@style/ChatFriendsTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <activity
             android:name=".activities.CompleteAssignment"
             android:screenOrientation="portrait"

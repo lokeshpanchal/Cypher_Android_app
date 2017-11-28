@@ -593,7 +593,9 @@ public class CounsellerBooking extends Activity {
             }
         });
 
-        if (MainActivity.session_left <= 0 && MainActivity.is_booking == false) {
+        if (MainActivity.session_left <= 0 && MainActivity.is_booking == false)
+        {
+
             Intent intent = new Intent(this, CameraTestActivity.class);
             startActivity(intent);
             finish();

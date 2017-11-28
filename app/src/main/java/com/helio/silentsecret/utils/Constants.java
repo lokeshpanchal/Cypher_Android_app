@@ -83,6 +83,7 @@ public class Constants {
     public static final String ADDMUSICCOUT = "addmusiccount";
 
     public static final String RATINGPOPUP = "ratingpopup";
+    public static final String APPCOUNSELLING_REQUEST = "appCounselling_request";
 
     public static final String USERLASTATTAND = "user_last_attandance";
 
@@ -154,6 +155,10 @@ public class Constants {
     public final static String USER_FLAGGED = "isFlagged";
     public final static String USER_HELP_DATE = "help_time";
     public final static String USER_HELP_USERS = "help_users";
+    public final static String USER_COUNTRY = "user_country";
+    public final static String USER_COUNTRY_CODE = "user_country_code";
+    public final static String APPCOUNSEELING_COUNTRY = "IN";
+   // public final static String APPCOUNSEELING_COUNTRY = "GB";
 
     public static final int TRENDING_HEARTS = 0;
     public static final int TRENDING_HUGS = 1;
@@ -181,6 +186,7 @@ public class Constants {
     public final static String SECRET_CLASS = "Secrets";
     public final static String SECRET_CREATED_AT = "createdAt";
     public final static String SECRET_ADDRESS = "address";
+
     public final static String SECRET_AGE = "age";
     public final static String SECRET_FONT = "font";
     public static final String SECRET_FONTS = "fonts";

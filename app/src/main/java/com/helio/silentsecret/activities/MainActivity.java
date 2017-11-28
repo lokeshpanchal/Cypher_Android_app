@@ -13,6 +13,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -119,10 +121,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.helio.silentsecret.activities.MySecretsActivity.chatcount;
+import static com.helio.silentsecret.utils.AppSession.save;
 
 
 public class MainActivity extends BaseActivity implements
@@ -180,6 +184,8 @@ public class MainActivity extends BaseActivity implements
     String formattedDate = " ";
     Calendar c = null;
     SharedPreferences myPrefs;
+
+    public static String user_country_code = "";
 
 
     public static String[] petnamearray = {"Monkey", "Panda", "Horse", "Rabbit", "Donkey", "Sheep", "Deer", "Tiger", "Parrot", "Meerkat", "Mermaid",
@@ -325,7 +331,7 @@ public class MainActivity extends BaseActivity implements
         try {
 
 
-
+            user_country_code = AppSession.getValue(this,Constants.USER_COUNTRY_CODE);
             buildGoogleApiClient();
 
             try {
@@ -339,41 +345,7 @@ public class MainActivity extends BaseActivity implements
 
             if (longitude == 0.0 && latitude == 0.0) {
                 location_detecter.setVisibility(View.VISIBLE);
-                /*LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                if (location == null)
-                    location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 10, new android.location.LocationListener()
-                {
-                    @Override
-                    public void onLocationChanged(Location location)
-                    {
-                        longitude = location.getLongitude();
-                        latitude = location.getLatitude();
-                        Preference.saveUserLat("" + latitude);
-                        Preference.saveUserLon("" + longitude);
-
-                        location_detecter.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-
-                    }
-                });*/
             }
 
 
@@ -390,6 +362,8 @@ public class MainActivity extends BaseActivity implements
                     if (longitude == 0.0 && latitude == 0.0)
                     {
                         buildGoogleApiClient();
+
+
 
                         try {
                             AlertDialog.Builder dialog2 = new AlertDialog.Builder(ct);
@@ -425,96 +399,7 @@ public class MainActivity extends BaseActivity implements
                         location_detecter.setVisibility(View.GONE);
 
 
-                    /*if (longitude == 0.0 && latitude == 0.0)
-                    {
-                        location_detecter.setVisibility(View.VISIBLE);
-                        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                        location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                        if (location == null)
-                            location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-                        if (location == null)
-                        {
-
-
-                                try {
-                                    AlertDialog.Builder dialog2 = new AlertDialog.Builder(ct);
-                                    dialog2.setMessage(getResources().getString(R.string.gps_guest_enabled));
-                                    dialog2.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                            // TODO Auto-generated method stub
-                                            Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                            startActivity(myIntent);
-                                            //get gps
-                                        }
-                                    });
-
-                                    dialog2.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-
-                                        @Override
-                                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                            // TODO Auto-generated method stub
-
-
-                                        }
-                                    });
-
-                                    AlertDialog gps = dialog2.create();
-                                    gps.setCanceledOnTouchOutside(false);
-                                    gps.show();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-
-
-                        }
-                        else
-                        {
-
-
-                                longitude = location.getLongitude();
-                                latitude = location.getLatitude();
-                                Preference.saveUserLat("" + latitude);
-                                Preference.saveUserLon("" + longitude);
-
-                            location_detecter.setVisibility(View.GONE);
-
-                        }
-
-                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 10, new android.location.LocationListener()
-                        {
-                            @Override
-                            public void onLocationChanged(Location location)
-                            {
-                                longitude = location.getLongitude();
-                                latitude = location.getLatitude();
-                                Preference.saveUserLat("" + latitude);
-                                Preference.saveUserLon("" + longitude);
-
-                                location_detecter.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                            }
-
-                            @Override
-                            public void onProviderEnabled(String provider) {
-
-                            }
-
-                            @Override
-                            public void onProviderDisabled(String provider) {
-
-                            }
-                        });
-                    }
-                    else
-                        location_detecter.setVisibility(View.GONE);*/
                 }
             });
 
@@ -526,7 +411,7 @@ public class MainActivity extends BaseActivity implements
                 public void onDrawerClosed() {
                     landing_page.setVisibility(View.GONE);
 
-                    AppSession.save(ct, Constants.DONE_LANDING_SCREEN, "done");
+                    save(ct, Constants.DONE_LANDING_SCREEN, "done");
 
                     code = AppSession.getValue(ct, Constants.USER_CODE);
                     if (code == null || code.equalsIgnoreCase("")) {
@@ -827,7 +712,7 @@ public class MainActivity extends BaseActivity implements
                 public void onClick(View view) {
                     tutor_layout.setVisibility(View.GONE);
                     is_from_tutorials = false;
-                    AppSession.save(ct, Constants.CYPHER_TUTORIALS, "true");
+                    save(ct, Constants.CYPHER_TUTORIALS, "true");
                 }
             });
 
@@ -940,10 +825,10 @@ public class MainActivity extends BaseActivity implements
 
             String returing = AppSession.getValue(ct, Constants.USER_RETURNING);
             if (returing == null || returing.equalsIgnoreCase("")) {
-                AppSession.save(ct, Constants.USER_RETURNING, "1");
+                save(ct, Constants.USER_RETURNING, "1");
             } else if (returing.equalsIgnoreCase("1")) {
                 new UpdateReturnuing().execute();
-                AppSession.save(ct, Constants.USER_RETURNING, "2");
+                save(ct, Constants.USER_RETURNING, "2");
             }
 
             safeguard_ok.setOnClickListener(new View.OnClickListener() {
@@ -983,7 +868,7 @@ public class MainActivity extends BaseActivity implements
                             is_from_notification = true;
                             is_from_commNotif = true;
                             is_done_in_oncreate = true;
-                            AppSession.save(ct, Constants.COMMENT_SECRET_ID, "");
+                            save(ct, Constants.COMMENT_SECRET_ID, "");
                             makeSearchwithid(SearchFragment.secret_id);
 
                         } else {
@@ -992,7 +877,7 @@ public class MainActivity extends BaseActivity implements
                                 is_from_notification = true;
                                 is_from_commNotif = true;
                                 is_done_in_oncreate = true;
-                                AppSession.save(ct, Constants.COMMENT_SECRET_ID, "");
+                                save(ct, Constants.COMMENT_SECRET_ID, "");
                                 makeSearchwithid(SearchFragment.secret_id);
 
                             }
@@ -1007,7 +892,7 @@ public class MainActivity extends BaseActivity implements
                             is_from_notification = true;
                             is_from_commNotif = true;
                             is_done_in_oncreate = true;
-                            AppSession.save(ct, Constants.COMMENT_SECRET_ID, "");
+                            save(ct, Constants.COMMENT_SECRET_ID, "");
                             makeSearchwithid(SearchFragment.secret_id);
 
                         }
@@ -1017,7 +902,7 @@ public class MainActivity extends BaseActivity implements
                     is_from_notification = true;
                     is_from_commNotif = true;
                     is_done_in_oncreate = true;
-                    AppSession.save(ct, Constants.COMMENT_SECRET_ID, "");
+                    save(ct, Constants.COMMENT_SECRET_ID, "");
                     makeSearchwithid(SearchFragment.secret_id);
                 }
 
@@ -1319,7 +1204,7 @@ public class MainActivity extends BaseActivity implements
 
             Calendar c = Calendar.getInstance();
             String todaysdate = mmddff.format(c.getTime());
-            AppSession.save(ct, Constants.USERLASTATTAND, todaysdate);
+            save(ct, Constants.USERLASTATTAND, todaysdate);
             Intent alarmIntent = new Intent(ct, InactiveNotification.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(ct, 0, alarmIntent, 0);
             try {
@@ -1607,7 +1492,7 @@ public class MainActivity extends BaseActivity implements
             setVerifyFlagConditionDTO = null;
         setVerifyFlagConditionDTO = new SetVerifyFlagConditionDTO(enc_username, "verified", "false");
         new UpdateVeryfiFlag().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        AppSession.save(ct, Constants.USER_VERIFIED, "false");
+        save(ct, Constants.USER_VERIFIED, "false");
 
     }
 
@@ -1850,7 +1735,7 @@ public class MainActivity extends BaseActivity implements
             try {
                 secretsCount = Integer.parseInt(secrets);
                 secretsCount = secretsCount + count;
-                AppSession.save(ct, Constants.USER_SECRETS, "" + secretsCount);
+                save(ct, Constants.USER_SECRETS, "" + secretsCount);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1872,7 +1757,7 @@ public class MainActivity extends BaseActivity implements
                     setVerifyFlagConditionDTO = null;
                 setVerifyFlagConditionDTO = new SetVerifyFlagConditionDTO(enc_username, "verified", "true");
                 new UpdateVeryfiFlag().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                AppSession.save(ct, Constants.USER_VERIFIED, "true");
+                save(ct, Constants.USER_VERIFIED, "true");
 
                 return;
             } else if (sumUp > 10 && secretsCount > 5) {
@@ -2125,13 +2010,73 @@ public class MainActivity extends BaseActivity implements
         startActivity(intent);
     }
 
-    public void runqreader(boolean flag) {
-        Intent intent = new Intent(this, CameraTestActivity.class);
+    public void runqreader(boolean flag)
+    {
+        if(user_country_code == null || user_country_code.equalsIgnoreCase(""))
+        {
+            try
+            {
+                AlertDialog.Builder dialog2 = new AlertDialog.Builder(ct);
+                dialog2.setMessage(getResources().getString(R.string.gps_guest_enabled));
+                dialog2.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        // TODO Auto-generated method stub
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                        //get gps
+                    }
+                });
+
+                dialog2.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        // TODO Auto-generated method stub
+
+
+                    }
+                });
+
+                AlertDialog gps = dialog2.create();
+                gps.setCanceledOnTouchOutside(false);
+                gps.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else  if(user_country_code.equalsIgnoreCase(Constants.APPCOUNSEELING_COUNTRY))
+        {
+            Intent intent = new Intent(this, CounsellingAssignment.class);
+
+
+            if (!flag)
+                intent.putExtra(Constants.ACCESS_QR_READER, true);
+
+            startActivity(intent);
+        }
+        else
+            {
+               String req =  AppSession.getValue(ct,Constants.APPCOUNSELLING_REQUEST);
+                if(req == null  || req.equalsIgnoreCase(""))
+                {
+                    Intent intent = new Intent(this, OtherCountryUserActivity.class);
+                    if (!flag)
+                        intent.putExtra(Constants.ACCESS_QR_READER, true);
+                    startActivity(intent);
+                }
+                else
+                    new ToastUtil(ct, "Your appCounselling request has been submitted.");
+
+            }
+
+        /*Intent intent = new Intent(this, CameraTestActivity.class);
+
 
         if (!flag)
             intent.putExtra(Constants.ACCESS_QR_READER, true);
 
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
 
@@ -2267,7 +2212,8 @@ public class MainActivity extends BaseActivity implements
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (session_left > 0 || MainActivity.is_booking) {
+        if (session_left > 0 || MainActivity.is_booking)
+        {
 
             replaceDialog(Constants.ACCESS_BOOK_APPONTMENT);
         } else {
@@ -2610,14 +2556,14 @@ public class MainActivity extends BaseActivity implements
                 if (Getdiffbettwodate(todaysdate, showdate[0]) < 15 && showdate.length < 3) {
                     if (Getdiffbettwodate(todaysdate, showdate[1]) != 0) {
                         String firstpopdate = showdate[0] + "#" + todaysdate;
-                        AppSession.save(ct, Constants.RATINGPOPUP, firstpopdate);
+                        save(ct, Constants.RATINGPOPUP, firstpopdate);
                         showpopup = true;
                     }
                 }
             } else {
                 showpopup = true;
                 String firstpopdate = todaysdate + "#" + todaysdate;
-                AppSession.save(ct, Constants.RATINGPOPUP, firstpopdate);
+                save(ct, Constants.RATINGPOPUP, firstpopdate);
             }
             if (showpopup) {
                 AlertDialog.Builder updateAlert = new AlertDialog.Builder(MainActivity.this);
@@ -2633,7 +2579,7 @@ public class MainActivity extends BaseActivity implements
                                 final String appPackageName = getPackageName();
                                 try {
                                     String firstpopdate = todaysdate + "#" + todaysdate + "#done";
-                                    AppSession.save(ct, Constants.RATINGPOPUP, firstpopdate);
+                                    save(ct, Constants.RATINGPOPUP, firstpopdate);
 
                                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                                 } catch (Exception e) {
@@ -2761,7 +2707,7 @@ public class MainActivity extends BaseActivity implements
             try {
                 if (petAvtarInfoDTO != null) {
                     pet_name = petnamearray[select_index];
-                    AppSession.save(ct, Constants.USER_PET_NAME, petnamearray[select_index]);
+                    save(ct, Constants.USER_PET_NAME, petnamearray[select_index]);
                     ShowPetStatus();
                 }
 
@@ -3114,10 +3060,10 @@ public class MainActivity extends BaseActivity implements
                             if (UserInfoobj.has("session_left"))
                                 Session_left = UserInfoobj.getString("session_left");
 
-                            AppSession.save(ct, Constants.USED_QR_CODE, qid);
-                            AppSession.save(ct, Constants.AGENCY_ID, agency_unq_id);
-                            AppSession.save(ct, Constants.AGENT_UNIQUE_ID, agent_unq_id);
-                            AppSession.save(ct, Constants.USER_SESSION_LEFT, Session_left);
+                            save(ct, Constants.USED_QR_CODE, qid);
+                            save(ct, Constants.AGENCY_ID, agency_unq_id);
+                            save(ct, Constants.AGENT_UNIQUE_ID, agent_unq_id);
+                            save(ct, Constants.USER_SESSION_LEFT, Session_left);
 
                             session_left = Integer.parseInt(Session_left);
 
@@ -3205,10 +3151,10 @@ public class MainActivity extends BaseActivity implements
                                 Session_left = UserInfoobj.getString("session_left");
 
 
-                            AppSession.save(ct, Constants.USED_QR_CODE, qid);
-                            AppSession.save(ct, Constants.AGENCY_ID, agency_unq_id);
-                            AppSession.save(ct, Constants.AGENT_UNIQUE_ID, agent_unq_id);
-                            AppSession.save(ct, Constants.USER_SESSION_LEFT, Session_left);
+                            save(ct, Constants.USED_QR_CODE, qid);
+                            save(ct, Constants.AGENCY_ID, agency_unq_id);
+                            save(ct, Constants.AGENT_UNIQUE_ID, agent_unq_id);
+                            save(ct, Constants.USER_SESSION_LEFT, Session_left);
 
                             session_left = Integer.parseInt(Session_left);
 
@@ -3551,8 +3497,8 @@ public class MainActivity extends BaseActivity implements
                             codetype = jsonObject.getString("codetype");
 
 
-                        AppSession.save(ct, Constants.USER_CODE, code);
-                        AppSession.save(ct, Constants.USER_CODE_TYPE, codetype);
+                        save(ct, Constants.USER_CODE, code);
+                        save(ct, Constants.USER_CODE_TYPE, codetype);
 
                         edt_search.setText("");
                         ruby_code_layout.setVisibility(View.GONE);
@@ -3654,6 +3600,27 @@ public class MainActivity extends BaseActivity implements
                 Preference.saveUserLon("" + longitude);
 
                 location_detecter.setVisibility(View.GONE);
+
+
+                Geocoder geocoder;
+                List<Address> addresses;
+                geocoder = new Geocoder(this, Locale.getDefault());
+
+
+
+               // addresses = geocoder.getFromLocation(51.433151, -0.094251, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                String country = addresses.get(0).getCountryName();
+                String country_code = addresses.get(0).getCountryCode();
+                save(ct,Constants.USER_COUNTRY,country);
+                save(ct,Constants.USER_COUNTRY_CODE,country_code);
+
+
+           user_country_code = country_code;
+
+
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -3680,6 +3647,24 @@ public class MainActivity extends BaseActivity implements
                 Preference.saveUserLon("" + longitude);
 
                 location_detecter.setVisibility(View.GONE);
+
+                String country =  AppSession.getValue(ct,Constants.USER_COUNTRY);
+
+                if(country == null && country.equalsIgnoreCase(""))
+                {
+                    Geocoder geocoder;
+                    List<Address> addresses;
+                    geocoder = new Geocoder(this, Locale.getDefault());
+
+                    addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+
+                     country = addresses.get(0).getCountryName();
+                    String country_code = addresses.get(0).getCountryCode();
+                    save(ct,Constants.USER_COUNTRY,country);
+                    save(ct,Constants.USER_COUNTRY_CODE,country_code);
+                    user_country_code = country_code;
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
